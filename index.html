@@ -280,23 +280,30 @@
             <div class="container mx-auto px-4">
                 <h2 class="text-3xl font-bold text-center mb-12" data-translate="dashboard-title">Agricultural Dashboard</h2>
                 
+                <!-- Add fixed height containers for charts -->
                 <div class="grid lg:grid-cols-3 gap-8">
                     <!-- Crop Distribution Chart -->
                     <div class="bg-white rounded-xl p-6 shadow-lg">
                         <h3 class="text-xl font-semibold mb-4" data-translate="chart-crop-dist">Recommended Crops Distribution</h3>
-                        <canvas id="cropDistChart"></canvas>
+                        <div class="h-[300px]"> <!-- Add fixed height container -->
+                            <canvas id="cropDistChart"></canvas>
+                        </div>
                     </div>
                     
                     <!-- Yield Prediction Chart -->
                     <div class="bg-white rounded-xl p-6 shadow-lg">
                         <h3 class="text-xl font-semibold mb-4" data-translate="chart-yield">Predicted Yield per Crop</h3>
-                        <canvas id="yieldChart"></canvas>
+                        <div class="h-[300px]"> <!-- Add fixed height container -->
+                            <canvas id="yieldChart"></canvas>
+                        </div>
                     </div>
                     
                     <!-- Market Price Trends -->
                     <div class="bg-white rounded-xl p-6 shadow-lg">
                         <h3 class="text-xl font-semibold mb-4" data-translate="chart-price">Market Price Trends</h3>
-                        <canvas id="priceChart"></canvas>
+                        <div class="h-[300px]"> <!-- Add fixed height container -->
+                            <canvas id="priceChart"></canvas>
+                        </div>
                     </div>
                 </div>
                 
@@ -356,7 +363,7 @@
                                         <span class="text-2xl">👨‍💻</span>
                                     </div>
                                     <div>
-                                        <div class="font-semibold">Arjun Kumar</div>
+                                        <div class="font-semibold">Basavaraj N</div>
                                         <div class="text-sm opacity-90" data-translate="role-lead">Team Lead & AI Developer</div>
                                     </div>
                                 </div>
@@ -366,7 +373,7 @@
                                         <span class="text-2xl">👩‍🔬</span>
                                     </div>
                                     <div>
-                                        <div class="font-semibold">Priya Sharma</div>
+                                        <div class="font-semibold">Channaveer H</div>
                                         <div class="text-sm opacity-90" data-translate="role-data">Data Scientist</div>
                                     </div>
                                 </div>
@@ -376,8 +383,28 @@
                                         <span class="text-2xl">🎨</span>
                                     </div>
                                     <div>
-                                        <div class="font-semibold">Rahul Patel</div>
+                                        <div class="font-semibold">aditi I</div>
                                         <div class="text-sm opacity-90" data-translate="role-ui">UI/UX Designer</div>
+                                    </div>
+                                </div>
+                                
+                                  <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                                        <span class="text-2xl">✨</span>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold">Hrushikesh M</div>
+                                        <div class="text-sm opacity-90" data-translate="role-ui">researach Expert</div>
+                                    </div>
+                                </div>
+                                
+                                  <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                                        <span class="text-2xl">🎞️</span>
+                                    </div> 
+                                    <div>
+                                        <div class="font-semibold">Aditi S</div>
+                                        <div class="text-sm opacity-90" data-translate="role-ui">Data analist</div>
                                     </div>
                                 </div>
                                 
@@ -386,7 +413,7 @@
                                         <span class="text-2xl">⚙️</span>
                                     </div>
                                     <div>
-                                        <div class="font-semibold">Sneha Reddy</div>
+                                        <div class="font-semibold">Drakshayani U</div>
                                         <div class="text-sm opacity-90" data-translate="role-backend">Backend Developer</div>
                                     </div>
                                 </div>
@@ -870,84 +897,104 @@
             }, 100);
         }
 
-        function createCropDistributionChart() {
-            const ctx = document.getElementById('cropDistChart');
-            if (!ctx) return;
+        // Update the chart functions with better responsive options
+function createCropDistributionChart() {
+    const ctx = document.getElementById('cropDistChart');
+    if (!ctx) return;
 
-            new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: ['Wheat', 'Rice', 'Maize', 'Others'],
-                    datasets: [{
-                        data: [40, 30, 20, 10],
-                        backgroundColor: ['#22c55e', '#16a34a', '#15803d', '#166534']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
+    new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Wheat', 'Rice', 'Maize', 'Others'],
+            datasets: [{
+                data: [40, 30, 20, 10],
+                backgroundColor: ['#22c55e', '#16a34a', '#15803d', '#166534']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 12
                     }
                 }
-            });
+            }
         }
+    });
+}
 
-        function createYieldChart() {
-            const ctx = document.getElementById('yieldChart');
-            if (!ctx) return;
+function createYieldChart() {
+    const ctx = document.getElementById('yieldChart');
+    if (!ctx) return;
 
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Wheat', 'Rice', 'Maize', 'Cotton'],
-                    datasets: [{
-                        label: 'Yield (quintals/acre)',
-                        data: [35, 28, 42, 18],
-                        backgroundColor: '#22c55e'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Wheat', 'Rice', 'Maize', 'Cotton'],
+            datasets: [{
+                label: 'Yield (quintals/acre)',
+                data: [35, 28, 42, 18],
+                backgroundColor: '#22c55e'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        maxTicksLimit: 6
                     }
                 }
-            });
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
         }
+    });
+}
 
-        function createPriceChart() {
-            const ctx = document.getElementById('priceChart');
-            if (!ctx) return;
+function createPriceChart() {
+    const ctx = document.getElementById('priceChart');
+    if (!ctx) return;
 
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                    datasets: [{
-                        label: 'Price (₹/qtl)',
-                        data: [2200, 2350, 2180, 2420, 2380, 2500],
-                        borderColor: '#22c55e',
-                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: false
-                        }
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Price (₹/qtl)',
+                data: [2200, 2350, 2180, 2420, 2380, 2500],
+                borderColor: '#22c55e',
+                backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    ticks: {
+                        maxTicksLimit: 6
                     }
                 }
-            });
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
         }
+    });
+}
 
         // Language Functions
         function initializeLanguage() {
