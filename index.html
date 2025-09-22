@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriSense - AI Crop Recommendation System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        /* Custom CSS for additional styling */
+        .hero-bg {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%234ade80" width="1200" height="600"/><path fill="%2322c55e" d="M0 400c200-50 400-100 600-80s400 50 600 20v260H0z"/><path fill="%2316a34a" d="M0 500c300-30 600-60 1200 0v100H0z"/></svg>');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .pulse-green {
+            animation: pulseGreen 2s infinite;
+        }
+        
+        @keyframes pulseGreen {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Offline Banner -->
+    <div class="bg-green-600 text-white text-center py-2 text-sm">
+        <span>🌐 Works Partially Offline in Low Connectivity Regions</span>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                        <span class="text-2xl">🌱</span>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-800" data-translate="app-title">AgriSense</h1>
+                        <p class="text-xs text-gray-600" data-translate="app-subtitle">AI Crop Recommendation System</p>
+                    </div>
+                </div>
+                
+                <!-- Language Toggle -->
+                <div class="flex items-center space-x-4">
+                    <select id="languageSelect" class="px-3 py-1 border border-gray-300 rounded-md text-sm">
+                        <option value="en">English</option>
+                        <option value="hi">हिंदी</option>
+                        <option value="kn">ಕನ್ನಡ</option>
+                    </select>
+                    
+                    <!-- Mobile Menu Button -->
+                    <button id="mobileMenuBtn" class="md:hidden p-2">
+                        <span class="text-2xl">☰</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <nav id="mainNav" class="hidden md:block mt-4">
+                <ul class="flex flex-wrap space-x-6 text-sm">
+                    <li><a href="#home" class="nav-link text-green-600 font-medium" data-translate="nav-home">Home</a></li>
+                    <li><a href="#crop-recommendation" class="nav-link hover:text-green-600" data-translate="nav-crop">Crop Recommendation</a></li>
+                    <li><a href="#disease-detection" class="nav-link hover:text-green-600" data-translate="nav-disease">Disease Detection</a></li>
+                    <li><a href="#dashboard" class="nav-link hover:text-green-600" data-translate="nav-dashboard">Dashboard</a></li>
+                    <li><a href="#about" class="nav-link hover:text-green-600" data-translate="nav-about">About</a></li>
+                    <li><a href="#contact" class="nav-link hover:text-green-600" data-translate="nav-contact">Contact</a></li>
+                </ul>
+            </nav>
+            
+            <!-- Mobile Navigation -->
+            <nav id="mobileNav" class="hidden md:hidden mt-4 border-t pt-4">
+                <ul class="space-y-2">
+                    <li><a href="#home" class="nav-link block py-2 text-green-600 font-medium" data-translate="nav-home">Home</a></li>
+                    <li><a href="#crop-recommendation" class="nav-link block py-2 hover:text-green-600" data-translate="nav-crop">Crop Recommendation</a></li>
+                    <li><a href="#disease-detection" class="nav-link block py-2 hover:text-green-600" data-translate="nav-disease">Disease Detection</a></li>
+                    <li><a href="#dashboard" class="nav-link block py-2 hover:text-green-600" data-translate="nav-dashboard">Dashboard</a></li>
+                    <li><a href="#about" class="nav-link block py-2 hover:text-green-600" data-translate="nav-about">About</a></li>
+                    <li><a href="#contact" class="nav-link block py-2 hover:text-green-600" data-translate="nav-contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Home Section -->
+        <section id="home" class="page-section">
+            <!-- Hero Section -->
+            <div class="hero-bg min-h-[500px] flex items-center justify-center text-white">
+                <div class="text-center px-4 max-w-4xl mx-auto">
+                    <h2 class="text-4xl md:text-6xl font-bold mb-6 fade-in" data-translate="hero-title">Smart Farming Powered by AI</h2>
+                    <p class="text-xl md:text-2xl mb-8 fade-in" data-translate="hero-subtitle">Revolutionizing agriculture with intelligent crop recommendations and disease detection</p>
+                    <button id="ctaBtn" class="bg-green-500 hover:bg-green-600 px-8 py-4 rounded-lg font-semibold text-lg pulse-green transition-all" data-translate="cta-button">
+                        Get Crop Advice 🌾
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Features Section -->
+            <div class="container mx-auto px-4 py-16">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl font-bold text-gray-800 mb-4" data-translate="features-title">Our AI-Powered Solutions</h3>
+                    <p class="text-gray-600 text-lg max-w-2xl mx-auto" data-translate="features-subtitle">Empowering farmers with cutting-edge technology for better yields and sustainable farming</p>
+                </div>
+                
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Crop Recommendation Card -->
+                    <div class="bg-white rounded-xl p-6 shadow-lg card-hover">
+                        <div class="text-4xl mb-4">🌱</div>
+                        <h4 class="text-xl font-semibold mb-3" data-translate="feature-crop-title">Crop Recommendation</h4>
+                        <p class="text-gray-600 mb-4" data-translate="feature-crop-desc">AI-powered suggestions based on soil, weather, and market conditions</p>
+                        <button class="text-green-600 font-medium hover:underline" data-translate="feature-learn-more">Learn More →</button>
+                    </div>
+                    
+                    <!-- Disease Detection Card -->
+                    <div class="bg-white rounded-xl p-6 shadow-lg card-hover">
+                        <div class="text-4xl mb-4">🔬</div>
+                        <h4 class="text-xl font-semibold mb-3" data-translate="feature-disease-title">Disease Detection</h4>
+                        <p class="text-gray-600 mb-4" data-translate="feature-disease-desc">Early identification of plant diseases using computer vision</p>
+                        <button class="text-green-600 font-medium hover:underline" data-translate="feature-learn-more">Learn More →</button>
+                    </div>
+                    
+                    <!-- Yield Prediction Card -->
+                    <div class="bg-white rounded-xl p-6 shadow-lg card-hover">
+                        <div class="text-4xl mb-4">📈</div>
+                        <h4 class="text-xl font-semibold mb-3" data-translate="feature-yield-title">Yield Prediction</h4>
+                        <p class="text-gray-600 mb-4" data-translate="feature-yield-desc">Accurate forecasting for better planning and resource allocation</p>
+                        <button class="text-green-600 font-medium hover:underline" data-translate="feature-learn-more">Learn More →</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Crop Recommendation Section -->
+        <section id="crop-recommendation" class="page-section hidden bg-gray-50 py-16">
+            <div class="container mx-auto px-4">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-3xl font-bold text-center mb-12" data-translate="crop-rec-title">AI Crop Recommendation</h2>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <!-- Input Form -->
+                        <div class="bg-white rounded-xl p-6 shadow-lg">
+                            <form id="cropRecommendationForm">
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2" data-translate="form-location">Location</label>
+                                        <input type="text" id="location" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" placeholder="Enter your location" required>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2" data-translate="form-soil-type">Soil Type</label>
+                                        <select id="soilType" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" required>
+                                            <option value="" data-translate="form-select-soil">Select Soil Type</option>
+                                            <option value="clay" data-translate="soil-clay">Clay</option>
+                                            <option value="sandy" data-translate="soil-sandy">Sandy</option>
+                                            <option value="loamy" data-translate="soil-loamy">Loamy</option>
+                                            <option value="silt" data-translate="soil-silt">Silt</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2" data-translate="form-ph">pH Level (Optional)</label>
+                                        <input type="number" id="phLevel" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" min="0" max="14" step="0.1" placeholder="6.5">
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2" data-translate="form-moisture">Moisture Level (Optional)</label>
+                                        <input type="number" id="moisture" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" min="0" max="100" placeholder="65">
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2" data-translate="form-prev-crop">Previous Crop (Optional)</label>
+                                        <select id="prevCrop" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                                            <option value="" data-translate="form-select-prev">Select Previous Crop</option>
+                                            <option value="rice" data-translate="crop-rice">Rice</option>
+                                            <option value="wheat" data-translate="crop-wheat">Wheat</option>
+                                            <option value="maize" data-translate="crop-maize">Maize</option>
+                                            <option value="cotton" data-translate="crop-cotton">Cotton</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-lg font-semibold transition-colors" data-translate="form-submit">
+                                        Get Recommendation
+                                    </button>
+                                </div>
+                            </form>
+                            
+                            <!-- Soil Testing Kit Info -->
+                            <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                <div class="flex items-start space-x-3">
+                                    <div class="text-2xl">💡</div>
+                                    <div>
+                                        <h5 class="font-semibold text-blue-800 mb-1" data-translate="soil-kit-title">Need Soil Testing?</h5>
+                                        <p class="text-sm text-blue-700" data-translate="soil-kit-desc">Don't know your soil pH? Use affordable soil testing kits (₹300) for better accuracy.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Results -->
+                        <div class="bg-white rounded-xl p-6 shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4" data-translate="recommendation-title">Recommendation Results</h3>
+                            <div id="recommendationResult" class="text-center text-gray-500">
+                                <div class="text-6xl mb-4">🌾</div>
+                                <p data-translate="recommendation-placeholder">Fill out the form to get personalized crop recommendations</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Disease Detection Section -->
+        <section id="disease-detection" class="page-section hidden py-16">
+            <div class="container mx-auto px-4">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-3xl font-bold text-center mb-12" data-translate="disease-title">Plant Disease Detection</h2>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <!-- Upload Section -->
+                        <div class="bg-white rounded-xl p-6 shadow-lg">
+                            <div class="text-center">
+                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 mb-4">
+                                    <div id="uploadArea" class="cursor-pointer">
+                                        <div class="text-4xl mb-4">📱</div>
+                                        <p class="text-lg font-medium mb-2" data-translate="upload-title">Upload Crop Image</p>
+                                        <p class="text-gray-500 text-sm" data-translate="upload-desc">Click to select or drag and drop</p>
+                                    </div>
+                                    <input type="file" id="imageUpload" class="hidden" accept="image/*">
+                                </div>
+                                
+                                <div id="imagePreview" class="hidden">
+                                    <img id="previewImg" class="max-w-full h-48 object-cover rounded-lg mx-auto mb-4">
+                                    <button id="analyzeBtn" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg font-semibold" data-translate="analyze-btn">
+                                        Analyze Image
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Results -->
+                        <div class="bg-white rounded-xl p-6 shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4" data-translate="analysis-title">Analysis Results</h3>
+                            <div id="diseaseResult" class="text-center text-gray-500">
+                                <div class="text-6xl mb-4">🔬</div>
+                                <p data-translate="analysis-placeholder">Upload an image to detect diseases</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="page-section hidden bg-gray-50 py-16">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl font-bold text-center mb-12" data-translate="dashboard-title">Agricultural Dashboard</h2>
+                
+                <!-- Add fixed height containers for charts -->
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <!-- Crop Distribution Chart -->
+                    <div class="bg-white rounded-xl p-6 shadow-lg">
+                        <h3 class="text-xl font-semibold mb-4" data-translate="chart-crop-dist">Recommended Crops Distribution</h3>
+                        <div class="h-[300px]"> <!-- Add fixed height container -->
+                            <canvas id="cropDistChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Yield Prediction Chart -->
+                    <div class="bg-white rounded-xl p-6 shadow-lg">
+                        <h3 class="text-xl font-semibold mb-4" data-translate="chart-yield">Predicted Yield per Crop</h3>
+                        <div class="h-[300px]"> <!-- Add fixed height container -->
+                            <canvas id="yieldChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Market Price Trends -->
+                    <div class="bg-white rounded-xl p-6 shadow-lg">
+                        <h3 class="text-xl font-semibold mb-4" data-translate="chart-price">Market Price Trends</h3>
+                        <div class="h-[300px]"> <!-- Add fixed height container -->
+                            <canvas id="priceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stats Cards -->
+                <div class="grid md:grid-cols-4 gap-6 mt-8">
+                    <div class="bg-white rounded-xl p-6 shadow-lg text-center">
+                        <div class="text-3xl font-bold text-green-600 mb-2">1,247</div>
+                        <div class="text-gray-600" data-translate="stat-farmers">Active Farmers</div>
+                    </div>
+                    <div class="bg-white rounded-xl p-6 shadow-lg text-center">
+                        <div class="text-3xl font-bold text-blue-600 mb-2">89%</div>
+                        <div class="text-gray-600" data-translate="stat-accuracy">Prediction Accuracy</div>
+                    </div>
+                    <div class="bg-white rounded-xl p-6 shadow-lg text-center">
+                        <div class="text-3xl font-bold text-purple-600 mb-2">₹12L</div>
+                        <div class="text-gray-600" data-translate="stat-savings">Cost Savings</div>
+                    </div>
+                    <div class="bg-white rounded-xl p-6 shadow-lg text-center">
+                        <div class="text-3xl font-bold text-orange-600 mb-2">156</div>
+                        <div class="text-gray-600" data-translate="stat-crops">Crop Varieties</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="page-section hidden py-16">
+            <div class="container mx-auto px-4">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-3xl font-bold text-center mb-12" data-translate="about-title">About AgriSense</h2>
+                    
+                    <div class="grid md:grid-cols-2 gap-12 items-center">
+                        <div>
+                            <h3 class="text-2xl font-semibold mb-6" data-translate="about-mission-title">Our Mission</h3>
+                            <p class="text-gray-600 mb-6" data-translate="about-mission-desc">
+                                AgriSense is revolutionizing agriculture through AI-powered solutions. Built for the Smart India Hackathon, 
+                                our platform addresses critical challenges faced by Indian farmers by providing intelligent crop recommendations, 
+                                disease detection, and yield predictions.
+                            </p>
+                            
+                            <h4 class="text-xl font-semibold mb-4" data-translate="about-features-title">Key Features</h4>
+                            <ul class="space-y-3 text-gray-600">
+                                <li class="flex items-center"><span class="text-green-500 mr-3">✓</span><span data-translate="about-feature-1">Multilingual support (English, Hindi, Kannada)</span></li>
+                                <li class="flex items-center"><span class="text-green-500 mr-3">✓</span><span data-translate="about-feature-2">Offline-first PWA for low connectivity regions</span></li>
+                                <li class="flex items-center"><span class="text-green-500 mr-3">✓</span><span data-translate="about-feature-3">IoT sensor integration (future)</span></li>
+                                <li class="flex items-center"><span class="text-green-500 mr-3">✓</span><span data-translate="about-feature-4">Real-time market price tracking</span></li>
+                                <li class="flex items-center"><span class="text-green-500 mr-3">✓</span><span data-translate="about-feature-5">Sustainable farming practices</span></li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-gradient-to-r from-green-400 to-blue-500 rounded-xl p-8 text-white">
+                            <h3 class="text-2xl font-semibold mb-6" data-translate="about-team-title">Meet Our Team</h3>
+                            
+                            <div class="space-y-4">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                                        <span class="text-2xl">👨‍💻</span>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold">Basavaraj N</div>
+                                        <div class="text-sm opacity-90" data-translate="role-lead">Team Lead & AI Developer</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                                        <span class="text-2xl">👩‍🔬</span>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold">Channaveer H</div>
+                                        <div class="text-sm opacity-90" data-translate="role-data">Data Scientist</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                                        <span class="text-2xl">🎨</span>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold">aditi I</div>
+                                        <div class="text-sm opacity-90" data-translate="role-ui">UI/UX Designer</div>
+                                    </div>
+                                </div>
+                                
+                                  <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                                        <span class="text-2xl">✨</span>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold">Hrushikesh M</div>
+                                        <div class="text-sm opacity-90" data-translate="role-ui">researach Expert</div>
+                                    </div>
+                                </div>
+                                
+                                  <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                                        <span class="text-2xl">🎞️</span>
+                                    </div> 
+                                    <div>
+                                        <div class="font-semibold">Aditi S</div>
+                                        <div class="text-sm opacity-90" data-translate="role-ui">Data analist</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                                        <span class="text-2xl">⚙️</span>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold">Drakshayani U</div>
+                                        <div class="text-sm opacity-90" data-translate="role-backend">Backend Developer</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="page-section hidden bg-gray-50 py-16">
+            <div class="container mx-auto px-4">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-3xl font-bold text-center mb-12" data-translate="contact-title">Contact Us</h2>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <!-- Contact Form -->
+                        <div class="bg-white rounded-xl p-6 shadow-lg">
+                            <form id="contactForm">
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2" data-translate="contact-name">Your Name</label>
+                                        <input type="text" id="contactName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" required>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2" data-translate="contact-email">Email Address</label>
+                                        <input type="email" id="contactEmail" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" required>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2" data-translate="contact-message">Message</label>
+                                        <textarea id="contactMessage" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" required></textarea>
+                                    </div>
+                                    
+                                    <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-lg font-semibold transition-colors" data-translate="contact-send">
+                                        Send Message
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <!-- Contact Information -->
+                        <div class="bg-white rounded-xl p-6 shadow-lg">
+                            <h3 class="text-xl font-semibold mb-6" data-translate="contact-info-title">Get in Touch</h3>
+                            
+                            <div class="space-y-6">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                                        <span class="text-2xl">📧</span>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold" data-translate="contact-email-label">Email</div>
+                                        <div class="text-gray-600">contact@agrisense.in</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                                        <span class="text-2xl">📱</span>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold" data-translate="contact-phone-label">Phone</div>
+                                        <div class="text-gray-600">+91 9876543210</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                                        <span class="text-2xl">🌐</span>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold" data-translate="contact-website-label">Website</div>
+                                        <div class="text-gray-600">www.agrisense.in</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="pt-6 border-t">
+                                    <h4 class="font-semibold mb-4" data-translate="contact-social">Follow Us</h4>
+                                    <div class="flex space-x-4">
+                                        <a href="#" class="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600 transition-colors">
+                                            <span class="text-sm font-bold">f</span>
+                                        </a>
+                                        <a href="#" class="w-10 h-10 bg-blue-400 text-white rounded-full flex items-center justify-center hover:bg-blue-500 transition-colors">
+                                            <span class="text-sm font-bold">t</span>
+                                        </a>
+                                        <a href="#" class="w-10 h-10 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors">
+                                            <span class="text-sm font-bold">yt</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Company Info -->
+                <div>
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                            <span class="text-xl">🌱</span>
+                        </div>
+                        <span class="text-xl font-bold">AgriSense</span>
+                    </div>
+                    <p class="text-gray-300 mb-4" data-translate="footer-desc">
+                        Empowering farmers with AI-powered agricultural solutions for sustainable and profitable farming.
+                    </p>
+                    <div class="text-sm text-gray-400" data-translate="footer-copyright">
+                        © 2025 AgriSense Team | Built for Smart India Hackathon
+                    </div>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-4" data-translate="footer-links-title">Quick Links</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><a href="#home" class="hover:text-green-400 transition-colors" data-translate="nav-home">Home</a></li>
+                        <li><a href="#crop-recommendation" class="hover:text-green-400 transition-colors" data-translate="nav-crop">Crop Recommendation</a></li>
+                        <li><a href="#disease-detection" class="hover:text-green-400 transition-colors" data-translate="nav-disease">Disease Detection</a></li>
+                        <li><a href="#about" class="hover:text-green-400 transition-colors" data-translate="nav-about">About</a></li>
+                        <li><a href="#contact" class="hover:text-green-400 transition-colors" data-translate="nav-contact">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Features -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-4" data-translate="footer-features-title">Features</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li data-translate="footer-feature-1">AI Crop Recommendations</li>
+                        <li data-translate="footer-feature-2">Disease Detection</li>
+                        <li data-translate="footer-feature-3">Yield Predictions</li>
+                        <li data-translate="footer-feature-4">Market Price Analysis</li>
+                        <li data-translate="footer-feature-5">Multilingual Support</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg transform translate-y-full opacity-0 transition-all duration-300">
+        <div class="flex items-center space-x-3">
+            <span class="text-xl">✅</span>
+            <span id="toastMessage">Success!</span>
+        </div>
+    </div>
+
+    <script>
+        // Translation data
+        const translations = {
+            en: {
+                'app-title': 'AgriSense',
+                'app-subtitle': 'AI Crop Recommendation System',
+                'nav-home': 'Home',
+                'nav-crop': 'Crop Recommendation',
+                'nav-disease': 'Disease Detection',
+                'nav-dashboard': 'Dashboard',
+                'nav-about': 'About',
+                'nav-contact': 'Contact',
+                'hero-title': 'Smart Farming Powered by AI',
+                'hero-subtitle': 'Revolutionizing agriculture with intelligent crop recommendations and disease detection',
+                'cta-button': 'Get Crop Advice 🌾',
+                'features-title': 'Our AI-Powered Solutions',
+                'features-subtitle': 'Empowering farmers with cutting-edge technology for better yields and sustainable farming',
+                'feature-crop-title': 'Crop Recommendation',
+                'feature-crop-desc': 'AI-powered suggestions based on soil, weather, and market conditions',
+                'feature-disease-title': 'Disease Detection',
+                'feature-disease-desc': 'Early identification of plant diseases using computer vision',
+                'feature-yield-title': 'Yield Prediction',
+                'feature-yield-desc': 'Accurate forecasting for better planning and resource allocation',
+                'feature-learn-more': 'Learn More →',
+                'crop-rec-title': 'AI Crop Recommendation',
+                'form-location': 'Location',
+                'form-soil-type': 'Soil Type',
+                'form-ph': 'pH Level (Optional)',
+                'form-moisture': 'Moisture Level (Optional)',
+                'form-prev-crop': 'Previous Crop (Optional)',
+                'form-submit': 'Get Recommendation',
+                'soil-kit-title': 'Need Soil Testing?',
+                'soil-kit-desc': 'Don\'t know your soil pH? Use affordable soil testing kits (₹300) for better accuracy.',
+                'recommendation-title': 'Recommendation Results',
+                'recommendation-placeholder': 'Fill out the form to get personalized crop recommendations'
+            },
+            hi: {
+                'app-title': 'एग्रीसेंस',
+                'app-subtitle': 'एआई फसल सिफारिश प्रणाली',
+                'nav-home': 'होम',
+                'nav-crop': 'फसल सिफारिश',
+                'nav-disease': 'रोग निदान',
+                'nav-dashboard': 'डैशबोर्ड',
+                'nav-about': 'के बारे में',
+                'nav-contact': 'संपर्क',
+                'hero-title': 'एआई द्वारा संचालित स्मार्ट खेती',
+                'hero-subtitle': 'बुद्धिमान फसल सिफारिशों और रोग निदान के साथ कृषि में क्रांति',
+                'cta-button': 'फसल सलाह प्राप्त करें 🌾',
+                'features-title': 'हमारे एआई-संचालित समाधान',
+                'features-subtitle': 'बेहतर उत्पादन और टिकाऊ खेती के लिए अत्याधुनिक तकनीक के साथ किसानों को सशक्त बनाना',
+                'feature-crop-title': 'फसल सिफारिश',
+                'feature-crop-desc': 'मिट्टी, मौसम और बाजार की स्थितियों के आधार पर एआई-संचालित सुझाव',
+                'feature-disease-title': 'रोग निदान',
+                'feature-disease-desc': 'कंप्यूटर विजन का उपयोग करके पौधों की बीमारियों की जल्दी पहचान',
+                'feature-yield-title': 'उत्पादन भविष्यवाणी',
+                'feature-yield-desc': 'बेहतर योजना और संसाधन आवंटन के लिए सटीक पूर्वानुमान',
+                'feature-learn-more': 'और जानें →',
+                'crop-rec-title': 'एआई फसल सिफारिश',
+                'form-location': 'स्थान',
+                'form-soil-type': 'मिट्टी का प्रकार',
+                'form-ph': 'पीएच स्तर (वैकल्पिक)',
+                'form-moisture': 'नमी स्तर (वैकल्पिक)',
+                'form-prev-crop': 'पिछली फसल (वैकल्पिक)',
+                'form-submit': 'सिफारिश प्राप्त करें',
+                'soil-kit-title': 'मिट्टी परीक्षण की आवश्यकता?',
+                'soil-kit-desc': 'अपनी मिट्टी का पीएच नहीं पता? बेहतर सटीकता के लिए किफायती मिट्टी परीक्षण किट (₹300) का उपयोग करें।',
+                'recommendation-title': 'सिफारिश परिणाम',
+                'recommendation-placeholder': 'व्यक्तिगत फसल सिफारिशें प्राप्त करने के लिए फॉर्म भरें'
+            },
+            kn: {
+                'app-title': 'ಆಗ್ರಿಸೆನ್ಸ್',
+                'app-subtitle': 'AI ಬೆಳೆ ಶಿಫಾರಸು ವ್ಯವಸ್ಥೆ',
+                'nav-home': 'ಮುಖ್ಯ',
+                'nav-crop': 'ಬೆಳೆ ಶಿಫಾರಸು',
+                'nav-disease': 'ರೋಗ ಪತ್ತೆ',
+                'nav-dashboard': 'ಡ್ಯಾಶ್‌ಬೋರ್ಡ್',
+                'nav-about': 'ಬಗ್ಗೆ',
+                'nav-contact': 'ಸಂಪರ್ಕ',
+                'hero-title': 'AI ನಿಂದ ಚಾಲಿತ ಸ್ಮಾರ್ಟ್ ಕೃಷಿ',
+                'hero-subtitle': 'ಬುದ್ಧಿವಂತ ಬೆಳೆ ಶಿಫಾರಸುಗಳು ಮತ್ತು ರೋಗ ಪತ್ತೆಯೊಂದಿಗೆ ಕೃಷಿಯಲ್ಲಿ ಕ್ರಾಂತಿ',
+                'cta-button': 'ಬೆಳೆ ಸಲಹೆ ಪಡೆಯಿರಿ 🌾',
+                'features-title': 'ನಮ್ಮ AI-ಚಾಲಿತ ಪರಿಹಾರಗಳು',
+                'features-subtitle': 'ಉತ್ತಮ ಇಳುವರಿ ಮತ್ತು ಸುಸ್ಥಿರ ಕೃಷಿಗಾಗಿ ಅತ್ಯಾಧುನಿಕ ತಂತ್ರಜ್ಞಾನದೊಂದಿಗೆ ರೈತರನ್ನು ಸಬಲೀಕರಿಸುವುದು',
+                'feature-crop-title': 'ಬೆಳೆ ಶಿಫಾರಸು',
+                'feature-crop-desc': 'ಮಣ್ಣು, ಹವಾಮಾನ ಮತ್ತು ಮಾರುಕಟ್ಟೆ ಪರಿಸ್ಥಿತಿಗಳ ಆಧಾರದ ಮೇಲೆ AI-ಚಾಲಿತ ಸಲಹೆಗಳು',
+                'feature-disease-title': 'ರೋಗ ಪತ್ತೆ',
+                'feature-disease-desc': 'ಕಂಪ್ಯೂಟರ್ ವಿಷನ್ ಬಳಸಿ ಸಸ್ಯ ರೋಗಗಳ ಆರಂಭಿಕ ಗುರುತಿಸುವಿಕೆ',
+                'feature-yield-title': 'ಇಳುವರಿ ಪೂರ್ವಸೂಚನೆ',
+                'feature-yield-desc': 'ಉತ್ತಮ ಯೋಜನೆ ಮತ್ತು ಸಂಪನ್ಮೂಲ ಹಂಚಿಕೆಗಾಗಿ ನಿಖರ ಮುನ್ಸೂಚನೆ',
+                'feature-learn-more': 'ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ →',
+                'crop-rec-title': 'AI ಬೆಳೆ ಶಿಫಾರಸು',
+                'form-location': 'ಸ್ಥಳ',
+                'form-soil-type': 'ಮಣ್ಣಿನ ಪ್ರಕಾರ',
+                'form-ph': 'pH ಮಟ್ಟ (ಐಚ್ಛಿಕ)',
+                'form-moisture': 'ತೇವಾಂಶ ಮಟ್ಟ (ಐಚ್ಛಿಕ)',
+                'form-prev-crop': 'ಹಿಂದಿನ ಬೆಳೆ (ಐಚ್ಛಿಕ)',
+                'form-submit': 'ಶಿಫಾರಸು ಪಡೆಯಿರಿ',
+                'soil-kit-title': 'ಮಣ್ಣಿನ ಪರೀಕ್ಷೆಯ ಅಗತ್ಯವಿದೆಯೇ?',
+                'soil-kit-desc': 'ನಿಮ್ಮ ಮಣ್ಣಿನ pH ತಿಳಿದಿಲ್ಲವೇ? ಉತ್ತಮ ನಿಖರತೆಗಾಗಿ ಕೈಗೆಟುಕುವ ಮಣ್ಣಿನ ಪರೀಕ್ಷಾ ಕಿಟ್‌ಗಳನ್ನು (₹300) ಬಳಸಿ।',
+                'recommendation-title': 'ಶಿಫಾರಸು ಫಲಿತಾಂಶಗಳು',
+                'recommendation-placeholder': 'ವೈಯಕ್ತಿಕ ಬೆಳೆ ಶಿಫಾರಸುಗಳನ್ನು ಪಡೆಯಲು ಫಾರ್ಮ್ ಭರ್ತಿ ಮಾಡಿ'
+            }
+        };
+
+        // Global variables
+        let currentLanguage = 'en';
+
+        // DOM Elements
+        const languageSelect = document.getElementById('languageSelect');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileNav = document.getElementById('mobileNav');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const pageSections = document.querySelectorAll('.page-section');
+        const ctaBtn = document.getElementById('ctaBtn');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeNavigation();
+            initializeForms();
+            initializeCharts();
+            initializeLanguage();
+            initializeFileUpload();
+        });
+
+        // Navigation Functions
+        function initializeNavigation() {
+            // Mobile menu toggle
+            mobileMenuBtn.addEventListener('click', function() {
+                mobileNav.classList.toggle('hidden');
+            });
+
+            // Navigation link clicks
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    showSection(targetId);
+                    updateActiveNav(this);
+                    
+                    // Close mobile menu if open
+                    mobileNav.classList.add('hidden');
+                });
+            });
+
+            // CTA button
+            ctaBtn.addEventListener('click', function() {
+                showSection('crop-recommendation');
+                updateActiveNav(document.querySelector('[href="#crop-recommendation"]'));
+            });
+        }
+
+        function showSection(sectionId) {
+            // Hide all sections
+            pageSections.forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Show target section
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.remove('hidden');
+            }
+        }
+
+        function updateActiveNav(activeLink) {
+            navLinks.forEach(link => {
+                link.classList.remove('text-green-600', 'font-medium');
+                link.classList.add('hover:text-green-600');
+            });
+            
+            activeLink.classList.add('text-green-600', 'font-medium');
+            activeLink.classList.remove('hover:text-green-600');
+        }
+
+        // Form Functions
+        function initializeForms() {
+            // Crop Recommendation Form
+            const cropForm = document.getElementById('cropRecommendationForm');
+            cropForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                handleCropRecommendation();
+            });
+
+            // Contact Form
+            const contactForm = document.getElementById('contactForm');
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                handleContactForm();
+            });
+        }
+
+        function handleCropRecommendation() {
+            const location = document.getElementById('location').value;
+            const soilType = document.getElementById('soilType').value;
+            const phLevel = document.getElementById('phLevel').value;
+            const moisture = document.getElementById('moisture').value;
+            const prevCrop = document.getElementById('prevCrop').value;
+
+            // Mock recommendation logic
+            const crops = ['Rice 🌾', 'Wheat 🌾', 'Maize 🌽', 'Cotton 🌱', 'Sugarcane 🎋'];
+            const yields = ['28', '35', '42', '18', '65'];
+            const prices = ['₹2,200', '₹2,500', '₹1,800', '₹5,200', '₹3,100'];
+            const profits = ['High ✅', 'Medium 📊', 'High ✅', 'Very High 🔥', 'Medium 📊'];
+            const sustainability = ['8/10', '7/10', '9/10', '6/10', '7/10'];
+
+            const randomIndex = Math.floor(Math.random() * crops.length);
+
+            const recommendationHtml = `
+                <div class="bg-green-50 border border-green-200 rounded-lg p-6 text-left fade-in">
+                    <h4 class="text-lg font-semibold text-green-800 mb-4">Recommendation for ${location}</h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="font-medium">Best Crop:</span>
+                            <span class="text-green-600 font-semibold">${crops[randomIndex]}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-medium">Expected Yield:</span>
+                            <span>${yields[randomIndex]} quintals/acre</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-medium">Market Price:</span>
+                            <span>${prices[randomIndex]}/qtl</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-medium">Profit Margin:</span>
+                            <span>${profits[randomIndex]}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-medium">Sustainability Score:</span>
+                            <span class="text-green-600 font-semibold">${sustainability[randomIndex]}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('recommendationResult').innerHTML = recommendationHtml;
+            showToast('Recommendation Generated ✅');
+        }
+
+        function handleContactForm() {
+            const name = document.getElementById('contactName').value;
+            const email = document.getElementById('contactEmail').value;
+            const message = document.getElementById('contactMessage').value;
+
+            // Reset form
+            document.getElementById('contactForm').reset();
+            
+            showToast(`Thank you ${name}! Your message has been sent successfully. 📨`);
+        }
+
+        // File Upload Functions
+        function initializeFileUpload() {
+            const uploadArea = document.getElementById('uploadArea');
+            const imageUpload = document.getElementById('imageUpload');
+            const imagePreview = document.getElementById('imagePreview');
+            const previewImg = document.getElementById('previewImg');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+
+            uploadArea.addEventListener('click', function() {
+                imageUpload.click();
+            });
+
+            imageUpload.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewImg.src = e.target.result;
+                        uploadArea.parentElement.classList.add('hidden');
+                        imagePreview.classList.remove('hidden');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            analyzeBtn.addEventListener('click', function() {
+                handleDiseaseDetection();
+            });
+        }
+
+        function handleDiseaseDetection() {
+            // Mock disease detection logic
+            const diseases = [
+                { name: 'Early Blight in Tomato 🍅', treatment: 'Mancozeb spray', risk: 'Moderate ⚠️' },
+                { name: 'Leaf Rust in Wheat 🌾', treatment: 'Propiconazole fungicide', risk: 'High 🔴' },
+                { name: 'Brown Spot in Rice 🌾', treatment: 'Carbendazim spray', risk: 'Low 🟢' },
+                { name: 'Bacterial Wilt in Potato 🥔', treatment: 'Copper oxychloride', risk: 'High 🔴' },
+                { name: 'Powdery Mildew in Grapes 🍇', treatment: 'Sulfur spray', risk: 'Moderate ⚠️' }
+            ];
+
+            const randomDisease = diseases[Math.floor(Math.random() * diseases.length)];
+
+            const diseaseHtml = `
+                <div class="bg-orange-50 border border-orange-200 rounded-lg p-6 text-left fade-in">
+                    <h4 class="text-lg font-semibold text-orange-800 mb-4">Detection Result</h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="font-medium">Detected:</span>
+                            <span class="text-orange-600 font-semibold">${randomDisease.name}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-medium">Treatment:</span>
+                            <span>${randomDisease.treatment}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-medium">Risk Level:</span>
+                            <span>${randomDisease.risk}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('diseaseResult').innerHTML = diseaseHtml;
+            showToast('Disease Analysis Complete! 🔬');
+        }
+
+        // Chart Functions
+        function initializeCharts() {
+            // Wait a bit for the DOM to be ready
+            setTimeout(() => {
+                createCropDistributionChart();
+                createYieldChart();
+                createPriceChart();
+            }, 100);
+        }
+
+        // Update the chart functions with better responsive options
+function createCropDistributionChart() {
+    const ctx = document.getElementById('cropDistChart');
+    if (!ctx) return;
+
+    new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Wheat', 'Rice', 'Maize', 'Others'],
+            datasets: [{
+                data: [40, 30, 20, 10],
+                backgroundColor: ['#22c55e', '#16a34a', '#15803d', '#166534']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 12
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createYieldChart() {
+    const ctx = document.getElementById('yieldChart');
+    if (!ctx) return;
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Wheat', 'Rice', 'Maize', 'Cotton'],
+            datasets: [{
+                label: 'Yield (quintals/acre)',
+                data: [35, 28, 42, 18],
+                backgroundColor: '#22c55e'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        maxTicksLimit: 6
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+}
+
+function createPriceChart() {
+    const ctx = document.getElementById('priceChart');
+    if (!ctx) return;
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Price (₹/qtl)',
+                data: [2200, 2350, 2180, 2420, 2380, 2500],
+                borderColor: '#22c55e',
+                backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    ticks: {
+                        maxTicksLimit: 6
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+}
+
+        // Language Functions
+        function initializeLanguage() {
+            languageSelect.addEventListener('change', function() {
+                currentLanguage = this.value;
+                translatePage();
+            });
+        }
+
+        function translatePage() {
+            const elements = document.querySelectorAll('[data-translate]');
+            elements.forEach(element => {
+                const key = element.getAttribute('data-translate');
+                if (translations[currentLanguage] && translations[currentLanguage][key]) {
+                    element.textContent = translations[currentLanguage][key];
+                }
+            });
+        }
+
+        // Utility Functions
+        function showToast(message) {
+            toastMessage.textContent = message;
+            toast.classList.remove('translate-y-full', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-full', 'opacity-0');
+                toast.classList.remove('translate-y-0', 'opacity-100');
+            }, 3000);
+        }
+
+        // Smooth scrolling for better UX
+        function smoothScrollTo(element) {
+            element.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+
+        // Add some interactive animations
+        document.addEventListener('scroll', function() {
+            const cards = document.querySelectorAll('.card-hover');
+            cards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    card.classList.add('fade-in');
+                }
+            });
+        });
+
+        // Enhanced form validation
+        function validateForm(formId) {
+            const form = document.getElementById(formId);
+            const inputs = form.querySelectorAll('input[required], select[required], textarea[required]');
+            let isValid = true;
+
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    input.classList.add('border-red-500');
+                    isValid = false;
+                } else {
+                    input.classList.remove('border-red-500');
+                }
+            });
+
+            return isValid;
+        }
+
+        // Add loading states for better UX
+        function showLoading(buttonId) {
+            const button = document.getElementById(buttonId);
+            const originalText = button.textContent;
+            button.textContent = 'Processing...';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.disabled = false;
+            }, 2000);
+        }
+
+        // Enhanced error handling
+        function handleError(message) {
+            showToast(`Error: ${message} ❌`);
+            console.error(message);
+        }
+
+        // Progressive Web App features simulation
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                // Simulate PWA registration
+                console.log('PWA features ready for offline support');
+            });
+        }
+
+        // Dark mode toggle (bonus feature)
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark');
+            const isDark = document.body.classList.contains('dark');
+            localStorage.setItem('darkMode', isDark);
+        }
+
+        // Initialize dark mode from localStorage
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark');
+        }
+
+        // Add keyboard navigation support
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                mobileNav.classList.add('hidden');
+            }
+        });
+
+        // Performance optimization: Lazy loading for charts
+        const chartObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const chartId = entry.target.id;
+                    if (chartId === 'dashboard') {
+                        initializeCharts();
+                        chartObserver.unobserve(entry.target);
+                    }
+                }
+            });
+        });
+
+        const dashboardSection = document.getElementById('dashboard');
+        if (dashboardSection) {
+            chartObserver.observe(dashboardSection);
+        }
+
+        // Add search functionality (bonus feature)
+        function addSearchFunctionality() {
+            const searchInput = document.createElement('input');
+            searchInput.type = 'text';
+            searchInput.placeholder = 'Search crops, diseases...';
+            searchInput.className = 'px-4 py-2 border border-gray-300 rounded-lg';
+            
+            searchInput.addEventListener('input', function(e) {
+                const query = e.target.value.toLowerCase();
+                // Simple search implementation
+                console.log('Searching for:', query);
+            });
+        }
+
+        // Weather integration simulation
+        function getWeatherData(location) {
+            // Mock weather data
+            return {
+                temperature: Math.floor(Math.random() * 15) + 25,
+                humidity: Math.floor(Math.random() * 30) + 60,
+                rainfall: Math.floor(Math.random() * 50),
+                forecast: ['Sunny', 'Cloudy', 'Rainy'][Math.floor(Math.random() * 3)]
+            };
+        }
+
+        // Market price simulation
+        function getMarketPrices() {
+            const crops = ['Wheat', 'Rice', 'Maize', 'Cotton', 'Sugarcane'];
+            return crops.map(crop => ({
+                name: crop,
+                price: Math.floor(Math.random() * 3000) + 1500,
+                change: (Math.random() - 0.5) * 10
+            }));
+        }
+
+        // Expert advice system simulation
+        function getExpertAdvice(crop, issue) {
+            const advice = [
+                "Consider using organic fertilizers for better soil health",
+                "Monitor moisture levels regularly during growing season",
+                "Implement crop rotation to prevent soil depletion",
+                "Use integrated pest management techniques",
+                "Consider drought-resistant varieties in water-scarce areas"
+            ];
+            return advice[Math.floor(Math.random() * advice.length)];
+        }
+
+        // Community features simulation
+        function initializeCommunityFeatures() {
+            console.log('Community features: Farmer forums, knowledge sharing, and local expert network');
+        }
+
+        // Notification system for important updates
+        function showNotification(title, message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 bg-${type === 'success' ? 'green' : type === 'warning' ? 'yellow' : 'blue'}-500 text-white px-6 py-4 rounded-lg shadow-lg z-50`;
+            notification.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <span class="text-xl">${type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️'}</span>
+                    <div>
+                        <div class="font-semibold">${title}</div>
+                        <div class="text-sm">${message}</div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+
+        // Initialize all features when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🌱 AgriSense Platform Initialized');
+            console.log('✅ AI Crop Recommendation System Ready');
+            console.log('✅ Disease Detection Module Active');
+            console.log('✅ Multi-language Support Enabled');
+            console.log('✅ Mobile-Responsive Design Loaded');
+            console.log('✅ Offline Capabilities Simulated');
+            
+            // Show welcome notification
+            setTimeout(() => {
+                showNotification('Welcome to AgriSense!', 'Your AI-powered farming assistant is ready to help.', 'success');
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
