@@ -26,6 +26,8 @@
     </script>
   </head>
   <body class="bg-gray-50 font-sans">
+    <!-- Offline Banner -->
+    <div class="bg-green-600 text-white text-center py-2 text-sm">🌐 Works Partially Offline in Low Connectivity Regions</div>
     <!-- Header -->
     <header class="bg-white shadow-md sticky top-0 z-50">
       <div class="container mx-auto px-4 py-4">
@@ -55,24 +57,26 @@
         <!-- Desktop Nav -->
         <nav id="mainNav" class="hidden md:block mt-4">
           <ul class="flex flex-wrap space-x-6 text-sm">
-            <li><a href="index.html" class="hover:text-green-600">Home</a></li>
-            <li><a href="crop-recommendation.html" class="hover:text-green-600">Crop Recommendation</a></li>
-            <li><a href="disease-detection.html" class="hover:text-green-600">Disease Detection</a></li>
-            <li><a href="dashboard.html" class="hover:text-green-600">Dashboard</a></li>
-            <li><a href="about.html" class="text-green-600 font-medium">About</a></li>
-            <li><a href="contact.html" class="hover:text-green-600">Contact</a></li>
+            <li><a href="index.html" class="hover:text-green-600" data-translate="nav-home">Home</a></li>
+            <li><a href="crop-recommendation.html" class="hover:text-green-600" data-translate="nav-crop">Crop Recommendation</a></li>
+            <li><a href="disease-detection.html" class="hover:text-green-600" data-translate="nav-disease">Disease Detection</a></li>
+            <li><a href="dashboard.html" class="hover:text-green-600" data-translate="nav-dashboard">Dashboard</a></li>
+            <li><a href="soil-testing.html" class="hover:text-green-600" data-translate="nav-soil">Soil Testing Kit</a></li>
+            <li><a href="about.html" class="text-green-600 font-medium" data-translate="nav-about">About</a></li>
+            <li><a href="contact.html" class="hover:text-green-600" data-translate="nav-contact">Contact</a></li>
           </ul>
         </nav>
 
         <!-- Mobile Nav -->
         <nav id="mobileNav" class="hidden md:hidden mt-4 border-t pt-4">
           <ul class="space-y-2">
-            <li><a href="home.html" class="block py-2">Home</a></li>
-            <li><a href="crop-recommendation.html" class="block py-2">Crop Recommendation</a></li>
-            <li><a href="disease-detection.html" class="block py-2">Disease Detection</a></li>
-            <li><a href="dashboard.html" class="block py-2">Dashboard</a></li>
-            <li><a href="about.html" class="block py-2 text-green-600 font-medium">About</a></li>
-            <li><a href="contact.html" class="block py-2">Contact</a></li>
+            <li><a href="home.html" class="block py-2" data-translate="nav-home">Home</a></li>
+            <li><a href="crop-recommendation.html" class="block py-2" data-translate="nav-crop">Crop Recommendation</a></li>
+            <li><a href="disease-detection.html" class="block py-2" data-translate="nav-disease">Disease Detection</a></li>
+            <li><a href="dashboard.html" class="block py-2" data-translate="nav-dashboard">Dashboard</a></li>
+            <li><a href="soil-testing.html" class="block py-2" data-translate="nav-soil">Soil Testing Kit</a></li>
+            <li><a href="about.html" class="block py-2 text-green-600 font-medium" data-translate="nav-about">About</a></li>
+            <li><a href="contact.html" class="block py-2" data-translate="nav-contact">Contact</a></li>
           </ul>
         </nav>
       </div>
@@ -88,9 +92,11 @@
               <div>
                 <h3 class="text-2xl font-semibold mb-6">Our Mission</h3>
                 <p class="text-gray-600 mb-6">
-                  AgriSense is revolutionizing agriculture through AI-powered solutions. Built for the Smart India Hackathon,
-                  our platform addresses critical challenges faced by Indian farmers by providing intelligent crop recommendations,
-                  disease detection, and yield predictions.
+                  AgriSense is an AI-powered platform aimed at modernizing agriculture through 
+                  intelligent data-driven solutions. The system assists farmers by providing
+                  smart crop recommendations, detecting plant diseases at an early stage, 
+                  and predicting crop yield accurately - helping improve productivity and 
+                  sustainability in farming.
                 </p>
                 <h4 class="text-xl font-semibold mb-4">Key Features</h4>
                 <ul class="space-y-3 text-gray-600">
@@ -154,7 +160,7 @@
               <span class="text-xl font-bold">AgriSense</span>
             </div>
             <p class="text-gray-300 mb-4">Empowering farmers with AI-powered agricultural solutions for sustainable and profitable farming.</p>
-            <div class="text-sm text-gray-400">© 2025 AgriSense Team | Built for Smart India Hackathon</div>
+            <div class="text-sm text-gray-400">© 2025 AgriSense Team | Built with Love </div>
           </div>
           <!-- Quick Links -->
           <div>
@@ -181,5 +187,8 @@
         </div>
       </div>
     </footer>
+
+    <script src="common.js"></script>
+    <script src="chatbot.js"></script>
   </body>
   </html>

@@ -40,6 +40,7 @@
           <li><a href="crop-recommendation.html" class="text-green-600 font-medium" data-translate="nav-crop">Crop Recommendation</a></li>
           <li><a href="disease-detection.html" class="hover:text-green-600" data-translate="nav-disease">Disease Detection</a></li>
           <li><a href="dashboard.html" class="hover:text-green-600" data-translate="nav-dashboard">Dashboard</a></li>
+          <li><a href="soil-testing.html" class="hover:text-green-600" data-translate="nav-soil">Soil Testing Kit</a></li>
           <li><a href="about.html" class="hover:text-green-600" data-translate="nav-about">About</a></li>
           <li><a href="contact.html" class="hover:text-green-600" data-translate="nav-contact">Contact</a></li>
         </ul>
@@ -50,6 +51,7 @@
           <li><a href="crop-recommendation.html" class="block py-2 text-green-600 font-medium">Crop Recommendation</a></li>
           <li><a href="disease-detection.html" class="block py-2">Disease Detection</a></li>
           <li><a href="dashboard.html" class="block py-2">Dashboard</a></li>
+          <li><a href="soil-testing.html" class="block py-2">Soil Testing Kit</a></li>
           <li><a href="about.html" class="block py-2">About</a></li>
           <li><a href="contact.html" class="block py-2">Contact</a></li>
         </ul>
@@ -93,10 +95,11 @@
                     <label class="block text-sm font-medium mb-2" data-translate="form-soil-type">Soil Type</label>
                     <select id="soilType" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" required>
                       <option value="">Select Soil Type</option>
-                      <option value="clay">Clay</option>
-                      <option value="sandy">Sandy</option>
-                      <option value="loamy">Loamy</option>
-                      <option value="silt">Silt</option>
+                      <option value="alluvial">Alluvial</option>
+                      <option value="black">Black</option>
+                      <option value="laterite">Laterite</option>
+                      <option value="red">Red</option>
+                      <option value="other">Other</option>
                     </select>
                   </div>
                   <div>
@@ -170,7 +173,10 @@
                   <div class="text-2xl">💡</div>
                   <div>
                     <h5 class="font-semibold text-blue-800 mb-1">Need Soil Testing?</h5>
-                    <p class="text-sm text-blue-700">Don't know your soil NPK values and ph ? Use affordable soil testing kits (₹300) for better accuracy.</p>
+                    <p class="text-sm text-blue-700 mb-3">Don't know your soil NPK values and ph ? Use affordable soil testing kits (₹300) for better accuracy.</p>
+                    <a href="soil-testing.html" class="inline-block bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
+                      Request Testing Kit 🧪
+                    </a>
                   </div>
                 </div>
               </div>
@@ -231,39 +237,24 @@
   </footer>
 
   <script src="common.js"></script>
+  <script src="js/location-handler.js"></script>
   <script>
-    // Mobile nav toggle
-    document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
-      document.getElementById('mobileNav')?.classList.toggle('hidden');
-    });
-
+    // Toast notification function
     function showToast(message) {
       const toast = document.getElementById('toast');
-      const msg = document.getElementById('toastMessage');
-      msg.textContent = message;
-      toast.classList.remove('translate-y-full','opacity-0');
-      toast.classList.add('translate-y-0','opacity-100');
+      const toastMessage = document.getElementById('toastMessage');
+      
+      if (!toast || !toastMessage) return;
+      
+      toastMessage.textContent = message;
+      toast.classList.remove('translate-y-full', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      
       setTimeout(() => {
-        toast.classList.add('translate-y-full','opacity-0');
-        toast.classList.remove('translate-y-0','opacity-100');
+        toast.classList.add('translate-y-full', 'opacity-0');
+        toast.classList.remove('translate-y-0', 'opacity-100');
       }, 2500);
     }
-
-    // Taluk list per district (example)
-    const TALUKS_BY_DISTRICT = {
-      "Bagalkot": ["Jamkhandi", "Bilagi", "Hungund", "Mudhol", "Badami", "Bagalkot", "Ilkal", "Rabakavi-Banahatti"],
-      "Belagavi": ["Belagavi", "Athani", "Bailhongal", "Chikodi", "Gokak", "Hukkeri", "Raybag", "Ramdurg", "Saundatti", "Khanapur", "Nippani"],
-      "Bidar": ["Aurad", "Basavakalyan", "Bhalki", "Bidar", "Humnabad"],
-      "Vijayapura": ["Vijayapura", "Basavana Bagewadi", "Indi", "Sindagi", "Muddebihal"],
-      "Dharwad": ["Dharwad", "Hubballi (Urban/Rural)", "Kalghatgi", "Kundgol", "Navalgund", "Annigeri"],
-      "Gadag": ["Gadag", "Ron", "Nargund", "Shirhatti", "Mundargi"],
-      "Kalaburagi": ["Kalaburagi", "Chincholi", "Sedam", "Chittapur", "Afzalpur", "Jevargi"],
-      "Haveri": ["Haveri", "Byadagi", "Ranebennur", "Hirekerur", "Shiggaon", "Savanur", "Hangal"],
-      "Koppal": ["Koppal", "Gangavathi", "Kushtagi", "Yelburga", "Karatagi"],
-      "Raichur": ["Raichur", "Sindhanur", "Manvi", "Lingasugur", "Devadurga", "Maski"]
-    };
-
-    // populate taluk when district changes
     (function initLocationSelectors(){
       const districtEl = document.getElementById('district');
       const talukEl = document.getElementById('taluk');
@@ -326,5 +317,7 @@
       });
     })();
   </script>
+  <script src="crop-recommendation.js"></script>
+  <script src="chatbot.js"></script>
 </body>
 </html>
