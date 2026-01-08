@@ -1,7 +1,7 @@
 // openrouter.js
 
 export async function getOpenRouterResponse(message, history) {
-  const apiKey = "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";  // <-- Replace AFTER you regenerate it
+  const apiKey = "..";  // <-- Replace AFTER you regenerate it
 
   const payload = {
     model: "meta-llama/llama-4-maverick:free",
@@ -58,3 +58,4 @@ export async function getOpenRouterResponse(message, history) {
     return `Error: ${err.message}. Please check your connection and try again.`;
   }
 }
+
