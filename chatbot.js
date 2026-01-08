@@ -1,5 +1,39 @@
 // Chatbot Widget
+import { getOpenRouterResponse } from './openrouter.js';
+
+// Language configuration
+const LANGUAGES = {
+  en: { name: 'English', flag: '🇬🇧' },
+  hi: { name: 'हिंदी', flag: '🇮🇳' },
+  kn: { name: 'ಕನ್ನಡ', flag: '🇮🇳' }
+};
+
+// Default language
+let currentLanguage = 'en';
+
+// Deepgram API key
+const DEEPGRAM_API_KEY = "ap2_e4543576-6bab-4d85-b5ac-bdef6adf587f"; // Replace with your actual API key
+
 (function() {
+  // Language selector HTML for chat menu
+  const languageSelectorHTML = `
+    <div id="languageSelector" class="absolute top-4 right-16">
+      <button id="languageToggle" class="text-gray-600 hover:text-gray-800">
+        <span class="text-lg">🌐</span>
+      </button>
+      <div id="languageDropdown" class="hidden absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg py-1 z-50">
+        ${Object.entries(LANGUAGES).map(([code, {name, flag}]) => `
+          <button 
+            data-lang="${code}"
+            class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-2"
+          >
+            <span>${flag} ${name}</span>
+          </button>
+        `).join('')}
+      </div>
+    </div>
+  `;
+
   // Create chatbot widget HTML
   const chatbotHTML = `
     <div id="chatbotWidget" class="fixed bottom-6 right-6 z-50">
@@ -19,6 +53,7 @@
               <p class="text-xs opacity-90">Your Farming Assistant</p>
             </div>
           </div>
+          ${languageSelectorHTML}
           <button id="chatbotClose" class="text-white hover:bg-white hover:bg-opacity-20 rounded-full w-8 h-8 flex items-center justify-center transition-all">
             <span class="text-2xl leading-none">×</span>
           </button>
@@ -61,8 +96,8 @@
                 class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
               />
               <button id="voiceInputBtn" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-green-600 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                 </svg>
               </button>
             </div>
@@ -72,25 +107,57 @@
           </div>
           <div id="voiceStatus" class="mt-2 text-xs text-center text-gray-500 hidden"></div>
         </div>
-        <style>
-          .pulse-animation {
-            animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-          }
-          @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-          }
-        </style>
+
       </div>
     </div>
   `;
 
-  // Initialize chatbot when DOM is ready
   function initChatbot() {
-    // Insert chatbot HTML into body
+    // Add chatbot to the page
     document.body.insertAdjacentHTML('beforeend', chatbotHTML);
+    
+    // Initialize language selection
+    const languageToggle = document.getElementById('languageToggle');
+    const languageDropdown = document.getElementById('languageDropdown');
+    const languageButtons = document.querySelectorAll('[data-lang]');
+    
+    // Toggle language dropdown
+    languageToggle?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      languageDropdown.classList.toggle('hidden');
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!languageDropdown.contains(e.target) && e.target !== languageToggle) {
+        languageDropdown.classList.add('hidden');
+      }
+    });
+    
+    // Handle language selection
+    languageButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        e.stopPropagation();
+        currentLanguage = button.dataset.lang;
+        // Store language preference
+        localStorage.setItem('chatbotLanguage', currentLanguage);
+        // Close dropdown
+        languageDropdown.classList.add('hidden');
+        // Update UI to show selected language
+        updateLanguageUI();
+        // Send welcome message in selected language if it's a new chat
+        if (chatMessages.children.length <= 1) { // Only if only the welcome message exists
+          sendWelcomeMessage();
+        }
+      });
+    });
+    
+    // Check for saved language preference
+    const savedLanguage = localStorage.getItem('chatbotLanguage');
+    if (savedLanguage && LANGUAGES[savedLanguage]) {
+      currentLanguage = savedLanguage;
+    }
 
-    // Get elements
     const chatbotToggle = document.getElementById('chatbotToggle');
     const chatbotWindow = document.getElementById('chatbotWindow');
     const chatbotClose = document.getElementById('chatbotClose');
@@ -101,190 +168,302 @@
     const chatMessages = document.getElementById('chatMessages');
     const quickActionBtns = document.querySelectorAll('.quick-action-btn');
 
-    // Speech recognition setup
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    let recognition = null;
-    let isListening = false;
-    let finalTranscript = '';
-    let timeoutId = null;
+    // Speech-to-text variables
+    let mediaRecorder;
+    let audioChunks = [];
 
-    if (SpeechRecognition) {
-      recognition = new SpeechRecognition();
-      recognition.continuous = true;
-      recognition.interimResults = true;
-      recognition.lang = 'en-IN';
+    // Add event listeners for voice input
+    voiceInputBtn.addEventListener('mousedown', startRecording);
+    voiceInputBtn.addEventListener('mouseup', stopRecording);
+    voiceInputBtn.addEventListener('mouseleave', stopRecording);
 
-      recognition.onstart = () => {
-        isListening = true;
-        finalTranscript = '';
-        chatInput.value = '';
-        voiceInputBtn.classList.add('text-red-500', 'pulse-animation');
-        voiceStatus.textContent = 'Listening...';
-        voiceStatus.classList.remove('hidden');
-      };
+    // For touch devices
+    voiceInputBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      startRecording();
+    });
+    voiceInputBtn.addEventListener('touchend', stopRecording);
 
-      recognition.onend = () => {
-        isListening = false;
-        voiceInputBtn.classList.remove('text-red-500', 'pulse-animation');
-        if (voiceStatus.textContent === 'Listening...') {
-          voiceStatus.textContent = 'Click the mic to speak';
-        }
-        // Auto-send if there's a final transcript
-        if (finalTranscript.trim()) {
-          sendMessage(finalTranscript);
-        }
-      };
-
-      recognition.onresult = (event) => {
-        let interimTranscript = '';
+    async function transcribeAudio(audioBlob) {
+      try {
+        console.log('Starting audio transcription...');
+        const formData = new FormData();
+        formData.append('file', audioBlob, 'recording.wav');
         
-        // Process both interim and final results
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          const transcript = event.results[i][0].transcript;
-          
-          if (event.results[i].isFinal) {
-            finalTranscript += transcript + ' ';
-            // Reset the input field with the final transcript
-            chatInput.value = finalTranscript.trim();
-            // Set a timeout to send the message if the user stops speaking
-            if (timeoutId) clearTimeout(timeoutId);
-            timeoutId = setTimeout(() => {
-              if (isListening) {
-                recognition.stop();
-              }
-            }, 1500); // 1.5 seconds of silence to consider the message complete
-          } else {
-            interimTranscript = transcript;
-            // Show interim results in real-time
-            chatInput.value = finalTranscript + interimTranscript;
-          }
-        }
-      };
+        console.log('Sending request to Deepgram...');
+        const response = await fetch("https://api.deepgram.com/v1/listen", {
+          method: "POST",
+          headers: {
+            "Authorization": `Token ${DEEPGRAM_API_KEY}`,
+            "Content-Type": "audio/wav"
+          },
+          body: formData
+        });
 
-      recognition.onerror = (event) => {
-        console.error('Speech recognition error', event.error);
-        voiceStatus.textContent = `Error: ${event.error}`;
-        setTimeout(() => voiceStatus.classList.add('hidden'), 3000);
-        voiceInputBtn.classList.remove('text-red-500', 'pulse-animation');
-      };
-
-      voiceInputBtn.addEventListener('click', () => {
-        try {
-          if (isListening) {
-            recognition.stop();
-          } else {
-            recognition.start();
-          }
-        } catch (error) {
-          console.error('Speech recognition error:', error);
-          voiceStatus.textContent = 'Error accessing microphone. Please check permissions.';
-          voiceStatus.classList.remove('hidden');
-          setTimeout(() => voiceStatus.classList.add('hidden'), 3000);
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('Deepgram API Error:', {
+            status: response.status,
+            statusText: response.statusText,
+            body: errorText
+          });
+          throw new Error(`API request failed with status ${response.status}`);
         }
-      });
-    } else {
-      // Hide voice button if not supported
-      voiceInputBtn.style.display = 'none';
+
+        const data = await response.json();
+        console.log('Deepgram response:', data);
+        
+        if (data?.results?.channels?.[0]?.alternatives?.[0]?.transcript) {
+          const transcript = data.results.channels[0].alternatives[0].transcript;
+          console.log('Transcription successful:', transcript);
+          return transcript;
+        } else {
+          console.error('Unexpected response format from Deepgram:', data);
+          return null;
+        }
+      } catch (error) {
+        console.error('Error in transcribeAudio:', error);
+        return null;
+      }
     }
 
-    // Toggle chatbot window
+    async function startRecording() {
+      try {
+        console.log('Requesting microphone access...');
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        console.log('Microphone access granted');
+        
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+        
+        mediaRecorder.ondataavailable = (event) => {
+          console.log('Audio data available');
+          audioChunks.push(event.data);
+        };
+
+        mediaRecorder.onstop = async () => {
+          console.log('Recording stopped, processing audio...');
+          const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+          voiceStatus.classList.add('hidden');
+          voiceInputBtn.classList.remove('text-red-500');
+          
+          // Show typing indicator while transcribing
+          const typingIndicator = document.createElement('div');
+          typingIndicator.id = 'typing-indicator';
+          typingIndicator.className = 'flex items-center space-x-1 my-2';
+          typingIndicator.innerHTML = `
+            <div class="typing-dot bg-green-400"></div>
+            <div class="typing-dot bg-green-500"></div>
+            <div class="typing-dot bg-green-600"></div>
+          `;
+          chatMessages.appendChild(typingIndicator);
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+
+          try {
+            // Transcribe the audio
+            console.log('Sending audio for transcription...');
+            const transcript = await transcribeAudio(audioBlob);
+            const typingElement = document.getElementById('typing-indicator');
+            if (typingElement) {
+              chatMessages.removeChild(typingElement);
+            }
+            
+            if (transcript) {
+              console.log('Transcription successful, sending message...');
+              sendMessage(transcript);
+            } else {
+              console.log('No transcript received from Deepgram');
+              addMessageToChat("Sorry, I couldn't understand the audio. Please try again.", false);
+            }
+          } catch (error) {
+            console.error('Error in transcription process:', error);
+            addMessageToChat("There was an error processing your voice input. Please try again.", false);
+          } finally {
+            // Clean up the stream
+            stream.getTracks().forEach(track => track.stop());
+          }
+        };
+
+        // Set a timer to automatically stop recording after 10 seconds
+        const maxRecordingTime = 10000; // 10 seconds
+        const stopRecordingTimer = setTimeout(() => {
+          if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+            console.log('Max recording time reached, stopping...');
+            mediaRecorder.stop();
+          }
+        }, maxRecordingTime);
+
+        mediaRecorder.start();
+        console.log('Recording started');
+        voiceStatus.classList.remove('hidden');
+        voiceStatus.innerHTML = `
+          <div class="flex items-center justify-center space-x-1">
+            <span class="inline-block w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+            <span>Listening... Speak now</span>
+          </div>
+        `;
+        voiceInputBtn.classList.add('text-red-500');
+      } catch (error) {
+        console.error('Error accessing microphone:', error);
+        addMessageToChat("Couldn't access microphone. Please check your permissions and try again.", false);
+      }
+    }
+
+    function stopRecording() {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+        voiceStatus.classList.add('hidden');
+        voiceInputBtn.classList.remove('text-red-500');
+        
+        // Stop all tracks in the stream
+        mediaRecorder.stream.getTracks().forEach(track => track.stop());
+      }
+    }
+
+    // Toggle chatbot
     chatbotToggle.addEventListener('click', () => {
+      const isOpening = chatbotWindow.classList.contains('hidden');
       chatbotWindow.classList.toggle('hidden');
-      if (!chatbotWindow.classList.contains('hidden')) {
+      if (isOpening) {
         chatInput.focus();
-        // Show voice input instructions if supported
-        if (recognition) {
-          voiceStatus.textContent = 'Click the mic to speak';
-          voiceStatus.classList.remove('hidden');
+        // Show welcome message if it's the first time opening
+        if (chatMessages.children.length === 0) {
+          sendWelcomeMessage();
         }
-      } else if (isListening && recognition) {
-        recognition.stop();
       }
     });
 
-    // Close chatbot
     chatbotClose.addEventListener('click', () => {
       chatbotWindow.classList.add('hidden');
     });
 
-    // Send message function
-    function sendMessage(message) {
-      if (!message.trim()) return;
-
-      // Add user message
-      const userMessageHTML = `
-        <div class="flex items-start space-x-2 justify-end">
-          <div class="bg-green-600 text-white rounded-2xl rounded-tr-none p-3 shadow-sm max-w-[80%]">
-            <p class="text-sm">${message}</p>
-          </div>
-        </div>
-      `;
-      chatMessages.insertAdjacentHTML('beforeend', userMessageHTML);
-
-      // Clear input
-      chatInput.value = '';
-
-      // Scroll to bottom
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-
-      // Simulate bot response
-      setTimeout(() => {
-        const botResponse = getBotResponse(message);
-        const botMessageHTML = `
-          <div class="flex items-start space-x-2">
-            <img src="chatbotlogo.webp" alt="Bot" class="w-8 h-8 rounded-full mt-1" />
-            <div class="bg-white rounded-2xl rounded-tl-none p-3 shadow-sm max-w-[80%]">
-              <p class="text-sm text-gray-800">${botResponse}</p>
+    function createMessageHTML(message, isUser = false) {
+      if (isUser) {
+        return `
+          <div class="flex items-start space-x-2 justify-end">
+            <div class="bg-green-600 text-white rounded-2xl rounded-tr-none p-3 shadow-sm max-w-[80%]">
+              <p class="text-sm">${message}</p>
             </div>
           </div>
         `;
-        chatMessages.insertAdjacentHTML('beforeend', botMessageHTML);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }, 1000);
+      } else {
+        return `
+          <div class="flex items-start space-x-2">
+            <img src="chatbotlogo.webp" alt="Bot" class="w-8 h-8 rounded-full mt-1" />
+            <div class="bg-white rounded-2xl rounded-tl-none p-3 shadow-sm max-w-[80%]">
+              <p class="text-sm text-gray-800">${message}</p>
+            </div>
+          </div>
+        `;
+      }
     }
 
-    // Send button click
-    chatSend.addEventListener('click', () => {
-      sendMessage(chatInput.value);
-    });
+    function addMessageToChat(message, isUser = false) {
+      const messageHTML = createMessageHTML(message, isUser);
+      chatMessages.insertAdjacentHTML('beforeend', messageHTML);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
 
-    // Enter key to send
-    chatInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        sendMessage(chatInput.value);
+    async function updateLanguageUI() {
+      // Update any UI elements that show the current language
+      const languageToggle = document.getElementById('languageToggle');
+      if (languageToggle) {
+        const currentLang = LANGUAGES[currentLanguage];
+        languageToggle.innerHTML = `<span class="text-lg">${currentLang.flag}</span>`;
       }
-    });
-
-    // Quick action buttons
-    quickActionBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        sendMessage(btn.textContent.trim());
-      });
-    });
-
-    // Simple bot responses
-    function getBotResponse(message) {
-      const lowerMessage = message.toLowerCase();
+    }
+    
+    async function sendWelcomeMessage() {
+      const welcomeMessages = {
+        en: "Hello! 👋 I'm AgriBot, your farming assistant. How can I help you today?",
+        hi: "नमस्ते! 👋 मैं AgriBot हूँ, आपका कृषि सहायक। आज मैं आपकी कैसे मदद कर सकता हूँ?",
+        kn: "ನಮಸ್ಕಾರ! 👋 ನಾನು AgriBot, ನಿಮ್ಮ ಕೃಷಿ ಸಹಾಯಕ. ಇಂದು ನಾನು ನಿಮಗೆ ಹೇಗೆ ಸಹಾಯ ಮಾಡಬಹುದು?"
+      };
       
-      if (lowerMessage.includes('crop') || lowerMessage.includes('🌾')) {
-        return "I can help you with crop recommendations! Visit our Crop Recommendation page where you can input your soil parameters (N, P, K, pH, rainfall, temperature) and get AI-powered crop suggestions. 🌾";
-      } else if (lowerMessage.includes('disease') || lowerMessage.includes('🦠')) {
-        return "For plant disease detection, please visit our Disease Detection page. You can upload a photo of your plant, and our AI will identify any diseases and suggest treatments. 🔬";
-      } else if (lowerMessage.includes('soil') || lowerMessage.includes('🧪')) {
-        return "Our Soil Testing Kit is available for just ₹300! It includes NPK analysis, pH testing, and organic matter measurement. Visit the Soil Testing page to request your kit. 🧪";
-      } else if (lowerMessage.includes('price') || lowerMessage.includes('cost')) {
-        return "Our services are very affordable! Soil Testing Kit: ₹300, and all our AI tools are FREE to use. 💰";
-      } else if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
-        return "Hello! 👋 How can I assist you with your farming needs today?";
-      } else if (lowerMessage.includes('thank')) {
-        return "You're welcome! Happy farming! 🌱 Feel free to ask if you need anything else.";
-      } else {
-        return "I'm here to help with crop recommendations, disease detection, and soil testing. What would you like to know more about? 🌾";
+      // Clear existing messages
+      chatMessages.innerHTML = '';
+      // Add welcome message in selected language
+      addMessageToChat(welcomeMessages[currentLanguage] || welcomeMessages.en);
+      
+      // Update UI to show selected language
+      updateLanguageUI();
+    }
+
+    async function sendMessage(message) {
+      if (!message.trim()) return;
+
+      // Add user message to chat
+      addMessageToChat(message, true);
+      chatInput.value = '';
+
+      // Show typing indicator
+      const typingIndicator = document.createElement('div');
+      typingIndicator.id = 'typing-indicator';
+      typingIndicator.className = 'flex items-center space-x-1 my-2';
+      typingIndicator.innerHTML = `
+        <div class="typing-dot bg-green-400"></div>
+        <div class="typing-dot bg-green-500"></div>
+        <div class="typing-dot bg-green-600"></div>
+      `;
+      chatMessages.appendChild(typingIndicator);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+
+      try {
+        const botResponse = await getBotResponse(message);
+        // Remove typing indicator
+        chatMessages.removeChild(typingIndicator);
+        // Add bot response
+        addMessageToChat(botResponse);
+      } catch (error) {
+        console.error('Error getting bot response:', error);
+        chatMessages.removeChild(typingIndicator);
+        addMessageToChat('Sorry, I encountered an error. Please try again.');
       }
+    }
+
+    chatSend.addEventListener('click', () => sendMessage(chatInput.value));
+
+    chatInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendMessage(chatInput.value);
+    });
+
+    quickActionBtns.forEach(btn => {
+      btn.addEventListener('click', () => sendMessage(btn.textContent.trim()));
+    });
+
+    let conversationHistory = [];
+    const MAX_HISTORY_ITEMS = 10;
+
+    async function getBotResponse(message) {
+      // Add language instruction to the message
+      const languageInstruction = {
+        en: "Please respond in English.",
+        hi: "कृपया हिंदी में उत्तर दें।",
+        kn: "ದಯವಿಟ್ಟು ಕನ್ನಡದಲ್ಲಿ ಉತ್ತರಿಸಿ."
+      }[currentLanguage] || "Please respond in English.";
+      
+      const messageWithLanguage = `${message} (${languageInstruction})`;
+      
+      conversationHistory.push({
+        role: 'user',
+        parts: [{ text: messageWithLanguage }]
+      });
+
+      if (conversationHistory.length > MAX_HISTORY_ITEMS * 2) {
+        conversationHistory = conversationHistory.slice(-MAX_HISTORY_ITEMS * 2);
+      }
+
+      const response = await getOpenRouterResponse(messageWithLanguage, conversationHistory);
+
+      conversationHistory.push({
+        role: 'model',
+        parts: [{ text: response }]
+      });
+
+      return response;
     }
   }
 
-  // Initialize when DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initChatbot);
   } else {
