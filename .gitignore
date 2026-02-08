@@ -1,2 +1,7 @@
-/argri.html
-/logo.png
+venv/
+venv2/
+__pycache__/
+*.pyc
+.env
+node_modules/
+.DS_Store

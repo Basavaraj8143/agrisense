@@ -1,0 +1,33 @@
+crop,yield_qtl_per_acre,price_per_qtl_Rs,main_soiltype,sub_soiltype,N (kg/ha),P₂O₅ (kg/ha),K₂O (kg/ha),"temperature (°C, optimal range)",humidity (% typical),ph (range)
+Arecanut/Banana,120,1000,Laterite,Coastal / Sand,275,137.5,350,24-30,70-90,5.5-7.0
+Bajra,10.62,2625,Red,Arid / Loam / Sandy,32.5,37.5,32.5,28-32,30-60,6.0-8.0
+Banana,120,1000,Red,Lateritic / Loam,300,162.5,375,26-30,70-90,5.5-7.0
+Bengalgram,3.85,5000,Black,Loamy,22.5,50,30,20-25,40-60,6.0-8.0
+Byadagi Chilli,4,15000,Black,Loamy,125,87.5,112.5,25-28,60-85,6.0-7.0
+Chilli,4,12000,Black,Loamy,125,87.5,112.5,25-28,60-85,6.0-7.0
+Chilli (Byadagi speciality),4,15000,Black,Loamy,125,87.5,112.5,25-28,60-85,6.0-7.0
+Chillies,4,12000,Black,Loamy,125,87.5,112.5,25-28,60-85,6.0-7.0
+Cotton,6.5,7500,Black,Cotton / Regur,105,60,70,25-30,50-70,5.5-8.0
+Grapes,30,2000,Other,Deep / Loamy,90,60,200,20-28,50-75,6.0-8.0
+Groundnut,10.34,6783,Black,Loam / Sandy,30,62.5,75,25-30,50-80,6.0-7.0
+Jowar,13.14,3371,Black,Black,60,35,35,28-32,30-60,6.0-8.0
+Jowar/Sorghum,13.14,3371,Black,Black,60,35,35,28-32,30-60,6.0-8.0
+Maize,11.59,2400,Black,Black,120,55,60,20-28,50-80,5.5-7.5
+Onion,40,1200,Other,Deep / Loamy,160,60,115,12-25,60-80,6.0-7.5
+Paddy,12.41,2300,Alluvial,Loam,125,62.5,50,25-30,60-90,5.5-7.0
+Pigeon pea / Tur,3.11,9200,Black,Cotton / Deep,20,45,30,25-30,40-70,6.0-8.0
+Pomegranate,8,6000,Alluvial,Loam / Sandy,150,75,150,25-30,40-70,6.5-7.5
+Pomegranate,8,6000,Alluvial,Loam / Sandy,150,75,150,25-30,40-70,6.5-7.5
+Pulses,3.48,7100,Black,Loamy,17.5,40,25,15-32,40-70,6.0-8.0
+"Pulses (tur, gram)",3.48,7100,Black,Loamy,20,45,30,25-30,40-70,6.0-8.0
+Pulses (tur/gram),3.48,7100,Black,Loamy,20,45,30,25-30,40-70,6.0-8.0
+Redgram,3.11,9200,Black,Cotton / Deep,20,45,30,25-30,40-70,6.0-8.0
+Soybean,6.5,4100,Black,Cotton,22.5,30,30,24-30,50-80,5.5-7.5
+Soybean/pulses,6.5,4100,Black,Cotton,17.5,40,25,15-32,40-70,6.0-8.0
+Sugarcane,350,350,Black,Loam,200,75,225,25-32,60-80,6.0-8.0
+Sunflower,4.86,5200,Black,Black,55,60,40,22-28,40-60,6.0-8.0
+Tobacco,10,12000,Black,Black,200,80,150,22-28,60-80,5.5-6.8
+Tur,3.11,9200,Black,Cotton / Deep,20,45,30,25-30,40-70,6.0-8.0
+Tur/Redgram,3.11,9200,Black,Cotton / Deep,20,45,30,25-30,40-70,6.0-8.0
+Vegetables,50,800,Other,Deep / Loamy,140,80,190,20-30,60-90,6.0-7.5
+Wheat,10.75,2050,Other,Deep / Loamy,125,62.5,45,15-20,50-70,6.0-7.5

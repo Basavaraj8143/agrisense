@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-translate="fertilizer-guide-title">Fertilizer Guide | AgriSense</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <script src="js/common.js" defer></script>
+  <style>
+    .card-hover { transition: all 0.3s ease; }
+    .card-hover:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+    .fade-in { animation: fadeIn 0.5s ease-in; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  </style>
+</head>
+<body class="bg-gray-50 font-sans">
+  <!-- Offline Banner -->
+  <div class="bg-green-600 text-white text-center py-2 text-sm" data-translate="offline-banner">🌐 Works Partially Offline in Low Connectivity Regions</div>
+  <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center"><span
+              class="text-2xl">🌱</span></div>
+          <div>
+            <h1 class="text-xl font-bold text-gray-800" data-translate="site-name">AgriSense</h1>
+            <p class="text-xs text-gray-600" data-translate="site-tagline">AI Crop Recommendation System</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <select id="languageSelect" class="px-3 py-1 border border-gray-300 rounded-md text-sm bg-white">
+            <option value="en">English</option>
+            <option value="hi">हिंदी</option>
+            <option value="kn">ಕನ್ನಡ</option>
+          </select>
+          <button id="mobileMenuBtn" class="md:hidden p-2"><span class="text-2xl">☰</span></button>
+        </div>
+      </div>
+      <nav class="hidden md:block mt-4">
+        <ul class="flex flex-wrap space-x-6 text-sm font-medium">
+          <li><a href="index.html" class="hover:text-green-600 transition-colors" data-translate="nav-home">Home</a></li>
+          <li><a href="crop-recommendation.html" class="hover:text-green-600 transition-colors" data-translate="nav-crop">Crop Recommendation</a></li>
+          <li><a href="pest-detection.html" class="hover:text-green-600 transition-colors" data-translate="nav-pest">Pest Detection</a></li>
+          <li><a href="soil-testing.html" class="hover:text-green-600 transition-colors" data-translate="nav-soil">Soil Testing</a></li>
+          <li><a href="dashboard.html" class="hover:text-green-600 transition-colors" data-translate="nav-dashboard">Dashboard</a></li>
+          <li><a href="community.html" class="hover:text-green-600 transition-colors" data-translate="nav-community">Community</a></li>
+          <li><a href="about.html" class="hover:text-green-600 transition-colors" data-translate="nav-about">About</a></li>
+        </ul>
+      </nav>
+      <!-- Mobile Nav -->
+      <nav id="mobileNav" class="hidden md:hidden mt-4 border-t pt-4">
+        <ul class="space-y-2">
+          <li><a href="index.html" class="block py-2 hover:bg-gray-50 rounded px-2">Home</a></li>
+          <li><a href="crop-recommendation.html" class="block py-2 hover:bg-gray-50 rounded px-2">Crop Recommendation</a></li>
+          <li><a href="pest-detection.html" class="block py-2 hover:bg-gray-50 rounded px-2">Pest Detection</a></li>
+          <li><a href="soil-testing.html" class="block py-2 hover:bg-gray-50 rounded px-2">Soil Testing</a></li>
+          <li><a href="dashboard.html" class="block py-2 hover:bg-gray-50 rounded px-2">Dashboard</a></li>
+          <li><a href="community.html" class="block py-2 hover:bg-gray-50 rounded px-2">Community</a></li>
+          <li><a href="about.html" class="block py-2 hover:bg-gray-50 rounded px-2">About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="py-10">
+    <div class="container mx-auto px-4">
+      <!-- Page Header -->
+      <div class="mb-8 text-center">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-3" data-translate="fertilizer-guide-title">Fertilizer Recommendation Guide</h1>
+        <p class="text-gray-600 max-w-3xl mx-auto" data-translate="fertilizer-guide-subtitle">
+          Get personalized fertilizer recommendations based on your crop and soil type for optimal yield
+        </p>
+      </div>
+
+      <!-- Form Section -->
+      <div class="bg-white rounded-xl shadow-md p-6 mb-8 card-hover">
+        <h2 class="text-xl font-semibold text-gray-800 mb-6" data-translate="select-parameters">Select Parameters</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Crop Selection -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="cropSelect" data-translate="select-crop">Select Crop</label>
+            <select id="cropSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+              <option value="" data-translate="select-crop">Select Crop</option>
+              <option value="rice" data-translate="rice">Rice</option>
+              <option value="wheat" data-translate="wheat">Wheat</option>
+              <option value="maize" data-translate="maize">Maize</option>
+              <option value="sugarcane" data-translate="sugarcane">Sugarcane</option>
+              <option value="cotton" data-translate="cotton">Cotton</option>
+              <option value="groundnut" data-translate="groundnut">Groundnut</option>
+              <option value="soybean" data-translate="soybean">Soybean</option>
+              <option value="pulses" data-translate="pulses">Pulses</option>
+              <option value="vegetables" data-translate="vegetables">Vegetables</option>
+              <option value="fruits" data-translate="fruits">Fruits</option>
+            </select>
+          </div>
+          
+          <!-- Soil Type -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="soilType" data-translate="soil-type">Soil Type</label>
+            <select id="soilType" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+              <option value="" data-translate="select-soil">Select Soil Type</option>
+              <option value="black" data-translate="black-soil">Black Soil</option>
+              <option value="red" data-translate="red-soil">Red Soil</option>
+              <option value="sandy" data-translate="sandy-soil">Sandy Soil</option>
+              <option value="clayey" data-translate="clayey-soil">Clayey Soil</option>
+              <option value="loamy" data-translate="loamy-soil">Loamy Soil</option>
+            </select>
+          </div>
+          
+          <!-- Growth Stage -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="growthStage" data-translate="growth-stage">Growth Stage</label>
+            <select id="growthStage" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+              <option value="" data-translate="select-stage">Select Growth Stage</option>
+              <option value="initial" data-translate="initial-stage">Initial Stage</option>
+              <option value="vegetative" data-translate="vegetative-stage">Vegetative Stage</option>
+              <option value="flowering" data-translate="flowering-stage">Flowering Stage</option>
+              <option value="fruiting" data-translate="fruiting-stage">Fruiting Stage</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="mt-6 text-center">
+          <button id="getRecommendation" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-lg transition duration-200 flex items-center mx-auto">
+            <i class="fas fa-seedling mr-2"></i>
+            <span data-translate="get-recommendation">Get Recommendation</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Results Section -->
+      <div id="resultsSection" class="hidden bg-white rounded-xl shadow-md p-6 mb-8 card-hover fade-in">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl font-semibold text-gray-800" data-translate="recommendation">Fertilizer Recommendation</h2>
+          <button id="printBtn" class="text-green-600 hover:text-green-800">
+            <i class="fas fa-print mr-1"></i>
+            <span data-translate="print">Print</span>
+          </button>
+        </div>
+        
+        <div id="recommendationContent" class="space-y-6">
+          <!-- Filled by JavaScript -->
+        </div>
+      </div>
+
+      <!-- Fertilizer Information -->
+      <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4" data-translate="fertilizer-info">Fertilizer Information</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- Nitrogen -->
+          <div class="bg-blue-50 p-4 rounded-lg">
+            <div class="flex items-center mb-2">
+              <div class="bg-blue-100 p-2 rounded-full mr-3">
+                <i class="fas fa-leaf text-blue-600"></i>
+              </div>
+              <h3 class="font-medium text-gray-800" data-translate="nitrogen">Nitrogen (N)</h3>
+            </div>
+            <p class="text-sm text-gray-600" data-translate="nitrogen-desc">Essential for leaf growth and green color. Found in urea, ammonium sulfate, and NPK fertilizers.</p>
+          </div>
+          
+          <!-- Phosphorus -->
+          <div class="bg-purple-50 p-4 rounded-lg">
+            <div class="flex items-center mb-2">
+              <div class="bg-purple-100 p-2 rounded-full mr-3">
+                <i class="fas fa-seedling text-purple-600"></i>
+              </div>
+              <h3 class="font-medium text-gray-800" data-translate="phosphorus">Phosphorus (P)</h3>
+            </div>
+            <p class="text-sm text-gray-600" data-translate="phosphorus-desc">Important for root development and flowering. Found in DAP, SSP, and NPK fertilizers.</p>
+          </div>
+          
+          <!-- Potassium -->
+          <div class="bg-yellow-50 p-4 rounded-lg">
+            <div class="flex items-center mb-2">
+              <div class="bg-yellow-100 p-2 rounded-full mr-3">
+                <i class="fas fa-apple-alt text-yellow-600"></i>
+              </div>
+              <h3 class="font-medium text-gray-800" data-translate="potassium">Potassium (K)</h3>
+            </div>
+            <p class="text-sm text-gray-600" data-translate="potassium-desc">Enhances fruit quality and disease resistance. Found in MOP, SOP, and NPK fertilizers.</p>
+          </div>
+          
+          <!-- Organic Matter -->
+          <div class="bg-green-50 p-4 rounded-lg">
+            <div class="flex items-center mb-2">
+              <div class="bg-green-100 p-2 rounded-full mr-3">
+                <i class="fas fa-recycle text-green-600"></i>
+              </div>
+              <h3 class="font-medium text-gray-800" data-translate="organic">Organic Matter</h3>
+            </div>
+            <p class="text-sm text-gray-600" data-translate="organic-desc">Improves soil structure and water retention. Includes compost, manure, and green manure.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-12">
+    <div class="container mx-auto px-4">
+      <div class="grid md:grid-cols-3 gap-8">
+        <div>
+          <div class="flex items-center space-x-3 mb-4">
+            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+              <span class="text-xl">🌱</span>
+            </div>
+            <span class="text-xl font-bold">AgriSense</span>
+          </div>
+          <p class="text-gray-600 mb-4" data-translate="testimonial-1">"AgriSense helped me increase my crop yield by 30% with their smart recommendations. The disease detection feature saved my entire tomato crop!"</p>
+          <div class="text-sm text-gray-400">© 2025 AgriSense Team | Built with Love</div>
+        </div>
+        <div>
+          <h4 class="text-white font-bold mb-4" data-translate="quick-links">Quick Links</h4>
+          <ul class="space-y-2 text-gray-300">
+            <li><a href="home.html" class="hover:text-green-400 transition-colors">Home</a></li>
+            <li><a href="crop-recommendation.html" class="hover:text-green-400 transition-colors">Crop Recommendation</a></li>
+            <li><a href="disease-detection.html" class="hover:text-green-400 transition-colors">Disease Detection</a></li>
+            <li><a href="fertilizer-guide.html" class="text-green-400 font-medium hover:text-green-400 transition-colors">Fertilizer Guide</a></li>
+            <li><a href="about.html" class="hover:text-green-400 transition-colors">About</a></li>
+            <li><a href="contact.html" class="hover:text-green-400 transition-colors">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-bold mb-4" data-translate="contact-us">Contact Us</h4>
+          <ul class="space-y-2 text-gray-300">
+            <li>AI Crop Recommendations</li>
+            <li>Disease Detection</li>
+            <li>Yield Predictions</li>
+            <li>Market Price Analysis</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/common.js"></script>
+  <script type="module" src="js/chatbot.js"></script>
+  <script>
+    // Mobile menu toggle
+    document.getElementById('mobileMenuBtn')?.addEventListener('click', () => document.getElementById('mobileNav')?.classList.toggle('hidden'));
+    
+    // Language selector
+    document.getElementById('languageSelect')?.addEventListener('change', function() {
+      changeLanguage(this.value);
+    });
+
+    // Fertilizer Recommendations Data
+    const fertilizerData = {
+      "Rice": {
+        "Black Soil": {
+          "Initial Stage": [
+            {
+              "fertilizer": "NPK (10:26:26)",
+              "amount": "50 kg/acre",
+              "timing": "Basal application",
+              "notes": "Increase P and K by 10% for black soils. Apply at field preparation."
+            },
+            {
+              "fertilizer": "Urea",
+              "amount": "20 kg/acre",
+              "timing": "Basal",
+              "notes": "Nitrogen for early growth."
+            }
+          ],
+          "Vegetative Stage": [
+            {
+              "fertilizer": "Urea",
+              "amount": "25 kg/acre",
+              "timing": "At 25–30 days",
+              "notes": "Avoid applying before rainfall; reduces efficiency."
+            },
+            {
+              "fertilizer": "MOP",
+              "amount": "12 kg/acre",
+              "timing": "At tillering",
+              "notes": "Improves drought tolerance."
+            }
+          ],
+          "Flowering Stage": [
+            {
+              "fertilizer": "19:19:19 (WSF)",
+              "amount": "3 kg/acre (spray)",
+              "timing": "50–55 days after transplanting",
+              "notes": "Do not overdose; triggers lodging if excess N."
+            }
+          ],
+          "Fruiting Stage": [
+            {
+              "fertilizer": "MOP",
+              "amount": "10 kg/acre",
+              "timing": "At grain filling",
+              "notes": "Essential for grain size and weight."
+            },
+            {
+              "fertilizer": "Magnesium Sulphate",
+              "amount": "3 kg/acre (spray)",
+              "timing": "Two sprays, 10 days apart",
+              "notes": "Prevents leaf yellowing."
+            }
+          ]
+        },
+        "Red Soil": "USE SAME STRUCTURE — with +20% Nitrogen, +10% Phosphorus",
+        "Sandy Soil": "USE SAME STRUCTURE — with +30% Nitrogen, -10% Potassium",
+        "Clayey Soil": "USE SAME STRUCTURE — with -15% Nitrogen, +10% P, +15% K",
+        "Loamy Soil": "Use base values (same as initial JSON above)"
+      },
+      "Wheat": {
+        "Black Soil": {
+          "Initial Stage": [
+            {
+              "fertilizer": "DAP",
+              "amount": "40 kg/acre",
+              "timing": "Basal",
+              "notes": "Supplies P and starter N."
+            },
+            {
+              "fertilizer": "Urea",
+              "amount": "20 kg/acre",
+              "timing": "Basal",
+              "notes": "Improves early tiller formation."
+            }
+          ],
+          "Vegetative Stage": [
+            {
+              "fertilizer": "Urea",
+              "amount": "25 kg/acre",
+              "timing": "At crown root initiation (20–25 days)",
+              "notes": "Critical stage for yield formation."
+            }
+          ],
+          "Flowering Stage": [
+            {
+              "fertilizer": "MOP",
+              "amount": "10 kg/acre",
+              "timing": "Early flowering",
+              "notes": "Improves stress resistance."
+            }
+          ],
+          "Fruiting Stage": [
+            {
+              "fertilizer": "13:00:45",
+              "amount": "4 kg/acre",
+              "timing": "Spray during grain filling",
+              "notes": "Enhances kernel weight."
+            }
+          ]
+        },
+        "Red Soil": "Apply +20% N",
+        "Sandy Soil": "Apply +30% N, -10% K",
+        "Clayey Soil": "Apply -15% N, +15% K",
+        "Loamy Soil": "Use base values"
+      },
+      "Maize": {
+        "Black Soil": {
+          "Initial Stage": [
+            {
+              "fertilizer": "DAP",
+              "amount": "45 kg/acre",
+              "timing": "Basal",
+              "notes": "High P required for root development."
+            },
+            {
+              "fertilizer": "Urea",
+              "amount": "15 kg/acre",
+              "timing": "Basal",
+              "notes": "Starter N dose."
+            }
+          ],
+          "Vegetative Stage": [
+            {
+              "fertilizer": "Urea",
+              "amount": "20 kg/acre",
+              "timing": "Knee-high stage",
+              "notes": "Most critical stage for biomass."
+            },
+            {
+              "fertilizer": "MOP",
+              "amount": "10 kg/acre",
+              "timing": "With irrigation",
+              "notes": "Improves plant strength."
+            }
+          ],
+          "Flowering Stage": [
+            {
+              "fertilizer": "Boron",
+              "amount": "1 kg/acre (spray)",
+              "timing": "Pre-flowering",
+              "notes": "Required for tassel & silk health."
+            }
+          ],
+          "Fruiting Stage": [
+            {
+              "fertilizer": "MOP",
+              "amount": "10 kg/acre",
+              "timing": "Cob formation",
+              "notes": "Improves grain filling."
+            }
+          ]
+        },
+        "Red Soil": "Apply +20% N",
+        "Sandy Soil": "Apply +30% N",
+        "Clayey Soil": "Apply +15% K",
+        "Loamy Soil": "Use base values"
+      },
+      "Sugarcane": {
+        "Black Soil": {
+          "Initial Stage": [
+            {
+              "fertilizer": "NPK (10:26:26)",
+              "amount": "50 kg/acre",
+              "timing": "Basal",
+              "notes": "Ensures strong early growth."
+            },
+            {
+              "fertilizer": "Urea",
+              "amount": "40 kg/acre",
+              "timing": "Basal",
+              "notes": "High N-demand crop."
+            }
+          ],
+          "Vegetative Stage": [
+            {
+              "fertilizer": "Urea",
+              "amount": "40 kg/acre",
+              "timing": "Tillering",
+              "notes": "Boosts tiller count."
+            }
+          ],
+          "Flowering Stage": [
+            {
+              "fertilizer": "MOP",
+              "amount": "20 kg/acre",
+              "timing": "Grand growth stage",
+              "notes": "Increases sugar content."
+            }
+          ],
+          "Fruiting Stage": [
+            {
+              "fertilizer": "13:00:45",
+              "amount": "4 kg/acre",
+              "timing": "Before maturity",
+              "notes": "Improves cane weight."
+            }
+          ]
+        },
+        "Loamy Soil": "Use same baseline",
+        "Others": "Apply soil-modifier %"
+      },
+      "Cotton": "Already fully generated earlier (paste that section here)",
+      "Groundnut": "Includes SSP, Gypsum, Boron",
+      "Soybean": "Includes SSP, Urea, Micronutrients",
+      "Vegetables": "Includes DAP, Urea, MOP, 19:19:19, CaNO3",
+      "Fruits": "Includes FYM, NPK mixtures, Boron, CaNO3"
+    };
+    
+    // Function to handle soil-specific adjustments
+    function getRecommendations(crop, soil, stage) {
+      console.log('Getting recommendations for:', {crop, soil, stage});
+      
+      // First try exact match
+      if (fertilizerData[crop] && fertilizerData[crop][soil] && 
+          Array.isArray(fertilizerData[crop][soil][stage])) {
+        console.log('Exact match found');
+        return fertilizerData[crop][soil][stage];
+      }
+      
+      // Try with different case variations
+      const cropLower = crop.toLowerCase();
+      const soilLower = soil.toLowerCase();
+      const stageLower = stage.toLowerCase();
+      
+      for (const cropKey in fertilizerData) {
+        if (cropKey.toLowerCase() === cropLower) {
+          for (const soilKey in fertilizerData[cropKey]) {
+            if (soilKey.toLowerCase() === soilLower) {
+              for (const stageKey in fertilizerData[cropKey][soilKey]) {
+                if (stageKey.toLowerCase() === stageLower) {
+                  console.log('Case-insensitive match found');
+                  return fertilizerData[cropKey][soilKey][stageKey];
+                }
+              }
+            }
+          }
+        }
+      }
+      
+      // If no match, return soil-specific instructions if available
+      if (fertilizerData[crop] && typeof fertilizerData[crop][soil] === 'string') {
+        console.log('Soil-specific instructions found');
+        return [{
+          fertilizer: 'Soil-Specific Adjustment',
+          amount: 'Varies',
+          timing: 'As per growth stage',
+          notes: fertilizerData[crop][soil]
+        }];
+      }
+      
+      console.log('No specific recommendations found, using fallback');
+      return [{
+        fertilizer: 'NPK (10:26:26)',
+        amount: '40-50 kg/acre',
+        timing: 'Basal application',
+        notes: 'No specific recommendations found for this combination. Please consult with an agricultural expert.'
+      }];
+    }
+
+    // Generate Recommendation
+    document.getElementById('getRecommendation').addEventListener('click', function() {
+      const cropSelect = document.getElementById('cropSelect');
+      const soilSelect = document.getElementById('soilType');
+      const stageSelect = document.getElementById('growthStage');
+      
+      let crop = cropSelect.value;
+      let soil = soilSelect.options[soilSelect.selectedIndex].text;
+      let stage = stageSelect.value;
+      
+      // Normalize crop (rice → Rice)
+      crop = crop.charAt(0).toUpperCase() + crop.slice(1).toLowerCase();
+      
+      // Normalize soil (black → Black Soil)
+      soil = soil.split(' ')
+                .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+                .join(' ');
+      
+      // Normalize stage (initial → Initial Stage)
+      stage = stage.charAt(0).toUpperCase() + stage.slice(1).toLowerCase() + ' Stage';
+      
+      console.log('Selected values:', {crop, soil, stage});
+      
+      if (!crop || !soil || !stage) {
+        alert('Please select all fields');
+        return;
+      }
+      
+      try {
+        // Get recommendations using our helper function
+        let recommendations = getRecommendations(crop, soil, stage);
+        console.log('Recommendations:', recommendations);
+        
+        // Ensure we always have an array
+        if (!Array.isArray(recommendations)) {
+          recommendations = [{
+            fertilizer: 'Recommendation',
+            amount: 'N/A',
+            timing: 'N/A',
+            notes: recommendations || 'No specific recommendations available.'
+          }];
+        }
+      
+      // Display recommendations
+      const resultsDiv = document.getElementById('recommendationContent');
+      
+      // Format the recommendations for display
+      let recommendationsHtml = '';
+      
+      // Add selected parameters
+      recommendationsHtml += `
+        <div class="bg-green-50 p-4 rounded-lg mb-6">
+          <h3 class="font-medium text-green-800 mb-2" data-translate="selected-params">Selected Parameters:</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+            <div><span class="text-gray-600">Crop:</span> <span class="font-medium">${cropSelect.options[cropSelect.selectedIndex].text}</span></div>
+            <div><span class="text-gray-600">Soil Type:</span> <span class="font-medium">${soilSelect.options[soilSelect.selectedIndex].text}</span></div>
+            <div><span class="text-gray-600">Growth Stage:</span> <span class="font-medium">${stageSelect.options[stageSelect.selectedIndex].text}</span></div>
+          </div>
+        </div>
+        <h3 class="text-lg font-medium text-gray-800 mb-4">Recommended Fertilizers</h3>`;
+      
+      // Add recommendations table
+      if (recommendations && recommendations.length > 0) {
+        recommendationsHtml += `
+        <div class="overflow-x-auto">
+          <table class="min-w-full bg-white rounded-lg overflow-hidden">
+            <thead class="bg-gray-100">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fertilizer</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Timing</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Notes</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">`;
+        
+        recommendations.forEach(rec => {
+          recommendationsHtml += `
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${rec.fertilizer || rec.name || 'N/A'}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${rec.amount || 'N/A'}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${rec.timing || 'N/A'}</td>
+                <td class="px-6 py-4 text-sm text-gray-500">${rec.notes || 'No additional notes'}</td>
+              </tr>`;
+        });
+        
+        recommendationsHtml += `
+            </tbody>
+          </table>
+        </div>`;
+      } else {
+        recommendationsHtml += `
+        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div class="ml-3">
+              <p class="text-sm text-yellow-700">
+                No specific recommendations found for this combination. Please try different parameters or consult with an agricultural expert.
+              </p>
+            </div>
+          </div>
+        </div>`;
+      }
+      
+      // Add disclaimer
+      recommendationsHtml += `
+        <div class="mt-6 bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-400">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <i class="fas fa-exclamation-triangle text-yellow-400"></i>
+            </div>
+            <div class="ml-3">
+              <p class="text-sm text-yellow-700">
+                <strong>Note:</strong> These are general recommendations. For precise fertilizer application, please conduct a soil test and consult with local agricultural experts.
+              </p>
+            </div>
+          </div>
+        </div>`;
+      
+      // Update the DOM
+      resultsDiv.innerHTML = recommendationsHtml;
+      
+      // Show the results section
+      document.getElementById('resultsSection').classList.remove('hidden');
+      document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+      } catch (error) {
+        console.error('Error generating recommendations:', error);
+        resultsDiv.innerHTML = `
+          <div class="bg-red-50 border-l-4 border-red-400 p-4">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div class="ml-3">
+                <p class="text-sm text-red-700">
+                  An error occurred while generating recommendations. Please try again or contact support.
+                </p>
+              </div>
+            </div>
+          </div>`;
+          
+        // Show the results section even on error
+        document.getElementById('resultsSection').classList.remove('hidden');
+        document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+    
+    // Print functionality
+    document.getElementById('printBtn').addEventListener('click', function() {
+      window.print();
+    });
+  </script>
+</body>
+</html>

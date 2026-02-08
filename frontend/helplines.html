@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-translate="helpline-title">AgriSense - Helplines</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    .pulse-green { animation: pulseGreen 2s infinite }
+    @keyframes pulseGreen { 0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.7)} 70%{box-shadow:0 0 0 10px rgba(34,197,94,0)} }
+    .card-hover{transition:all .3s ease}
+    .card-hover:hover{transform:translateY(-5px);box-shadow:0 10px 25px rgba(0,0,0,.15)}
+    .hero-bg{background:linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)),url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%234ade80" width="1200" height="600"/><path fill="%2322c55e" d="M0 400c200-50 400-100 600-80s400 50 600 20v260H0z"/><path fill="%2316a34a" d="M0 500c300-30 600-60 1200 0v100H0z"/></svg>');background-size:cover;background-position:center}
+    /* Helpline specific styles */
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .helpline-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: none;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .helpline-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background-color: #28a745;
+            color: white;
+            font-weight: 600;
+            border-bottom: none;
+        }
+        .call-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: auto;
+            transition: background-color 0.3s;
+        }
+        .call-btn:hover {
+            background-color: #218838;
+            color: white;
+        }
+        .helpline-number {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #333;
+        }
+        .helpline-category {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        .search-box {
+            max-width: 500px;
+            margin: 0 auto 30px;
+        }
+  </style>
+</head>
+<body class="bg-gray-50 font-sans">
+  <!-- Offline Banner -->
+  <div class="bg-green-600 text-white text-center py-2 text-sm">🌐 Works Partially Offline in Low Connectivity Regions</div>
+  
+  <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center"><span
+              class="text-2xl">🌱</span></div>
+          <div>
+            <h1 class="text-xl font-bold text-gray-800" data-translate="site-name">AgriSense</h1>
+            <p class="text-xs text-gray-600" data-translate="site-tagline">AI Crop Recommendation System</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <select id="languageSelect" class="px-3 py-1 border border-gray-300 rounded-md text-sm bg-white">
+            <option value="en">English</option>
+            <option value="hi">हिंदी</option>
+            <option value="kn">ಕನ್ನಡ</option>
+          </select>
+          <button id="mobileMenuBtn" class="md:hidden p-2"><span class="text-2xl">☰</span></button>
+        </div>
+      </div>
+      <nav class="hidden md:block mt-4">
+        <ul class="flex flex-wrap space-x-6 text-sm font-medium">
+          <li><a href="index.html" class="hover:text-green-600 transition-colors" data-translate="nav-home">Home</a></li>
+          <li><a href="crop-recommendation.html" class="hover:text-green-600 transition-colors" data-translate="nav-crop">Crop Recommendation</a></li>
+          <li><a href="pest-detection.html" class="hover:text-green-600 transition-colors" data-translate="nav-pest">Pest Detection</a></li>
+          <li><a href="soil-testing.html" class="hover:text-green-600 transition-colors" data-translate="nav-soil">Soil Testing</a></li>
+          <li><a href="dashboard.html" class="hover:text-green-600 transition-colors" data-translate="nav-dashboard">Dashboard</a></li>
+          <li><a href="community.html" class="hover:text-green-600 transition-colors" data-translate="nav-community">Community</a></li>
+          <li><a href="about.html" class="hover:text-green-600 transition-colors" data-translate="nav-about">About</a></li>
+        </ul>
+      </nav>
+      <!-- Mobile Nav -->
+      <nav id="mobileNav" class="hidden md:hidden mt-4 border-t pt-4">
+        <ul class="space-y-2">
+          <li><a href="index.html" class="block py-2 hover:bg-gray-50 rounded px-2">Home</a></li>
+          <li><a href="crop-recommendation.html" class="block py-2 hover:bg-gray-50 rounded px-2">Crop Recommendation</a></li>
+          <li><a href="pest-detection.html" class="block py-2 hover:bg-gray-50 rounded px-2">Pest Detection</a></li>
+          <li><a href="soil-testing.html" class="block py-2 hover:bg-gray-50 rounded px-2">Soil Testing</a></li>
+          <li><a href="dashboard.html" class="block py-2 hover:bg-gray-50 rounded px-2">Dashboard</a></li>
+          <li><a href="community.html" class="block py-2 hover:bg-gray-50 rounded px-2">Community</a></li>
+          <li><a href="about.html" class="block py-2 hover:bg-gray-50 rounded px-2">About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+      <h1 class="text-3xl md:text-4xl font-bold text-center mb-2 text-gray-800" data-translate="helpline-title">Farmer Helpline Numbers</h1>
+      <p class="text-center text-gray-600 mb-8" data-translate="helpline-subtitle">Find government helpline numbers for farmers across different states</p>
+        
+        <div class="max-w-2xl mx-auto mb-10">
+          <div class="relative">
+            <select id="stateSelect" class="w-full px-5 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 appearance-none cursor-pointer bg-white" data-translate-placeholder="helpline-select-state">
+              <option value="" selected disabled data-translate="helpline-select-state">Select a state...</option>
+              <option value="all" data-translate="helpline-all-states">All States</option>
+              <option value="Andhra Pradesh">Andhra Pradesh</option>
+              <option value="Maharashtra">Maharashtra</option>
+              <option value="Punjab">Punjab</option>
+              <option value="Tamil Nadu">Tamil Nadu</option>
+              <option value="Uttar Pradesh">Uttar Pradesh</option>
+              <option value="Karnataka">Karnataka</option>
+              <option value="Gujarat">Gujarat</option>
+              <option value="Rajasthan">Rajasthan</option>
+              <option value="Madhya Pradesh">Madhya Pradesh</option>
+              <option value="West Bengal">West Bengal</option>
+              <option value="Kerala">Kerala</option>
+              <option value="Haryana">Haryana</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+              <i class="fas fa-chevron-down"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="helplineContainer">
+            <!-- Helpline cards will be dynamically added here -->
+        </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-12">
+    <div class="container mx-auto px-4">
+      <div class="grid md:grid-cols-3 gap-8">
+        <div>
+          <div class="flex items-center space-x-3 mb-4">
+            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center"><span class="text-xl">🌱</span></div>
+            <span class="text-xl font-bold">AgriSense</span>
+          </div>
+          <p class="text-gray-300 mb-4">Empowering farmers with AI-powered agricultural solutions for sustainable and profitable farming.</p>
+          <div class="text-sm text-gray-400">© 2025 AgriSense Team | Built with Love</div>
+        </div>
+        <div>
+          <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+          <ul class="space-y-2 text-gray-300">
+            <li><a href="index.html" class="hover:text-green-400 transition-colors">Home</a></li>
+            <li><a href="crop-recommendation.html" class="hover:text-green-400 transition-colors">Crop Recommendation</a></li>
+            <li><a href="disease-detection.html" class="hover:text-green-400 transition-colors">Disease Detection</a></li>
+            <li><a href="about.html" class="hover:text-green-400 transition-colors">About</a></li>
+            <li><a href="contact.html" class="hover:text-green-400 transition-colors">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-lg font-semibold mb-4">Features</h4>
+          <ul class="space-y-2 text-gray-300">
+            <li>AI Crop Recommendations</li>
+            <li>Disease Detection</li>
+            <li>Yield Predictions</li>
+            <li>Market Price Analysis</li>
+            <li>Multilingual Support</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/common.js"></script>
+  <script>
+    // Mobile menu toggle
+    document.getElementById('mobileMenuBtn')?.addEventListener('click', () => document.getElementById('mobileNav')?.classList.toggle('hidden'));
+    
+    // Main script for helplines
+        // Helpline data - can be expanded with more states and numbers
+        const helplineData = [
+            { 
+                state: "Andhra Pradesh", 
+                numbers: [
+                    { category: "helpline-kisan", number: "1800-180-1551" },
+                    { category: "helpline-state", number: "0863-2346135" }
+                ] 
+            },
+            { 
+                state: "Maharashtra", 
+                numbers: [
+                    { category: "helpline-kisan", number: "1800-180-1551" },
+                    { category: "helpline-state", number: "1800-120-5520" }
+                ] 
+            },
+            { 
+                state: "Punjab", 
+                numbers: [
+                    { category: "helpline-kisan", number: "1800-180-1551" },
+                    { category: "helpline-state", number: "1800-180-1551" }
+                ] 
+            },
+            { 
+                state: "Tamil Nadu", 
+                numbers: [
+                    { category: "helpline-kisan", number: "1800-180-1551" },
+                    { category: "helpline-state", number: "1800-425-1556" }
+                ] 
+            },
+            { 
+                state: "Uttar Pradesh", 
+                numbers: [
+                    { category: "helpline-kisan", number: "1800-180-1551" },
+                    { category: "helpline-state", number: "0522-2237444" }
+                ] 
+            },
+            { 
+                state: "Karnataka", 
+                numbers: [
+                    { category: "helpline-kisan", number: "1800-425-1556" },
+                    { category: "helpline-state", number: "080-23330151" }
+                ] 
+            },
+            { 
+                state: "Gujarat", 
+                numbers: [
+                    { category: "helpline-kisan", number: "1800-180-1551" },
+                    { category: "helpline-state", number: "1800-233-5501" }
+                ] 
+            },
+            { 
+                state: "Rajasthan", 
+                numbers: [
+                    { category: "helpline-kisan", number: "1800-180-1551" },
+                    { category: "helpline-state", number: "0141-2225710" }
+                ] 
+            },
+            { 
+                state: "Madhya Pradesh", 
+                numbers: [
+                    { category: "helpline-kisan", number: "1800-180-1551" },
+                    { category: "helpline-state", number: "1800-233-5500" }
+                ] 
+            },
+            { 
+                state: "West Bengal", 
+                numbers: [
+                    { category: "helpline-kisan", number: "1800-345-8810" },
+                    { category: "helpline-state", number: "1800-345-8810" }
+                ] 
+            },
+            { 
+                state: "Kerala", 
+                numbers: [
+                    { category: "helpline-kisan", number: "1800-425-1551" },
+                    { category: "helpline-state", number: "0471-2302180" }
+                ] 
+            },
+            { 
+                state: "Haryana", 
+                numbers: [
+                    { category: "helpline-kisan", number: "1800-180-2117" },
+                    { category: "helpline-state", number: "1800-180-2117" }
+                ] 
+            }
+        ];
+
+        // Function to create helpline cards
+        function createHelplineCards(data) {
+            const container = document.getElementById('helplineContainer');
+            container.innerHTML = '';
+
+            data.forEach(stateData => {
+                const card = document.createElement('div');
+                card.className = 'w-full';
+                
+                let numbersHtml = '';
+                stateData.numbers.forEach(num => {
+                    numbersHtml += `
+                        <div class="flex items-center justify-between mb-4 pb-4 border-b border-gray-100 last:border-0 last:mb-0 last:pb-0">
+                            <div>
+                                <div class="text-sm text-gray-500 mb-1" data-translate="${num.category}">${num.category}</div>
+                                <div class="text-lg font-medium text-gray-800">${num.number}</div>
+                            </div>
+                            <a href="tel:${num.number}" class="bg-green-500 hover:bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center transition-colors duration-200">
+                                <i class="fas fa-phone"></i>
+                            </a>
+                        </div>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden h-full hover:shadow-lg transition-shadow duration-300">
+                        <div class="bg-green-600 text-white px-6 py-4">
+                            <div class="flex items-center">
+                                <i class="fas fa-map-marker-alt mr-2"></i>
+                                <h3 class="text-lg font-semibold">${stateData.state}</h3>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            ${numbersHtml}
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        // State selection functionality
+        const stateSelect = document.getElementById('stateSelect');
+        stateSelect.addEventListener('change', filterByState);
+
+        function filterByState() {
+            const selectedState = stateSelect.value;
+            
+            if (!selectedState || selectedState === 'all') {
+                createHelplineCards(helplineData);
+                return;
+            }
+
+            const filteredData = helplineData.filter(stateData => 
+                stateData.state === selectedState
+            );
+
+            createHelplineCards(filteredData);
+            
+            // Scroll to the first result
+            if (filteredData.length > 0) {
+                document.getElementById('helplineContainer').scrollIntoView({ 
+                    behavior: 'smooth' 
+                });
+            }
+        }
+
+        // Initialize the page with all helpline cards
+        document.addEventListener('DOMContentLoaded', () => {
+            createHelplineCards(helplineData);
+        });
+  </script>
+</body>
+</html>

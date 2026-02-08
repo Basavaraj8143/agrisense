@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-translate="market-prices-title">Market Prices | AgriSense</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <script src="js/common.js" defer></script>
+  <script src="js/location-handler.js" defer></script>
+  <style>
+    .card-hover { transition: all 0.3s ease; }
+    .card-hover:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+    .price-up { color: #10B981; }
+    .price-down { color: #EF4444; }
+    .price-same { color: #6B7280; }
+  </style>
+</head>
+<body class="bg-gray-50 font-sans">
+  <!-- Offline Banner -->
+  <div class="bg-green-600 text-white text-center py-2 text-sm" data-translate="offline-banner">
+    🌐 Works Partially Offline in Low Connectivity Regions
+  </div>
+  
+  <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center"><span
+              class="text-2xl">🌱</span></div>
+          <div>
+            <h1 class="text-xl font-bold text-gray-800" data-translate="site-name">AgriSense</h1>
+            <p class="text-xs text-gray-600" data-translate="site-tagline">AI Crop Recommendation System</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <select id="languageSelect" class="px-3 py-1 border border-gray-300 rounded-md text-sm bg-white">
+            <option value="en">English</option>
+            <option value="hi">हिंदी</option>
+            <option value="kn">ಕನ್ನಡ</option>
+          </select>
+          <button id="mobileMenuBtn" class="md:hidden p-2"><span class="text-2xl">☰</span></button>
+        </div>
+      </div>
+      <nav class="hidden md:block mt-4">
+        <ul class="flex flex-wrap space-x-6 text-sm font-medium">
+          <li><a href="index.html" class="hover:text-green-600 transition-colors" data-translate="nav-home">Home</a></li>
+          <li><a href="crop-recommendation.html" class="hover:text-green-600 transition-colors" data-translate="nav-crop">Crop Recommendation</a></li>
+          <li><a href="pest-detection.html" class="hover:text-green-600 transition-colors" data-translate="nav-pest">Pest Detection</a></li>
+          <li><a href="soil-testing.html" class="hover:text-green-600 transition-colors" data-translate="nav-soil">Soil Testing</a></li>
+          <li><a href="dashboard.html" class="hover:text-green-600 transition-colors" data-translate="nav-dashboard">Dashboard</a></li>
+          <li><a href="community.html" class="hover:text-green-600 transition-colors" data-translate="nav-community">Community</a></li>
+          <li><a href="about.html" class="hover:text-green-600 transition-colors" data-translate="nav-about">About</a></li>
+        </ul>
+      </nav>
+      <!-- Mobile Nav -->
+      <nav id="mobileNav" class="hidden md:hidden mt-4 border-t pt-4">
+        <ul class="space-y-2">
+          <li><a href="index.html" class="block py-2 hover:bg-gray-50 rounded px-2">Home</a></li>
+          <li><a href="crop-recommendation.html" class="block py-2 hover:bg-gray-50 rounded px-2">Crop Recommendation</a></li>
+          <li><a href="pest-detection.html" class="block py-2 hover:bg-gray-50 rounded px-2">Pest Detection</a></li>
+          <li><a href="soil-testing.html" class="block py-2 hover:bg-gray-50 rounded px-2">Soil Testing</a></li>
+          <li><a href="dashboard.html" class="block py-2 hover:bg-gray-50 rounded px-2">Dashboard</a></li>
+          <li><a href="community.html" class="block py-2 hover:bg-gray-50 rounded px-2">Community</a></li>
+          <li><a href="about.html" class="block py-2 hover:bg-gray-50 rounded px-2">About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="py-10">
+    <div class="container mx-auto px-4">
+      <!-- Page Header -->
+      <div class="mb-8 text-center">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-3" data-translate="market-prices-title">Agricultural Market Prices</h1>
+        <p class="text-gray-600 max-w-3xl mx-auto" data-translate="market-prices-subtitle">
+          Real-time and historical market prices for agricultural commodities across different markets
+        </p>
+      </div>
+
+      <!-- Filters -->
+      <div class="bg-white rounded-xl shadow-md p-6 mb-8 card-hover">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="select-crop">Select Crop</label>
+            <select id="cropSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+              <option value="" data-translate="all-crops">All Crops</option>
+              <option value="Tomato">Tomato</option>
+              <option value="Rice">Rice</option>
+              <option value="Ragi">Ragi</option>
+              <option value="Jowar">Jowar</option>
+              <option value="Bajra">Bajra</option>
+              <option value="Maize">Maize</option>
+              <option value="Groundnut">Groundnut</option>
+              <option value="Sunflower">Sunflower</option>
+              <option value="Cotton">Cotton</option>
+              <option value="Sugarcane">Sugarcane</option>
+              <option value="Turmeric">Turmeric</option>
+              <option value="Chilli">Chilli</option>
+              <option value="Onion">Onion</option>
+              <option value="Potato">Potato</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="district">Select District</label>
+            <select id="district" name="district" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" required>
+              <option value="">Select District</option>
+              <option value="Bagalkot">Bagalkot</option>
+              <option value="Belagavi (Belgaum)">Belagavi (Belgaum)</option>
+              <option value="Bidar">Bidar</option>
+              <option value="Vijayapura (Bijapur)">Vijayapura (Bijapur)</option>
+              <option value="Dharwad">Dharwad</option>
+              <option value="Gadag">Gadag</option>
+              <option value="Kalaburagi (Gulbarga)">Kalaburagi (Gulbarga)</option>
+              <option value="Haveri">Haveri</option>
+              <option value="Koppal">Koppal</option>
+              <option value="Raichur">Raichur</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="taluk">Select Taluk</label>
+            <select id="taluk" name="taluk" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" disabled>
+              <option value="">Select Taluk</option>
+              <!-- Taluks will be populated by location-handler.js -->
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Price Table -->
+      <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+          <h2 class="text-xl font-semibold text-gray-800" data-translate="latest-prices">Latest Market Prices</h2>
+          <div class="flex items-center space-x-2">
+            <button id="refreshBtn" class="p-2 text-gray-500 hover:text-green-600 transition-colors">
+              <i class="fas fa-sync-alt"></i>
+            </button>
+            <button id="downloadBtn" class="p-2 text-gray-500 hover:text-green-600 transition-colors" data-translate="download">
+              <i class="fas fa-download mr-1"></i>
+              <span data-translate="export">Export</span>
+            </button>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="commodity">Commodity</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="market">Market</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="variety">Variety</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="min-price">Min Price (₹/quintal)</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="max-price">Max Price (₹/quintal)</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="avg-price">Avg. Price (₹/quintal)</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" data-translate="trend">Trend</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200" id="priceTableBody">
+              <!-- Rows will be dynamically inserted here -->
+            </tbody>
+          </table>
+        </div>
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
+          <div class="text-sm text-gray-500">
+            <span data-translate="showing">Showing</span> <span class="font-medium">1</span> <span data-translate="to">to</span> <span class="font-medium">10</span> <span data-translate="of">of</span> <span class="font-medium">1,250</span> <span data-translate="entries">entries</span>
+          </div>
+          <div class="flex space-x-2">
+            <button class="px-3 py-1 border rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" data-translate="previous">Previous</button>
+            <button class="px-3 py-1 border rounded-md text-sm font-medium text-white bg-green-600 hover:bg-green-700">1</button>
+            <button class="px-3 py-1 border rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">2</button>
+            <button class="px-3 py-1 border rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">3</button>
+            <button class="px-3 py-1 border rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" data-translate="next">Next</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Market News -->
+      <div class="mt-12">
+          <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+              <i class="fas fa-bullhorn text-orange-500 mr-2"></i> <span data-translate="market-news">Market News</span>
+            </h3>
+            <div class="space-y-4">
+              <div class="pb-4 border-b border-gray-100">
+                <h4 class="font-medium text-gray-800" data-translate="news-1">Tomato prices surge due to heavy rains</h4>
+                <p class="text-sm text-gray-500 mt-1" data-translate="news-1-desc">Unseasonal rainfall affects supply in southern markets</p>
+              </div>
+              <div class="pb-4 border-b border-gray-100">
+                <h4 class="font-medium text-gray-800" data-translate="news-2">Government announces MSP for Kharif crops</h4>
+                <p class="text-sm text-gray-500 mt-1" data-translate="news-2-desc">New MSP rates to benefit farmers across the country</p>
+              </div>
+              <div>
+                <h4 class="font-medium text-gray-800" data-translate="news-3">Export demand boosts Basmati rice prices</h4>
+                <p class="text-sm text-gray-500 mt-1" data-translate="news-3-desc">Increased international demand leads to price hike</p>
+              </div>
+            </div>
+            <a href="#" class="mt-4 inline-flex items-center text-sm text-green-600 hover:text-green-800" data-translate="view-all-news">
+              View all market news <i class="fas fa-arrow-right ml-1"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-12 mt-16">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <h3 class="text-lg font-semibold mb-4" data-translate="footer-about">About AgriSense</h3>
+          <p class="text-gray-400 text-sm" data-translate="footer-about-desc">Empowering farmers with AI-powered agricultural solutions for better yields and sustainable farming.</p>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-4" data-translate="quick-links">Quick Links</h3>
+          <ul class="space-y-2">
+            <li><a href="index.html" class="text-gray-400 hover:text-white text-sm" data-translate="nav-home">Home</a></li>
+            <li><a href="crop-recommendation.html" class="text-gray-400 hover:text-white text-sm" data-translate="nav-crop">Crop Recommendation</a></li>
+            <li><a href="disease-detection.html" class="text-gray-400 hover:text-white text-sm" data-translate="nav-disease">Disease Detection</a></li>
+            <li><a href="market-prices.html" class="text-gray-400 hover:text-white text-sm" data-translate="nav-market-prices">Market Prices</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-4" data-translate="contact-us">Contact Us</h3>
+          <ul class="space-y-2 text-sm text-gray-400">
+            <li class="flex items-center"><i class="fas fa-envelope mr-2"></i> <span data-translate="email">support@agrisense.com</span></li>
+            <li class="flex items-center"><i class="fas fa-phone-alt mr-2"></i> <span data-translate="phone">+91 98765 43210</span></li>
+            <li class="flex items-start"><i class="fas fa-map-marker-alt mr-2 mt-1"></i> <span data-translate="address">123 Farm Road, Agri Valley, India</span></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-4" data-translate="newsletter">Newsletter</h3>
+          <p class="text-gray-400 text-sm mb-3" data-translate="newsletter-desc">Subscribe to get the latest market updates and farming tips.</p>
+          <div class="flex">
+            <input type="email" placeholder="Your email" class="px-4 py-2 rounded-l-lg w-full text-gray-800 focus:outline-none">
+            <button class="bg-green-600 hover:bg-green-700 text-white px-4 rounded-r-lg" data-translate="subscribe">Subscribe</button>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-gray-700 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center">
+        <p class="text-gray-400 text-sm" data-translate="copyright">© 2023 AgriSense. All rights reserved.</p>
+        <div class="flex space-x-6 mt-4 md:mt-0">
+          <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // District to Taluk mapping is now handled by location-handler.js
+
+    // Sample data for the price table - using only districts from location-handler.js
+    const priceData = [
+      { 
+        commodity: 'Tomato', 
+        variety: 'Hybrid', 
+        market: 'Belagavi APMC', 
+        district: 'Belagavi (Belgaum)',
+        taluk: 'Belagavi',
+        minPrice: 1800, 
+        maxPrice: 2500, 
+        avgPrice: 2150, 
+        change: 5.5 
+      },
+      { 
+        commodity: 'Rice', 
+        variety: 'Sona Masoori', 
+        market: 'Bidar APMC', 
+        district: 'Bidar',
+        taluk: 'Bidar',
+        minPrice: 2500, 
+        maxPrice: 3200, 
+        avgPrice: 2850, 
+        change: 1.2 
+      },
+      { 
+        commodity: 'Ragi', 
+        variety: 'Local', 
+        market: 'Dharwad APMC', 
+        district: 'Dharwad',
+        taluk: 'Dharwad',
+        minPrice: 3200, 
+        maxPrice: 3800, 
+        avgPrice: 3500, 
+        change: 2.1 
+      },
+      { 
+        commodity: 'Jowar', 
+        variety: 'Local', 
+        market: 'Kalaburagi APMC', 
+        district: 'Kalaburagi (Gulbarga)',
+        taluk: 'Kalaburagi',
+        minPrice: 2800, 
+        maxPrice: 3200, 
+        avgPrice: 3000, 
+        change: -0.5 
+      },
+      { 
+        commodity: 'Groundnut', 
+        variety: 'TMV-2', 
+        market: 'Haveri APMC', 
+        district: 'Haveri',
+        taluk: 'Haveri',
+        minPrice: 5800, 
+        maxPrice: 6500, 
+        avgPrice: 6150, 
+        change: 1.8 
+      },
+      { 
+        commodity: 'Chilli', 
+        variety: 'Byadgi', 
+        market: 'Byadgi APMC', 
+        district: 'Haveri', 
+        taluk: 'Byadagi',
+        minPrice: 7500, 
+        maxPrice: 8800, 
+        avgPrice: 8150, 
+        change: 2.8 
+      },
+      { 
+        commodity: 'Maize', 
+        variety: 'Hybrid', 
+        market: 'Vijayapura APMC', 
+        district: 'Vijayapura (Bijapur)',
+        taluk: 'Vijayapura',
+        minPrice: 1800, 
+        maxPrice: 2200, 
+        avgPrice: 2000, 
+        change: -0.5 
+      },
+      { 
+        commodity: 'Turmeric', 
+        variety: 'Salem', 
+        market: 'Chikodi APMC', 
+        district: 'Belagavi (Belgaum)',
+        taluk: 'Chikodi',
+        minPrice: 8500, 
+        maxPrice: 9500, 
+        avgPrice: 9000, 
+        change: 3.2 
+      },
+      { 
+        commodity: 'Cotton', 
+        variety: 'BT', 
+        market: 'Raichur APMC', 
+        district: 'Raichur',
+        taluk: 'Raichur',
+        minPrice: 6500, 
+        maxPrice: 7200, 
+        avgPrice: 6850, 
+        change: 0.7 
+      },
+      { 
+        commodity: 'Sugarcane', 
+        variety: 'Co-86032', 
+        market: 'Gadag APMC', 
+        district: 'Gadag',
+        taluk: 'Gadag',
+        minPrice: 280, 
+        maxPrice: 320, 
+        avgPrice: 300, 
+        change: 0.5 
+      }
+    ];
+
+    // Function to render the price table
+    function renderPriceTable(data) {
+      const tbody = document.getElementById('priceTableBody');
+      tbody.innerHTML = '';
+
+      data.forEach(item => {
+        const row = document.createElement('tr');
+        row.className = 'hover:bg-gray-50';
+        
+        const changeClass = item.change > 0 ? 'price-up' : item.change < 0 ? 'price-down' : 'price-same';
+        const changeIcon = item.change > 0 ? 'fa-arrow-up' : item.change < 0 ? 'fa-arrow-down' : 'fa-equals';
+        
+        row.innerHTML = `
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 h-10 w-10 bg-green-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-seedling text-green-600"></i>
+              </div>
+              <div class="ml-4">
+                <div class="text-sm font-medium text-gray-900">${item.commodity}</div>
+                <div class="text-sm text-gray-500">${item.type}</div>
+              </div>
+            </div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="text-sm text-gray-900">${item.market}</div>
+            <div class="text-sm text-gray-500">${item.state}</div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+              ${item.variety}
+            </span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            ₹${item.minPrice.toLocaleString()}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            ₹${item.maxPrice.toLocaleString()}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            ₹${item.avgPrice.toLocaleString()}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm ${changeClass}">
+            <i class="fas ${changeIcon} mr-1"></i> ${Math.abs(item.change)}%
+          </td>
+        `;
+        
+        tbody.appendChild(row);
+      });
+    }
+
+    // Taluk population is now handled by location-handler.js
+
+    // Filter functionality
+    function filterTable() {
+      const selectedCrop = document.getElementById('cropSelect').value;
+      const selectedDistrict = document.getElementById('district').value;
+      const selectedTaluk = document.getElementById('taluk').value;
+      
+      const filteredData = priceData.filter(item => {
+        const matchesCrop = selectedCrop ? item.commodity === selectedCrop : true;
+        const matchesDistrict = selectedDistrict ? item.district === selectedDistrict : true;
+        const matchesTaluk = selectedTaluk ? item.taluk === selectedTaluk : true;
+        
+        return matchesCrop && matchesDistrict && matchesTaluk;
+      });
+      
+      renderPriceTable(filteredData);
+    }
+
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initial render
+      renderPriceTable(priceData);
+      
+      // Add event listeners for filters
+      document.getElementById('cropSelect').addEventListener('change', filterTable);
+      document.getElementById('district').addEventListener('change', () => {
+        // Small delay to ensure location-handler.js has updated the taluks
+        setTimeout(filterTable, 50);
+      });
+      document.getElementById('taluk').addEventListener('change', filterTable);
+      
+      // Refresh button
+      document.getElementById('refreshBtn').addEventListener('click', () => {
+        const btn = document.getElementById('refreshBtn');
+        btn.classList.add('animate-spin');
+        setTimeout(() => {
+          btn.classList.remove('animate-spin');
+          // In a real app, you would fetch new data here
+          renderPriceTable(priceData);
+        }, 1000);
+      });
+      
+      // Download button
+      document.getElementById('downloadBtn').addEventListener('click', () => {
+        // In a real app, this would generate and download a CSV/Excel file
+        alert('Export functionality will be implemented here');
+      });
+    });
+    // Initialize location handlers when the DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      // This will be called after location-handler.js has initialized
+      console.log('Market prices page initialized');
+    });
+  </script>
+</body>
+</html>

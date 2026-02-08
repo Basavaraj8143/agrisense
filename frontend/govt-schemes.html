@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-translate="govt-schemes-title">Government Schemes | AgriSense</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    .scheme-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .scheme-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    /* Removed @apply directives and will use Tailwind classes directly in HTML */
+  </style>
+</head>
+<body class="bg-gray-50 font-sans">
+  <!-- Offline Banner -->
+  <div class="bg-green-600 text-white text-center py-2 text-sm" data-translate="offline-banner">
+    🌐 Works Partially Offline in Low Connectivity Regions
+  </div>
+
+  <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center"><span
+              class="text-2xl">🌱</span></div>
+          <div>
+            <h1 class="text-xl font-bold text-gray-800" data-translate="site-name">AgriSense</h1>
+            <p class="text-xs text-gray-600" data-translate="site-tagline">AI Crop Recommendation System</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <select id="languageSelect" class="px-3 py-1 border border-gray-300 rounded-md text-sm bg-white">
+            <option value="en">English</option>
+            <option value="hi">हिंदी</option>
+            <option value="kn">ಕನ್ನಡ</option>
+          </select>
+          <button id="mobileMenuBtn" class="md:hidden p-2"><span class="text-2xl">☰</span></button>
+        </div>
+      </div>
+      <nav class="hidden md:block mt-4">
+        <ul class="flex flex-wrap space-x-6 text-sm font-medium">
+          <li><a href="index.html" class="hover:text-green-600 transition-colors" data-translate="nav-home">Home</a></li>
+          <li><a href="crop-recommendation.html" class="hover:text-green-600 transition-colors" data-translate="nav-crop">Crop Recommendation</a></li>
+          <li><a href="pest-detection.html" class="hover:text-green-600 transition-colors" data-translate="nav-pest">Pest Detection</a></li>
+          <li><a href="soil-testing.html" class="hover:text-green-600 transition-colors" data-translate="nav-soil">Soil Testing</a></li>
+          <li><a href="dashboard.html" class="hover:text-green-600 transition-colors" data-translate="nav-dashboard">Dashboard</a></li>
+          <li><a href="community.html" class="hover:text-green-600 transition-colors" data-translate="nav-community">Community</a></li>
+          <li><a href="about.html" class="hover:text-green-600 transition-colors" data-translate="nav-about">About</a></li>
+        </ul>
+      </nav>
+      <!-- Mobile Nav -->
+      <nav id="mobileNav" class="hidden md:hidden mt-4 border-t pt-4">
+        <ul class="space-y-2">
+          <li><a href="index.html" class="block py-2 hover:bg-gray-50 rounded px-2">Home</a></li>
+          <li><a href="crop-recommendation.html" class="block py-2 hover:bg-gray-50 rounded px-2">Crop Recommendation</a></li>
+          <li><a href="pest-detection.html" class="block py-2 hover:bg-gray-50 rounded px-2">Pest Detection</a></li>
+          <li><a href="soil-testing.html" class="block py-2 hover:bg-gray-50 rounded px-2">Soil Testing</a></li>
+          <li><a href="dashboard.html" class="block py-2 hover:bg-gray-50 rounded px-2">Dashboard</a></li>
+          <li><a href="community.html" class="block py-2 hover:bg-gray-50 rounded px-2">Community</a></li>
+          <li><a href="about.html" class="block py-2 hover:bg-gray-50 rounded px-2">About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="py-12">
+    <div class="container mx-auto px-4">
+      <!-- Page Header -->
+      <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-800 mb-4" data-translate="schemes-title">Government Schemes for Farmers</h1>
+        <p class="text-gray-600 max-w-3xl mx-auto" data-translate="schemes-subtitle">Explore various government schemes and initiatives designed to support farmers and boost agricultural productivity.</p>
+        
+        <!-- Search and Filter -->
+        <div class="mt-8 max-w-2xl mx-auto">
+          <div class="relative">
+            <input 
+              type="text" 
+              id="schemeSearch" 
+              placeholder="Search schemes..." 
+              data-translate-placeholder="schemes-search"
+              class="w-full px-6 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-green-500 focus:border-green-500 pl-12"
+            >
+            <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+          </div>
+          
+          <div class="flex flex-wrap justify-center gap-3 mt-6">
+            <button class="px-4 py-2 rounded-full text-sm font-medium transition-colors bg-green-600 text-white" data-filter="all" data-translate="all-schemes">All Schemes</button>
+            <button class="px-4 py-2 rounded-full text-sm font-medium transition-colors bg-gray-100 hover:bg-gray-200" data-filter="financial" data-translate="financial-support">Financial Support</button>
+            <button class="px-4 py-2 rounded-full text-sm font-medium transition-colors bg-gray-100 hover:bg-gray-200" data-filter="insurance" data-translate="crop-insurance">Crop Insurance</button>
+            <button class="px-4 py-2 rounded-full text-sm font-medium transition-colors bg-gray-100 hover:bg-gray-200" data-filter="irrigation" data-translate="irrigation">Irrigation</button>
+            <button class="px-4 py-2 rounded-full text-sm font-medium transition-colors bg-gray-100 hover:bg-gray-200" data-filter="organic" data-translate="organic-farming">Organic Farming</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Schemes Grid -->
+      <div id="schemesContainer" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Scheme cards will be dynamically inserted here -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-12">
+    <div class="container mx-auto px-4">
+      <div class="grid md:grid-cols-3 gap-8">
+        <div>
+          <div class="flex items-center space-x-3 mb-4">
+            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+              <span class="text-xl">🌱</span>
+            </div>
+            <span class="text-xl font-bold">AgriSense</span>
+          </div>
+          <p class="text-gray-300 mb-4">Empowering farmers with AI-powered agricultural solutions for sustainable and profitable farming.</p>
+          <div class="text-sm text-gray-400">© 2025 AgriSense Team | Built with ❤️ for Farmers</div>
+        </div>
+        <div>
+          <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+          <ul class="space-y-2 text-gray-300">
+            <li><a href="index.html" class="hover:text-green-400 transition-colors">Home</a></li>
+            <li><a href="crop-recommendation.html" class="hover:text-green-400 transition-colors">Crop Recommendation</a></li>
+            <li><a href="disease-detection.html" class="hover:text-green-400 transition-colors">Disease Detection</a></li>
+            <li><a href="dashboard.html" class="hover:text-green-400 transition-colors">Dashboard</a></li>
+            <li><a href="govt-schemes.html" class="hover:text-green-400 transition-colors font-medium">Govt Schemes</a></li>
+            <li><a href="about.html" class="hover:text-green-400 transition-colors">About</a></li>
+            <li><a href="contact.html" class="hover:text-green-400 transition-colors">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-lg font-semibold mb-4">Contact Us</h4>
+          <ul class="space-y-2 text-gray-300">
+            <li class="flex items-start">
+              <i class="fas fa-map-marker-alt mt-1 mr-3 text-green-400"></i>
+              <span>123 Farm Street, Agri Zone, Bangalore, Karnataka 560001</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-phone-alt mr-3 text-green-400"></i>
+              <span>+91 98765 43210</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-envelope mr-3 text-green-400"></i>
+              <span>info@agrisense.com</span>
+            </li>
+          </ul>
+          <div class="mt-4 flex space-x-4">
+            <a href="#" class="text-gray-300 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="text-gray-300 hover:text-white"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="text-gray-300 hover:text-white"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="text-gray-300 hover:text-white"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Move common.js before this script to ensure translatePage function is available
+    document.write('<script src="js/common.js"><\/script>');
+    
+    // Government schemes data
+    const schemes = [
+      {
+        id: 1,
+        title: 'Pradhan Mantri Kisan Samman Nidhi (PM-KISAN)',
+        description: 'Income support of ₹6,000 per year to all farmer families across the country in three equal installments of ₹2,000 every four months.',
+        category: 'financial',
+        eligibility: 'Small and marginal farmers with cultivable landholding',
+        benefits: '₹6,000 per year in three installments',
+        link: 'https://pmkisan.gov.in/',
+        tags: ['Financial Support', 'Direct Benefit Transfer']
+      },
+      {
+        id: 2,
+        title: 'Pradhan Mantri Fasal Bima Yojana (PMFBY)',
+        description: 'Comprehensive crop insurance scheme against crop failure, helping farmers cope with agricultural risks.',
+        category: 'insurance',
+        eligibility: 'All farmers including sharecroppers and tenant farmers',
+        benefits: 'Premium as low as 2% for Kharif, 1.5% for Rabi, and 5% for commercial/horticultural crops',
+        link: 'https://pmfby.gov.in/',
+        tags: ['Crop Insurance', 'Risk Management']
+      },
+      {
+        id: 3,
+        title: 'PM-KUSUM (Pradhan Mantri Kisan Urja Suraksha evam Utthaan Mahabhiyan)',
+        description: 'Scheme for farmers for installation of solar pumps and grid-connected solar power plants.',
+        category: 'irrigation',
+        eligibility: 'Individual farmers, cooperatives, panchayats, and farmer producer organizations (FPOs)',
+        benefits: 'Subsidy for solar pumps, grid-connected solar power plants, and solarization of existing grid-connected agriculture pumps',
+        link: 'https://pmkusum.mnre.gov.in/',
+        tags: ['Solar Pumps', 'Renewable Energy']
+      },
+      {
+        id: 4,
+        title: 'Paramparagat Krishi Vikas Yojana (PKVY)',
+        description: 'Promotion of organic farming through adoption of organic village by cluster approach and PGS certification.',
+        category: 'organic',
+        eligibility: 'Farmers willing to practice organic farming',
+        benefits: 'Financial assistance of ₹50,000 per hectare/3 years for organic inputs',
+        link: 'https://pgsindia-ncof.gov.in/PKVY/PKVY_Home.aspx',
+        tags: ['Organic Farming', 'Sustainable Agriculture']
+      },
+      {
+        id: 5,
+        title: 'Pradhan Mantri Krishi Sinchai Yojana (PMKSY)',
+        description: 'Ensuring access to irrigation for every farm and improving water use efficiency.',
+        category: 'irrigation',
+        eligibility: 'Farmers, State Governments, and other implementing agencies',
+        benefits: 'Financial assistance for micro-irrigation, water conservation, and water harvesting structures',
+        link: 'https://pmksy.gov.in/',
+        tags: ['Irrigation', 'Water Conservation']
+      },
+      {
+        id: 6,
+        title: 'Kisan Credit Card (KCC) Scheme',
+        description: 'Providing farmers with timely access to credit for their agricultural needs at subsidized interest rates.',
+        category: 'financial',
+        eligibility: 'Individual farmers, tenant farmers, sharecroppers, and self-help groups',
+        benefits: 'Credit up to ₹3 lakh at 4% interest per annum with interest subvention',
+        link: 'https://www.iffcobank.com/msme/kisan-credit-card.html',
+        tags: ['Credit', 'Financial Support']
+      },
+      {
+        id: 7,
+        title: 'National Mission for Sustainable Agriculture (NMSA)',
+        description: 'Promoting sustainable agriculture through climate change adaptation measures, and location specific integrated farming systems.',
+        category: 'organic',
+        eligibility: 'Farmers, Farmer Groups, and other stakeholders in agriculture',
+        benefits: 'Support for climate resilient practices, soil health management, and sustainable land management',
+        link: 'https://nmsa.dac.gov.in/',
+        tags: ['Sustainable Farming', 'Climate Resilience']
+      },
+      {
+        id: 8,
+        title: 'Soil Health Card Scheme',
+        description: 'Provide soil health cards to farmers every 2 years to help them understand the nutrient status of their soil.',
+        category: 'organic',
+        eligibility: 'All farmers across the country',
+        benefits: 'Free soil testing and recommendations for appropriate fertilizer use',
+        link: 'https://soilhealth.dac.gov.in/',
+        tags: ['Soil Health', 'Nutrient Management']
+      },
+      {
+        id: 9,
+        title: 'Pradhan Mantri Kisan Maan Dhan Yojana (PM-KMY)',
+        description: 'Pension scheme for small and marginal farmers providing them with a minimum fixed pension of ₹3,000 per month.',
+        category: 'financial',
+        eligibility: 'Small and marginal farmers between 18-40 years of age',
+        benefits: 'Pension of ₹3,000 per month after attaining the age of 60 years',
+        link: 'https://pmkmy.gov.in/',
+        tags: ['Pension', 'Social Security']
+      }
+    ];
+
+    // DOM Elements
+    let schemesContainer;
+    let filterButtons;
+    let searchInput;
+    let activeFilter = 'all';
+
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize DOM elements after the page is loaded
+      schemesContainer = document.getElementById('schemesContainer');
+      filterButtons = document.querySelectorAll('[data-filter]');
+      searchInput = document.getElementById('schemeSearch');
+      
+      displaySchemes(schemes);
+      setupEventListeners();
+      setupMobileMenu();
+    });
+
+    // Display schemes in the UI
+    function displaySchemes(schemesToShow) {
+      if (!schemesContainer) return;
+      
+      if (schemesToShow.length === 0) {
+        schemesContainer.innerHTML = `
+          <div class="col-span-full text-center py-12">
+            <i class="fas fa-search text-4xl text-gray-300 mb-4"></i>
+            <p class="text-gray-500">No schemes found matching your criteria.</p>
+          </div>
+        `;
+        return;
+      }
+
+      schemesContainer.innerHTML = schemesToShow.map(scheme => `
+        <div class="bg-white rounded-xl shadow-md overflow-hidden scheme-card" data-category="${scheme.category}">
+          <div class="p-6">
+            <div class="flex justify-between items-start mb-3">
+              <h3 class="text-xl font-semibold text-gray-800">${scheme.title}</h3>
+              <div class="flex-shrink-0 ml-3">
+                  ${scheme.tags.map(tag => 
+                  `<span class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 mr-1 mb-1 inline-block">${tag}</span>`
+                ).join('')}
+              </div>
+            </div>
+            <p class="text-gray-600 mb-4">${scheme.description}</p>
+            <div class="bg-gray-50 p-4 rounded-lg mb-4">
+              <p class="text-sm font-medium text-gray-700 mb-2">Eligibility:</p>
+              <p class="text-sm text-gray-600">${scheme.eligibility}</p>
+            </div>
+            <div class="flex justify-between items-center">
+              <div>
+                <p class="text-sm font-medium text-green-700">Benefits:</p>
+                <p class="text-sm text-gray-700">${scheme.benefits}</p>
+              </div>
+              <a 
+                href="${scheme.link}" 
+                target="_blank" 
+                class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              >
+                Learn More
+                <i class="fas fa-arrow-right ml-2"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Filter schemes based on category
+    function filterSchemes(category) {
+      activeFilter = category;
+      
+      // Update active button state
+      if (filterButtons) {
+        filterButtons.forEach(btn => {
+          if (btn.dataset.filter === category) {
+            btn.classList.add('bg-green-600', 'text-white');
+            btn.classList.remove('bg-gray-100', 'hover:bg-gray-200');
+          } else {
+            btn.classList.remove('bg-green-600', 'text-white');
+            btn.classList.add('bg-gray-100', 'hover:bg-gray-200');
+          }
+        });
+      }
+
+      const searchTerm = searchInput.value.toLowerCase();
+      let filteredSchemes = schemes;
+
+      // Apply category filter
+      if (category !== 'all') {
+        filteredSchemes = filteredSchemes.filter(scheme => scheme.category === category);
+      }
+
+      // Apply search filter
+      if (searchTerm) {
+        filteredSchemes = filteredSchemes.filter(scheme => 
+          scheme.title.toLowerCase().includes(searchTerm) || 
+          scheme.description.toLowerCase().includes(searchTerm) ||
+          scheme.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+        );
+      }
+
+      displaySchemes(filteredSchemes);
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // Filter buttons - using event delegation for better performance
+      document.addEventListener('click', (e) => {
+        const button = e.target.closest('[data-filter]');
+        if (button) {
+          const filter = button.dataset.filter;
+          filterSchemes(filter);
+        }
+      });
+
+      // Search input
+      if (searchInput) {
+        searchInput.addEventListener('input', () => {
+          filterSchemes(activeFilter);
+        });
+      }
+    }
+
+    // Mobile menu toggle
+    function setupMobileMenu() {
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      const mobileNav = document.getElementById('mobileNav');
+      
+      if (mobileMenuBtn && mobileNav) {
+        mobileMenuBtn.addEventListener('click', () => {
+          mobileNav.classList.toggle('hidden');
+        });
+      }
+    }
+  </script>
+  <!-- Common.js is now loaded before the schemes data -->
+  <script type="module" src="js/chatbot.js"></script>
+</body>
+</html>

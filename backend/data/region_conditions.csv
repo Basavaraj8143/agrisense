@@ -1,0 +1,323 @@
+dist,taluq,crop,season,avg_temp_rabi,avg_temp_kharif,avg_rainfall
+Bagalkot,Bagalkot,Maize,K,22.7,28.8,616
+Bagalkot,Bagalkot,Jowar/Sorghum,K/R,22.7,28.8,616
+Bagalkot,Bagalkot,Groundnut,K,22.7,28.8,616
+Bagalkot,Bagalkot,Sunflower,R,22.7,28.8,616
+Bagalkot,Bagalkot,Cotton,K,22.7,28.8,616
+Bagalkot,Bagalkot,Sugarcane,A,22.7,28.8,616
+Bagalkot,Bagalkot,Pulses (tur/gram),K/R,22.7,28.8,616
+Bagalkot,Jamkhandi,Sugarcane,A,22.8,28.9,632
+Bagalkot,Jamkhandi,Maize,K,22.8,28.9,632
+Bagalkot,Jamkhandi,Jowar,K,22.8,28.9,632
+Bagalkot,Jamkhandi,Groundnut,K,22.8,28.9,632
+Bagalkot,Jamkhandi,Sunflower,R,22.8,28.9,632
+Bagalkot,Jamkhandi,Pomegranate ,A,22.8,28.9,632
+Bagalkot,Bilagi,Jowar,K/R,22.8,28.9,634
+Bagalkot,Bilagi,Maize,K,22.8,28.9,634
+Bagalkot,Bilagi,Groundnut,K,22.8,28.9,634
+Bagalkot,Bilagi,Cotton,K,22.8,28.9,634
+Bagalkot,Bilagi,Onion,R/K intercropping,22.8,28.9,634
+Bagalkot,Hungund,Jowar,K/R,22.4,28.5,593
+Bagalkot,Hungund,Maize,K,22.4,28.5,593
+Bagalkot,Hungund,Cotton,K,22.4,28.5,593
+Bagalkot,Hungund,Groundnut,K,22.4,28.5,593
+Bagalkot,Hungund,Grapes,irrigated pockets,22.4,28.5,593
+Bagalkot,Mudhol,Sugarcane,A,22.8,28.9,626
+Bagalkot,Mudhol,Tobacco,R/K (depending on crop cycle),22.8,28.9,626
+Bagalkot,Mudhol,Maize,K,22.8,28.9,626
+Bagalkot,Mudhol,Pomegranate,A,22.8,28.9,626
+Bagalkot,Badami,Groundnut,K,22.6,28.7,611
+Bagalkot,Badami,Sunflower,R,22.6,28.7,611
+Bagalkot,Badami,Jowar,K,22.6,28.7,611
+Bagalkot,Badami,Maize,K,22.6,28.7,611
+Bagalkot,Badami,Redgram,K,22.6,28.7,611
+Bagalkot,Bagalkot (taluk),Maize,K,22.7,28.8,623
+Bagalkot,Bagalkot (taluk),Jowar,K/R,22.7,28.8,623
+Bagalkot,Bagalkot (taluk),Groundnut,K,22.7,28.8,623
+Bagalkot,Bagalkot (taluk),Sunflower,R,22.7,28.8,623
+Bagalkot,Bagalkot (taluk),Cotton,K,22.7,28.8,623
+Bagalkot,Ilkal,Cotton,K,22.4,28.5,586
+Bagalkot,Ilkal,Sunflower,R,22.4,28.5,586
+Bagalkot,Ilkal,Maize,K,22.4,28.5,586
+Bagalkot,Ilkal,Chilli,R/K,22.4,28.5,586
+Bagalkot,Ilkal,Onion,R,22.4,28.5,586
+Bagalkot,Rabakavi-Banahatti,Sugarcane,A,22.6,28.7,612
+Bagalkot,Rabakavi-Banahatti,Maize,K,22.6,28.7,612
+Bagalkot,Rabakavi-Banahatti,Sunflower,R,22.6,28.7,612
+Bagalkot,Rabakavi-Banahatti,Tobacco,R,22.6,28.7,612
+Bidar,Bidar,Jowar/Sorghum,K,20.6,27.4,946
+Bidar,Bidar,Paddy,K (in irrigated),20.6,27.4,946
+Bidar,Bidar,Groundnut,K,20.6,27.4,946
+Bidar,Bidar,Pulses (tur/gram),K/R,20.6,27.4,946
+Bidar,Bidar,Sugarcane,A (in command areas),20.6,27.4,946
+Bidar,Bidar,Chillies,K/R,20.6,27.4,946
+Bidar,Aurad,Jowar,K,20.3,27.1,924
+Bidar,Aurad,Tur/Redgram,K,20.3,27.1,924
+Bidar,Aurad,Paddy,K (where irrigated),20.3,27.1,924
+Bidar,Aurad,Maize,K,20.3,27.1,924
+Bidar,Basavakalyan,Jowar,K,20.6,27.4,948
+Bidar,Basavakalyan,Bajra,K,20.6,27.4,948
+Bidar,Basavakalyan,Wheat,R (in limited areas),20.6,27.4,948
+Bidar,Basavakalyan,Groundnut,K,20.6,27.4,948
+Bidar,Basavakalyan,Sunflower,R,20.6,27.4,948
+Bidar,Bhalki,Paddy,K (irrigated),20.7,27.5,961
+Bidar,Bhalki,Jowar,K,20.7,27.5,961
+Bidar,Bhalki,Sugarcane,A (pockets),20.7,27.5,961
+Bidar,Bhalki,Cotton,K,20.7,27.5,961
+Bidar,Bidar (taluk),Jowar,K,20.7,27.5,960
+Bidar,Bidar (taluk),Maize,K,20.7,27.5,960
+Bidar,Bidar (taluk),Pulses,K/R,20.7,27.5,960
+Bidar,Bidar (taluk),Groundnut,K,20.7,27.5,960
+Bidar,Humnabad,Sugarcane,A (where irrigated),20.4,27.2,929
+Bidar,Humnabad,Jowar,K,20.4,27.2,929
+Bidar,Humnabad,Maize,K,20.4,27.2,929
+Bidar,Humnabad,Chilli,K/R,20.4,27.2,929
+Bijapur (Vijayapura),Bijapur (Vijayapura),Maize,K,23.1,28.1,705
+Bijapur (Vijayapura),Bijapur (Vijayapura),Jowar,K/R,23.1,28.1,705
+Bijapur (Vijayapura),Bijapur (Vijayapura),Redgram,K,23.1,28.1,705
+Bijapur (Vijayapura),Bijapur (Vijayapura),Groundnut,K,23.1,28.1,705
+Bijapur (Vijayapura),Bijapur (Vijayapura),Sunflower,R,23.1,28.1,705
+Bijapur (Vijayapura),Bijapur (Vijayapura),Cotton,K,23.1,28.1,705
+Bijapur (Vijayapura),Bijapur (Vijayapura),Wheat,R (in areas),23.1,28.1,705
+Bijapur (Vijayapura),Vijayapura (taluk),Jowar,K/R,22.8,27.8,682
+Bijapur (Vijayapura),Vijayapura (taluk),Maize,K,22.8,27.8,682
+Bijapur (Vijayapura),Vijayapura (taluk),Groundnut,K,22.8,27.8,682
+Bijapur (Vijayapura),Vijayapura (taluk),Sunflower,R,22.8,27.8,682
+Bijapur (Vijayapura),Vijayapura (taluk),Pomegranate,irrigated / A,22.8,27.8,682
+Bijapur (Vijayapura),Vijayapura (taluk),Grapes,irrigated / A,22.8,27.8,682
+Bijapur (Vijayapura),Basavana Bagevadi,Jowar,K,22.8,27.8,683
+Bijapur (Vijayapura),Basavana Bagevadi,Maize,K,22.8,27.8,683
+Bijapur (Vijayapura),Basavana Bagevadi,Groundnut,K,22.8,27.8,683
+Bijapur (Vijayapura),Basavana Bagevadi,Sunflower,R,22.8,27.8,683
+Bijapur (Vijayapura),Indi,Jowar,K,23.2,28.2,716
+Bijapur (Vijayapura),Indi,Tur/Redgram,K,23.2,28.2,716
+Bijapur (Vijayapura),Indi,Maize,K,23.2,28.2,716
+Bijapur (Vijayapura),Indi,Cotton,K,23.2,28.2,716
+Bijapur (Vijayapura),Sindagi,Maize,K,23.2,28.2,720
+Bijapur (Vijayapura),Sindagi,Jowar,K/R,23.2,28.2,720
+Bijapur (Vijayapura),Sindagi,Tur,K,23.2,28.2,720
+Bijapur (Vijayapura),Sindagi,Sunflower,R,23.2,28.2,720
+Bijapur (Vijayapura),Sindagi,Cotton,K,23.2,28.2,720
+Bijapur (Vijayapura),Muddebihal,Jowar,K,23.2,28.2,722
+Bijapur (Vijayapura),Muddebihal,Maize,K,23.2,28.2,722
+Bijapur (Vijayapura),Muddebihal,Pulses,K,23.2,28.2,722
+Bijapur (Vijayapura),Muddebihal,Groundnut,K,23.2,28.2,722
+Dharwad,Dharwad,Maize,K,22.0,27.1,812
+Dharwad,Dharwad,Jowar,K/R,22.0,27.1,812
+Dharwad,Dharwad,Groundnut,K,22.0,27.1,812
+Dharwad,Dharwad,Cotton,K (in command areas),22.0,27.1,812
+Dharwad,Dharwad,Onion,R/K (intercrop),22.0,27.1,812
+Dharwad,Dharwad,Sunflower,R,22.0,27.1,812
+Dharwad,Dharwad (taluk),Maize,K,22.0,27.1,810
+Dharwad,Dharwad (taluk),Jowar,K/R,22.0,27.1,810
+Dharwad,Dharwad (taluk),Groundnut,K,22.0,27.1,810
+Dharwad,Dharwad (taluk),Cotton,K,22.0,27.1,810
+Dharwad,Dharwad (taluk),Onion,R,22.0,27.1,810
+Dharwad,Hubballi (Hubli) Urban/Rural,Maize,K,21.7,26.8,780
+Dharwad,Hubballi (Hubli) Urban/Rural,Jowar,K,21.7,26.8,780
+Dharwad,Hubballi (Hubli) Urban/Rural,Cotton,K,21.7,26.8,780
+Dharwad,Hubballi (Hubli) Urban/Rural,Sugarcane,A (in irrigated pockets),21.7,26.8,780
+Dharwad,Hubballi (Hubli) Urban/Rural,Vegetables,R/A (near peri-urban),21.7,26.8,780
+Dharwad,Kalghatgi,Paddy,K (in command/irrigated),21.9,27.0,798
+Dharwad,Kalghatgi,Maize,K,21.9,27.0,798
+Dharwad,Kalghatgi,Banana,A (in irrigated pockets),21.9,27.0,798
+Dharwad,Kundgol,Jowar,K,21.8,26.8,785
+Dharwad,Kundgol,Maize,K,21.8,26.8,785
+Dharwad,Kundgol,Cotton,K,21.8,26.8,785
+Dharwad,Kundgol,Groundnut,K,21.8,26.8,785
+Dharwad,Navalgund,Cotton,K,22.0,27.1,806
+Dharwad,Navalgund,Maize,K,22.0,27.1,806
+Dharwad,Navalgund,Onion,R,22.0,27.1,806
+Dharwad,Navalgund,Pulses,K,22.0,27.1,806
+Dharwad,Annigeri,Maize,K,21.8,26.9,791
+Dharwad,Annigeri,Cotton,K,21.8,26.9,791
+Dharwad,Annigeri,Sunflower,R,21.8,26.9,791
+Dharwad,Annigeri,Pulses,K,21.8,26.9,791
+Gadag,Gadag,Jowar,K/R,22.3,27.9,620
+Gadag,Gadag,Maize,K,22.3,27.9,620
+Gadag,Gadag,Groundnut,K,22.3,27.9,620
+Gadag,Gadag,Wheat,R (in some pockets),22.3,27.9,620
+Gadag,Gadag,Sunflower,R,22.3,27.9,620
+Gadag,Gadag,Pulses,K,22.3,27.9,620
+Gadag,Gadag (taluk),Jowar,K/R,22.7,28.3,663
+Gadag,Gadag (taluk),Maize,K,22.7,28.3,663
+Gadag,Gadag (taluk),Groundnut,K,22.7,28.3,663
+Gadag,Gadag (taluk),Sunflower,R,22.7,28.3,663
+Gadag,Gadag (taluk),Bengalgram,R,22.7,28.3,663
+Gadag,Ron,Jowar,K,22.7,28.3,660
+Gadag,Ron,Maize,K,22.7,28.3,660
+Gadag,Ron,Groundnut,K,22.7,28.3,660
+Gadag,Ron,Pulses,K/R,22.7,28.3,660
+Gadag,Nargund,Jowar,K,22.3,27.9,616
+Gadag,Nargund,Maize,K,22.3,27.9,616
+Gadag,Nargund,Bajra,K,22.3,27.9,616
+Gadag,Nargund,Bengalgram,R,22.3,27.9,616
+Gadag,Shirhatti,Maize,K,22.5,28.1,640
+Gadag,Shirhatti,Jowar,K,22.5,28.1,640
+Gadag,Shirhatti,Pulses,K,22.5,28.1,640
+Gadag,Shirhatti,Groundnut,K,22.5,28.1,640
+Gadag,Mundargi,Jowar,K,22.4,28.0,630
+Gadag,Mundargi,Maize,K,22.4,28.0,630
+Gadag,Mundargi,Wheat,R (where moisture allows),22.4,28.0,630
+Gadag,Mundargi,Sunflower,R,22.4,28.0,630
+Gulbarga (Kalaburagi),Gulbarga (Kalaburagi),Pigeon pea / Tur,K,23.0,28.0,704
+Gulbarga (Kalaburagi),Gulbarga (Kalaburagi),Jowar,K/R,23.0,28.0,704
+Gulbarga (Kalaburagi),Gulbarga (Kalaburagi),Groundnut,K,23.0,28.0,704
+Gulbarga (Kalaburagi),Gulbarga (Kalaburagi),Cotton,K,23.0,28.0,704
+Gulbarga (Kalaburagi),Gulbarga (Kalaburagi),Sunflower,R,23.0,28.0,704
+Gulbarga (Kalaburagi),Gulbarga (Kalaburagi),Maize,K,23.0,28.0,704
+Gulbarga (Kalaburagi),Kalaburagi (taluk),Tur,K,22.8,27.8,677
+Gulbarga (Kalaburagi),Kalaburagi (taluk),Jowar,K/R,22.8,27.8,677
+Gulbarga (Kalaburagi),Kalaburagi (taluk),Cotton,K,22.8,27.8,677
+Gulbarga (Kalaburagi),Kalaburagi (taluk),Groundnut,K,22.8,27.8,677
+Gulbarga (Kalaburagi),Kalaburagi (taluk),Sunflower,R,22.8,27.8,677
+Gulbarga (Kalaburagi),Chincholi,Redgram,K,23.2,28.2,717
+Gulbarga (Kalaburagi),Chincholi,Jowar,K,23.2,28.2,717
+Gulbarga (Kalaburagi),Chincholi,Maize,K,23.2,28.2,717
+Gulbarga (Kalaburagi),Chincholi,Bajra,K,23.2,28.2,717
+Gulbarga (Kalaburagi),Sedam,Groundnut,K,23.1,28.1,709
+Gulbarga (Kalaburagi),Sedam,Redgram,K,23.1,28.1,709
+Gulbarga (Kalaburagi),Sedam,Cotton,K,23.1,28.1,709
+Gulbarga (Kalaburagi),Chittapur,Jowar,K,23.1,28.1,706
+Gulbarga (Kalaburagi),Chittapur,Redgram,K,23.1,28.1,706
+Gulbarga (Kalaburagi),Chittapur,Cotton,K,23.1,28.1,706
+Gulbarga (Kalaburagi),Chittapur,Sunflower,R,23.1,28.1,706
+Gulbarga (Kalaburagi),Afzalpur,Jowar,K,23.0,28.0,704
+Gulbarga (Kalaburagi),Afzalpur,Maize,K,23.0,28.0,704
+Gulbarga (Kalaburagi),Afzalpur,Bajra,K,23.0,28.0,704
+Gulbarga (Kalaburagi),Afzalpur,Cotton,K,23.0,28.0,704
+Gulbarga (Kalaburagi),Jevargi,Cotton,K,22.9,27.9,690
+Gulbarga (Kalaburagi),Jevargi,Jowar,K,22.9,27.9,690
+Gulbarga (Kalaburagi),Jevargi,Tur,K,22.9,27.9,690
+Gulbarga (Kalaburagi),Jevargi,Sunflower,R,22.9,27.9,690
+Haveri,Haveri,Jowar,K/R,21.2,26.7,909
+Haveri,Haveri,Maize,K,21.2,26.7,909
+Haveri,Haveri,Paddy,K (in irrigated areas),21.2,26.7,909
+Haveri,Haveri,Groundnut,K,21.2,26.7,909
+Haveri,Haveri,Chilli (Byadagi speciality),K/R,21.2,26.7,909
+Haveri,Haveri,Cotton,K,21.2,26.7,909
+Haveri,Haveri,Sunflower,R,21.2,26.7,909
+Haveri,Haveri (taluk),Jowar,K/R,20.9,26.4,880
+Haveri,Haveri (taluk),Maize,K,20.9,26.4,880
+Haveri,Haveri (taluk),Paddy,K (where irrigated),20.9,26.4,880
+Haveri,Haveri (taluk),Pulses,K,20.9,26.4,880
+Haveri,Byadagi,Byadagi Chilli,K/R (depending on variety),21.0,26.5,882
+Haveri,Byadagi,Maize,K,21.0,26.5,882
+Haveri,Byadagi,Cotton,K,21.0,26.5,882
+Haveri,Byadagi,Groundnut,K,21.0,26.5,882
+Haveri,Ranebennur,Cotton,K,21.0,26.5,880
+Haveri,Ranebennur,Maize,K,21.0,26.5,880
+Haveri,Ranebennur,Paddy,K,21.0,26.5,880
+Haveri,Ranebennur,Onion,R,21.0,26.5,880
+Haveri,Hirekerur,Paddy,K (in irrigated),21.2,26.7,900
+Haveri,Hirekerur,Jowar,K,21.2,26.7,900
+Haveri,Hirekerur,Maize,K,21.2,26.7,900
+Haveri,Hirekerur,Sugarcane,A (in pockets),21.2,26.7,900
+Haveri,Shiggaon,Jowar,K,21.4,26.9,921
+Haveri,Shiggaon,Maize,K,21.4,26.9,921
+Haveri,Shiggaon,Groundnut,K,21.4,26.9,921
+Haveri,Shiggaon,Sunflower,R,21.4,26.9,921
+Haveri,Savanur,Maize,K,21.2,26.7,908
+Haveri,Savanur,Jowar,K,21.2,26.7,908
+Haveri,Savanur,Pulses,K,21.2,26.7,908
+Haveri,Hangal,Paddy,K (irrigated),21.0,26.5,887
+Haveri,Hangal,Maize,K,21.0,26.5,887
+Haveri,Hangal,Sugarcane,A (pockets),21.0,26.5,887
+Koppal,Koppal,Paddy,K (in Gangavathi/Karatagi irrigated areas),23.1,29.5,654
+Koppal,Koppal,Jowar,K/R,23.1,29.5,654
+Koppal,Koppal,Maize,K,23.1,29.5,654
+Koppal,Koppal,Groundnut,K,23.1,29.5,654
+Koppal,Koppal,Cotton,K,23.1,29.5,654
+Koppal,Koppal,Sunflower,R,23.1,29.5,654
+Koppal,Koppal (taluk),Jowar,K/R,23.0,29.4,642
+Koppal,Koppal (taluk),Groundnut,K,23.0,29.4,642
+Koppal,Koppal (taluk),Sunflower,R,23.0,29.4,642
+Koppal,Koppal (taluk),Pulses,K,23.0,29.4,642
+Koppal,Gangavathi,Paddy,K (major irrigated crop),22.8,29.2,622
+Koppal,Gangavathi,Cotton,K,22.8,29.2,622
+Koppal,Gangavathi,Maize,K,22.8,29.2,622
+Koppal,Gangavathi,Sugarcane,A (pockets),22.8,29.2,622
+Koppal,Kushtagi,Jowar,K,22.9,29.3,637
+Koppal,Kushtagi,Groundnut,K,22.9,29.3,637
+Koppal,Kushtagi,Sunflower,R,22.9,29.3,637
+Koppal,Kushtagi,Pulses,K,22.9,29.3,637
+Koppal,Yelburga,Jowar,K,23.2,29.6,669
+Koppal,Yelburga,Maize,K,23.2,29.6,669
+Koppal,Yelburga,Redgram,K,23.2,29.6,669
+Koppal,Yelburga,Sunflower,R,23.2,29.6,669
+Koppal,Karatagi,Paddy,K (canal irrigated),23.1,29.5,653
+Koppal,Karatagi,Maize,K,23.1,29.5,653
+Koppal,Karatagi,Sugarcane,A,23.1,29.5,653
+Raichur,Raichur,Paddy,K (large irrigated area in Doab),23.7,30.1,723
+Raichur,Raichur,Jowar,K/R,23.7,30.1,723
+Raichur,Raichur,Maize,K,23.7,30.1,723
+Raichur,Raichur,Groundnut,K,23.7,30.1,723
+Raichur,Raichur,Cotton,K,23.7,30.1,723
+Raichur,Raichur,"Pulses (tur, gram)",K/R,23.7,30.1,723
+Raichur,Raichur (taluk),Paddy,K (irrigated),23.7,30.1,723
+Raichur,Raichur (taluk),Jowar,K,23.7,30.1,723
+Raichur,Raichur (taluk),Maize,K,23.7,30.1,723
+Raichur,Raichur (taluk),Groundnut,K,23.7,30.1,723
+Raichur,Sindhanur,Paddy,K (major rice area),23.3,29.7,680
+Raichur,Sindhanur,Sunflower,R,23.3,29.7,680
+Raichur,Sindhanur,Maize,K,23.3,29.7,680
+Raichur,Manvi,Paddy,K (where irrigated),23.5,29.9,702
+Raichur,Manvi,Jowar,K,23.5,29.9,702
+Raichur,Manvi,Maize,K,23.5,29.9,702
+Raichur,Manvi,Sunflower,R,23.5,29.9,702
+Raichur,Lingasugur (Lingsugur),Jowar,K,23.6,30.0,712
+Raichur,Lingasugur (Lingsugur),Maize,K,23.6,30.0,712
+Raichur,Lingasugur (Lingsugur),Groundnut,K,23.6,30.0,712
+Raichur,Lingasugur (Lingsugur),Pulses,K,23.6,30.0,712
+Raichur,Deodurga / Devadurga,Jowar,K,23.4,29.8,695
+Raichur,Deodurga / Devadurga,Pulses,K,23.4,29.8,695
+Raichur,Deodurga / Devadurga,Bajra,K,23.4,29.8,695
+Raichur,Maski,Paddy,K,23.4,29.8,686
+Raichur,Maski,Groundnut,K,23.4,29.8,686
+Raichur,Maski,Maize,K,23.4,29.8,686
+Belagavi (Belgaum),Belagavi (Belgaum),Sugarcane,A (major commercial crop),22.8,27.8,675
+Belagavi (Belgaum),Belagavi (Belgaum),Maize,K,22.8,27.8,675
+Belagavi (Belgaum),Belagavi (Belgaum),Paddy,K (in command areas),22.8,27.8,675
+Belagavi (Belgaum),Belagavi (Belgaum),Jowar,K/R,22.8,27.8,675
+Belagavi (Belgaum),Belagavi (Belgaum),Groundnut,K,22.8,27.8,675
+Belagavi (Belgaum),Belagavi (Belgaum),Soybean/pulses,R/K,22.8,27.8,675
+Belagavi (Belgaum),Belagavi (Belgaum),Cotton,K (in pockets),22.8,27.8,675
+Belagavi (Belgaum),Belagavi (taluk),Sugarcane,A,22.9,27.9,692
+Belagavi (Belgaum),Belagavi (taluk),Maize,K,22.9,27.9,692
+Belagavi (Belgaum),Belagavi (taluk),Paddy,K (in lowlands),22.9,27.9,692
+Belagavi (Belgaum),Belagavi (taluk),Pulses,K/R,22.9,27.9,692
+Belagavi (Belgaum),Athani,Sugarcane,A (major),22.9,27.9,695
+Belagavi (Belgaum),Athani,Maize,K,22.9,27.9,695
+Belagavi (Belgaum),Athani,Jowar,K,22.9,27.9,695
+Belagavi (Belgaum),Bailhongal,Maize,K,22.9,27.9,688
+Belagavi (Belgaum),Bailhongal,Groundnut,K,22.9,27.9,688
+Belagavi (Belgaum),Bailhongal,Paddy,K,22.9,27.9,688
+Belagavi (Belgaum),Bailhongal,Pulses,K,22.9,27.9,688
+Belagavi (Belgaum),Chikodi,Sugarcane,A,23.0,28.0,700
+Belagavi (Belgaum),Chikodi,Maize,K,23.0,28.0,700
+Belagavi (Belgaum),Chikodi,Tobacco,R/K (in pockets),23.0,28.0,700
+Belagavi (Belgaum),Chikodi,Soybean,R,23.0,28.0,700
+Belagavi (Belgaum),Gokak,Sugarcane,A (in command),22.9,27.9,690
+Belagavi (Belgaum),Gokak,Maize,K,22.9,27.9,690
+Belagavi (Belgaum),Gokak,Pulses,K,22.9,27.9,690
+Belagavi (Belgaum),Hukkeri,Sugarcane,A,23.0,28.0,704
+Belagavi (Belgaum),Hukkeri,Maize,K,23.0,28.0,704
+Belagavi (Belgaum),Hukkeri,Groundnut,K,23.0,28.0,704
+Belagavi (Belgaum),Hukkeri,Cotton,K,23.0,28.0,704
+Belagavi (Belgaum),Raybag,Sugarcane,A,23.2,28.2,720
+Belagavi (Belgaum),Raybag,Maize,K,23.2,28.2,720
+Belagavi (Belgaum),Raybag,Bajra,K,23.2,28.2,720
+Belagavi (Belgaum),Raybag,Pulses,K,23.2,28.2,720
+Belagavi (Belgaum),Ramdurg,Maize,K,22.9,27.9,685
+Belagavi (Belgaum),Ramdurg,Jowar,K/R,22.9,27.9,685
+Belagavi (Belgaum),Ramdurg,Pulses,K,22.9,27.9,685
+Belagavi (Belgaum),Saundatti (Savadatti),Jowar,K,22.9,27.9,685
+Belagavi (Belgaum),Saundatti (Savadatti),Maize,K,22.9,27.9,685
+Belagavi (Belgaum),Saundatti (Savadatti),Cotton,K,22.9,27.9,685
+Belagavi (Belgaum),Saundatti (Savadatti),Groundnut,K,22.9,27.9,685
+Belagavi (Belgaum),Khanapur,Paddy,K (in valley),22.8,27.8,681
+Belagavi (Belgaum),Khanapur,Arecanut/Banana,A (in irrigated pockets),22.8,27.8,681
+Belagavi (Belgaum),Khanapur,Maize,K,22.8,27.8,681
+Belagavi (Belgaum),Nippani,Sugarcane,A,23.1,28.1,709
+Belagavi (Belgaum),Nippani,Maize,K,23.1,28.1,709
+Belagavi (Belgaum),Nippani,Tobacco,R/K,23.1,28.1,709

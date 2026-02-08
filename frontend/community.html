@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgriSense - Community</title>
+  <script src="js/common.js"></script>
+  
+  <script>
+    // Function to translate a single post
+    async function translatePost(button) {
+      const post = button.closest('.bg-white');
+      const postContent = post.querySelector('p.text-gray-600');
+      const postTitle = post.querySelector('h3.font-medium');
+      const currentLang = document.getElementById('languageSelect').value || 'en';
+      
+      // Skip if already translated to current language
+      if (post.dataset.translated === currentLang) return;
+      
+      try {
+        // Show loading state
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span data-translate="translating">Translating...</span>';
+        
+        // Get the text to translate
+        const textToTranslate = `${postTitle.textContent}. ${postContent.textContent}`;
+        
+        // In a real app, you would call a translation API here
+        // For demo, we'll just toggle between original and a sample translation
+        if (!post.dataset.originalContent) {
+          // Store original content
+          post.dataset.originalContent = textToTranslate;
+          post.dataset.originalTitle = postTitle.textContent;
+          post.dataset.originalPostContent = postContent.textContent;
+          
+          // Sample translation (in a real app, use a translation API)
+          let translatedText = textToTranslate;
+          if (currentLang === 'hi') {
+            translatedText = "कर्नाटक में काली मिट्टी के लिए सर्वोत्तम फसलें। मेरे पास उत्तरी कर्नाटक में 2 एकड़ काली मिट्टी है। आगामी सीजन में मैं कौन सी नकदी फसलें उगा सकता हूं?";
+          } else if (currentLang === 'kn') {
+            translatedText = "ಕರ್ನಾಟಕದ ಕಪ್ಪು ಹತ್ತಿ ಮಣ್ಣಿಗೆ ಉತ್ತಮ ಬೆಳೆಗಳು. ನನ್ನ ಬಳಿ ಉತ್ತರ ಕರ್ನಾಟಕದಲ್ಲಿ 2 ಎಕರೆ ಕಪ್ಪು ಹತ್ತಿ ಮಣ್ಣಿದೆ. ಮುಂದಿನ ಋತುವಿನಲ್ಲಿ ನಾನು ಯಾವ ನಗದು ಬೆಳೆಗಳನ್ನು ಬೆಳೆಯಬಹುದು?";
+          }
+          
+          // Update the post content
+          postTitle.textContent = translatedText.split('. ')[0] + '.';
+          postContent.textContent = translatedText.split('. ').slice(1).join('. ');
+          post.dataset.translated = currentLang;
+          button.innerHTML = '<i class="fas fa-undo mr-1"></i> <span data-translate="show-original">Show Original</span>';
+        } else {
+          // Toggle back to original
+          postTitle.textContent = post.dataset.originalTitle;
+          postContent.textContent = post.dataset.originalPostContent;
+          delete post.dataset.translated;
+          button.innerHTML = '<i class="fas fa-language mr-1"></i> <span data-translate="translate">Translate</span>';
+        }
+        
+        // Update translations for the button text
+        updateTranslations();
+      } catch (error) {
+        console.error('Translation error:', error);
+        button.innerHTML = originalText;
+        alert('Translation failed. Please try again.');
+      }
+    }
+    
+    // Update translations for dynamically added elements
+    function updateTranslations() {
+      const lang = document.getElementById('languageSelect').value || 'en';
+      const dict = window.translations?.[lang] || {};
+      
+      document.querySelectorAll('[data-translate]').forEach(el => {
+        const key = el.getAttribute('data-translate');
+        if (dict[key]) {
+          el.textContent = dict[key];
+        }
+      });
+      
+      // Update placeholders
+      document.querySelectorAll('[data-translate-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-translate-placeholder');
+        if (dict[key]) {
+          el.placeholder = dict[key];
+        }
+      });
+    }
+  </script>
+  
+  <!-- Language change handler -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    .pulse-green { animation: pulseGreen 2s infinite }
+    @keyframes pulseGreen { 0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.7)} 70%{box-shadow:0 0 0 10px rgba(34,197,94,0)} }
+    .card-hover{transition:all .3s ease}
+    .comment-section {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .comment-avatar {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      min-height: 32px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 1px solid #e5e7eb;
+    }
+    /* Main post images */
+    .post-image-container {
+      width: 100%;
+      max-width: 100%;
+      margin: 12px 0;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .post-image {
+      width: 100%;
+      max-height: 400px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+    }
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .voice-recording {
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+  </style>
+</head>
+<body class="bg-gray-50 font-sans">
+  <!-- Offline Banner -->
+  <div class="bg-green-600 text-white text-center py-2 text-sm">🌐 Works Partially Offline in Low Connectivity Regions</div>
+  <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center"><span
+              class="text-2xl">🌱</span></div>
+          <div>
+            <h1 class="text-xl font-bold text-gray-800" data-translate="site-name">AgriSense</h1>
+            <p class="text-xs text-gray-600" data-translate="site-tagline">AI Crop Recommendation System</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <select id="languageSelect" class="px-3 py-1 border border-gray-300 rounded-md text-sm bg-white">
+            <option value="en">English</option>
+            <option value="hi">हिंदी</option>
+            <option value="kn">ಕನ್ನಡ</option>
+          </select>
+          <button id="mobileMenuBtn" class="md:hidden p-2"><span class="text-2xl">☰</span></button>
+        </div>
+      </div>
+      <nav class="hidden md:block mt-4">
+        <ul class="flex flex-wrap space-x-6 text-sm font-medium">
+          <li><a href="index.html" class="hover:text-green-600 transition-colors" data-translate="nav-home">Home</a></li>
+          <li><a href="crop-recommendation.html" class="hover:text-green-600 transition-colors" data-translate="nav-crop">Crop Recommendation</a></li>
+          <li><a href="pest-detection.html" class="hover:text-green-600 transition-colors" data-translate="nav-pest">Pest Detection</a></li>
+          <li><a href="soil-testing.html" class="hover:text-green-600 transition-colors" data-translate="nav-soil">Soil Testing</a></li>
+          <li><a href="dashboard.html" class="hover:text-green-600 transition-colors" data-translate="nav-dashboard">Dashboard</a></li>
+          <li><a href="community.html" class="hover:text-green-600 transition-colors" data-translate="nav-community">Community</a></li>
+          <li><a href="about.html" class="hover:text-green-600 transition-colors" data-translate="nav-about">About</a></li>
+        </ul>
+      </nav>
+      <!-- Mobile Nav -->
+      <nav id="mobileNav" class="hidden md:hidden mt-4 border-t pt-4">
+        <ul class="space-y-2">
+          <li><a href="index.html" class="block py-2 hover:bg-gray-50 rounded px-2">Home</a></li>
+          <li><a href="crop-recommendation.html" class="block py-2 hover:bg-gray-50 rounded px-2">Crop Recommendation</a></li>
+          <li><a href="pest-detection.html" class="block py-2 hover:bg-gray-50 rounded px-2">Pest Detection</a></li>
+          <li><a href="soil-testing.html" class="block py-2 hover:bg-gray-50 rounded px-2">Soil Testing</a></li>
+          <li><a href="dashboard.html" class="block py-2 hover:bg-gray-50 rounded px-2">Dashboard</a></li>
+          <li><a href="community.html" class="block py-2 hover:bg-gray-50 rounded px-2">Community</a></li>
+          <li><a href="about.html" class="block py-2 hover:bg-gray-50 rounded px-2">About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Hero Section -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4" data-translate="community-hero-title">Join Our Plant Lovers Community</h1>
+            <button onclick="openNewPostModal()" class="mt-6 bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 transition-colors">
+                <i class="fas fa-plus mr-2"></i> <span data-translate="start-discussion">Start New Discussion</span>
+            </button>
+        </div>
+
+        <!-- Discussion Forums -->
+        <div class="mb-12">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-900" data-translate="forum-title">Farmer's Discussion Forum</h2>
+                <button onclick="openNewPostModal()" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 flex items-center">
+                    <i class="fas fa-plus mr-2"></i> <span data-translate="new-post">New Post</span>
+                </button>
+            </div>
+            
+            <!-- Search and Filter -->
+            <div class="bg-white p-4 rounded-lg shadow-sm mb-6">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div class="flex-1">
+                        <div class="relative">
+                            <input type="text" placeholder="Search discussions..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                    </div>
+                    <select class="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <option>All Categories</option>
+                        <option>Crop Diseases</option>
+                        <option>Organic Farming</option>
+                        <option>Irrigation</option>
+                        <option>Market Prices</option>
+                        <option>Government Schemes</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+
+                <!-- Discussion Card 2 -->
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 transition-all hover:shadow-md">
+                    <div class="flex items-start">
+                        <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="User" class="w-12 h-12 rounded-full mr-4 border-2 border-green-200">
+                        <div class="flex-1">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start">
+                                <h3 class="font-medium text-lg text-gray-900">Best crops for black cotton soil in Karnataka</h3>
+                                <div class="flex items-center mt-1 sm:mt-0">
+                                    <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Crop Advice</span>
+                                    <span class="text-sm text-gray-500 ml-2">5h ago</span>
+                                </div>
+                            </div>
+                            <p class="text-gray-600 mt-1">I have 2 acres of black cotton soil in North Karnataka. What are the best cash crops I can grow in the upcoming season?</p>
+                            
+                            <!-- Large Image -->
+                            <div class="mt-4">
+                                <div class="post-image-container">
+                                    <img src="https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80" alt="Black cotton soil field" class="post-image">
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1 text-center">My black cotton soil field in North Karnataka</p>
+                            </div>
+                            
+                            <div class="mt-3 flex flex-wrap justify-between items-center text-sm text-gray-500 border-t pt-3">
+                                <div class="flex space-x-4">
+                                <span class="flex items-center cursor-pointer hover:text-green-600"><i class="far fa-comment-alt mr-1"></i> <span class="comment-count">1</span> <span data-translate="comments">comments</span></span>
+                                <span class="flex items-center cursor-pointer hover:text-green-600"><i class="far fa-heart mr-1"></i> <span class="like-count">15</span> <span data-translate="likes">likes</span></span>
+                                <span class="flex items-center cursor-pointer hover:text-green-600"><i class="fas fa-share-alt mr-1"></i> <span data-translate="share">Share</span></span>
+                                <button class="flex items-center text-blue-600 hover:text-blue-800 text-sm" onclick="translatePost(this)">
+                                    <i class="fas fa-language mr-1"></i> <span data-translate="translate">Translate</span>
+                                </button>
+                            </div>
+                                <button class="text-green-600 hover:underline">View Details</button>
+                            </div>
+                            
+                            <!-- Comment Section -->
+                            <div class="mt-4 pt-4 border-t">
+                                <div class="space-y-3 mb-4">
+                                    <!-- Comment -->
+                                  
+                                </div>
+                                
+                                <!-- Add Comment -->
+                                <div class="mt-3 flex items-start">
+                                    <img src="https://randomuser.me/api/portraits/lego/1.jpg" alt="You" class="comment-avatar mr-2">
+                                    <div class="flex-1 relative">
+                                        <div class="flex items-center mb-1">
+                                            <span class="text-sm font-medium">Add a comment</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="text" placeholder="Write a comment..." class="flex-1 border border-gray-300 rounded-l-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+                                            <button class="bg-green-600 text-white p-2 rounded-r-md hover:bg-green-700">
+                                                <i class="fas fa-paper-plane"></i>
+                                            </button>
+                                            <button class="ml-2 p-2 text-gray-600 hover:text-green-600 focus:outline-none">
+                                                <i class="fas fa-microphone"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+
+                <!-- Discussion Card 4 -->
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 transition-all hover:shadow-md">
+                    <div class="flex items-start">
+                        <img src="https://randomuser.me/api/portraits/men/62.jpg" alt="User" class="w-12 h-12 rounded-full mr-4 border-2 border-green-200">
+                        <div class="flex-1">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start">
+                                <h3 class="font-medium text-lg text-gray-900">Drip irrigation system recommendations?</h3>
+                                <div class="flex items-center mt-1 sm:mt-0">
+                                    <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Irrigation</span>
+                                    <span class="text-sm text-gray-500 ml-2">2d ago</span>
+                                </div>
+                            </div>
+                            <p class="text-gray-600 mt-1">Looking to install a drip irrigation system for my 1-acre farm. Any recommendations for systems that work well in Indian climate? Budget is around ₹15,000.</p>
+                            
+                            <div class="mt-3 flex flex-wrap justify-between items-center text-sm text-gray-500 border-t pt-3">
+                                <div class="flex space-x-4">
+                                    <span class="flex items-center cursor-pointer hover:text-green-600"><i class="far fa-comment-alt mr-1"></i> 7 comments</span>
+                                    <span class="flex items-center cursor-pointer hover:text-green-600"><i class="far fa-heart mr-1"></i> 14 likes</span>
+                                    <span class="flex items-center cursor-pointer hover:text-green-600"><i class="fas fa-share-alt mr-1"></i> Share</span>
+                                    <button class="flex items-center text-blue-600 hover:text-blue-800 text-sm" onclick="translatePost(this)">
+                                        <i class="fas fa-language mr-1"></i> <span data-translate="translate">Translate</span>
+                                    </button>
+                                </div>
+                                <button class="text-green-600 hover:underline">View Details</button>
+                            </div>
+                            
+                            <!-- Comment Section -->
+                            <div class="mt-4 pt-4 border-t">
+                                <div class="space-y-3 mb-4">
+                                    <!-- Comment 1 -->
+                                    <div class="flex items-start">
+                                        <img src="https://randomuser.me/api/portraits/men/35.jpg" alt="User" class="comment-avatar mr-2">
+                                        <div class="flex-1 bg-gray-50 rounded-lg p-3">
+                                            <div class="flex justify-between items-center">
+                                                <span class="font-medium text-sm">Vikram Joshi</span>
+                                                <span class="text-xs text-gray-500">1d ago</span>
+                                            </div>
+                                            <p class="text-sm text-gray-700 mt-1">I've been using a drip irrigation system from Jain Irrigation for 3 years now. It's perfect for our climate and very efficient. Cost me around ₹12,000 for 1 acre.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Comment 2 -->
+                                    <div class="flex items-start">
+                                        <img src="https://randomuser.me/api/portraits/women/29.jpg" alt="User" class="comment-avatar mr-2">
+                                        <div class="flex-1 bg-gray-50 rounded-lg p-3">
+                                            <div class="flex justify-between items-center">
+                                                <span class="font-medium text-sm">Sneha Iyer</span>
+                                                <span class="text-xs text-gray-500">5h ago</span>
+                                            </div>
+                                            <p class="text-sm text-gray-700 mt-1">Make sure to install a good filter system to prevent clogging. Also, check if there are any government subsidies available in your area for drip irrigation.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Add Comment -->
+                                <div class="mt-3 flex items-start">
+                                    <img src="https://randomuser.me/api/portraits/lego/3.jpg" alt="You" class="comment-avatar mr-2">
+                                    <div class="flex-1 relative">
+                                        <div class="flex items-center mb-1">
+                                            <span class="text-sm font-medium">Add a comment</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="text" placeholder="Write a comment..." class="flex-1 border border-gray-300 rounded-l-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+                                            <button class="bg-green-600 text-white p-2 rounded-r-md hover:bg-green-700">
+                                                <i class="fas fa-paper-plane"></i>
+                                            </button>
+                                            <button class="ml-2 p-2 text-gray-600 hover:text-green-600 focus:outline-none">
+                                                <i class="fas fa-microphone"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Discussion Card 5 -->
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 transition-all hover:shadow-md">
+                    <div class="flex items-start">
+                        <img src="https://randomuser.me/api/portraits/women/54.jpg" alt="User" class="w-12 h-12 rounded-full mr-4 border-2 border-green-200">
+                        <div class="flex-1">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start">
+                                <h3 class="font-medium text-lg text-gray-900">Best crops to grow in summer season?</h3>
+                                <div class="flex items-center mt-1 sm:mt-0">
+                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">Seasonal Tips</span>
+                                    <span class="text-sm text-gray-500 ml-2">3d ago</span>
+                                </div>
+                            </div>
+                            <p class="text-gray-600 mt-1">The summer season is approaching. What are some good crops that can withstand the heat? I'm in North India where temperatures can reach 45°C.</p>
+                            
+                            <div class="mt-4">
+                                <div class="post-image-container">
+                                    <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Summer crops" class="post-image">
+                                </div>
+                            </div>
+                            
+                            <div class="mt-3 flex flex-wrap justify-between items-center text-sm text-gray-500 border-t pt-3">
+                                <div class="flex space-x-4">
+                                    <span class="flex items-center cursor-pointer hover:text-green-600"><i class="far fa-comment-alt mr-1"></i> 15 comments</span>
+                                    <span class="flex items-center cursor-pointer hover:text-green-600"><i class="far fa-heart mr-1"></i> 32 likes</span>
+                                    <span class="flex items-center cursor-pointer hover:text-green-600"><i class="fas fa-share-alt mr-1"></i> Share</span>
+                                    <button class="flex items-center text-blue-600 hover:text-blue-800 text-sm" onclick="translatePost(this)">
+                                        <i class="fas fa-language mr-1"></i> <span data-translate="translate">Translate</span>
+                                    </button>
+                                </div>
+                                <button class="text-green-600 hover:underline">View Details</button>
+                            </div>
+                            
+                            <!-- Comment Section -->
+                            <div class="mt-4 pt-4 border-t">
+                                <div class="space-y-3 mb-4">
+                                    <!-- Comment 1 -->
+                                    <div class="flex items-start">
+                                        <img src="https://randomuser.me/api/portraits/men/42.jpg" alt="User" class="comment-avatar mr-2">
+                                        <div class="flex-1 bg-gray-50 rounded-lg p-3">
+                                            <div class="flex justify-between items-center">
+                                                <span class="font-medium text-sm">Arjun Reddy</span>
+                                                <span class="text-xs text-gray-500">2d ago</span>
+                                            </div>
+                                            <p class="text-sm text-gray-700 mt-1">For extreme summer, try pearl millet (bajra) and cluster beans. They're drought-resistant and do well in high temperatures. Also, consider growing bottle gourd and bitter gourd on trellises to protect from ground heat.</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Comment 2 -->
+                                    <div class="flex items-start">
+                                        <img src="https://randomuser.me/api/portraits/women/51.jpg" alt="User" class="comment-avatar mr-2">
+                                        <div class="flex-1 bg-gray-50 rounded-lg p-3">
+                                            <div class="flex justify-between items-center">
+                                                <span class="font-medium text-sm">Kavita Patel</span>
+                                                <span class="text-xs text-gray-500">1d ago</span>
+                                            </div>
+                                            <p class="text-sm text-gray-700 mt-1">I've had success with okra and cowpea in Rajasthan summers. The key is to use mulch to retain soil moisture and water early in the morning. Also, consider shade netting for young plants during peak afternoon heat.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Add Comment -->
+                                <div class="mt-3 flex items-start">
+                                    <img src="https://randomuser.me/api/portraits/lego/4.jpg" alt="You" class="comment-avatar mr-2">
+                                    <div class="flex-1 relative">
+                                        <div class="flex items-center mb-1">
+                                            <span class="text-sm font-medium">Add a comment</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="text" placeholder="Write a comment..." class="flex-1 border border-gray-300 rounded-l-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+                                            <button class="bg-green-600 text-white p-2 rounded-r-md hover:bg-green-700">
+                                                <i class="fas fa-paper-plane"></i>
+                                            </button>
+                                            <button class="ml-2 p-2 text-gray-600 hover:text-green-600 focus:outline-none">
+                                                <i class="fas fa-microphone"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="mt-8 flex justify-center">
+                <nav class="flex items-center space-x-2">
+                    <button class="px-3 py-1 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="px-3 py-1 rounded-md bg-green-600 text-white">1</button>
+                    <button class="px-3 py-1 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50">2</button>
+                    <button class="px-3 py-1 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50">3</button>
+                    <span class="px-2">...</span>
+                    <button class="px-3 py-1 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50">10</button>
+                    <button class="px-3 py-1 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </nav>
+            </div>
+        </div>
+        
+        <!-- New Post Modal -->
+        <div id="newPostModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-lg w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+                <form id="newPostForm" class="divide-y divide-gray-200">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-medium text-gray-900">Create New Post</h3>
+                            <button type="button" onclick="closeNewPostModal()" class="text-gray-400 hover:text-gray-500">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="mb-4">
+                            <label for="postTitle" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                            <input type="text" id="postTitle" name="title" required
+                                placeholder="Enter a clear title for your question" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+                        </div>
+                        <div class="mb-4">
+                            <label for="postCategory" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                            <select id="postCategory" name="category" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+                                <option value="">Select a category</option>
+                                <option value="Crop Diseases">Crop Diseases</option>
+                                <option value="Organic Farming">Organic Farming</option>
+                                <option value="Irrigation">Irrigation</option>
+                                <option value="Market Prices">Market Prices</option>
+                                <option value="Government Schemes">Government Schemes</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label for="postDescription" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <textarea id="postDescription" name="description" rows="4" required
+                                placeholder="Provide details about your question or topic..." 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"></textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Add Images (Optional)</label>
+                            <div class="flex items-center justify-center w-full">
+                                <label class="flex flex-col w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                                    <div class="flex flex-col items-center justify-center pt-7">
+                                        <i class="fas fa-cloud-upload-alt text-3xl text-gray-400"></i>
+                                        <p class="pt-1 text-sm text-gray-500">Click to upload or drag and drop</p>
+                                        <p class="text-xs text-gray-500">PNG, JPG, GIF up to 5MB</p>
+                                    </div>
+                                    <input type="file" id="postImages" class="hidden" multiple accept="image/*" onchange="handleImageUpload(event)">
+                                </label>
+                            </div>
+                            <div id="imagePreview" class="mt-2 flex flex-wrap gap-2"></div>
+                        </div>
+                        <div class="mb-4">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="anonymous" name="isAnonymous" 
+                                    class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded">
+                                <label for="anonymous" class="ml-2 block text-sm text-gray-700">Post anonymously</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="px-4 py-3 bg-gray-50 rounded-b-lg flex justify-end space-x-3">
+                        <button type="button" onclick="closeNewPostModal()" 
+                            class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+                            Cancel
+                        </button>
+                        <button type="submit" 
+                            class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                            Post Question
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Community Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 text-center card-hover">
+                <div class="text-4xl font-bold text-green-600 mb-2">5K+</div>
+                <div class="text-gray-600">Community Members</div>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 text-center card-hover">
+                <div class="text-4xl font-bold text-green-600 mb-2">1.2K+</div>
+                <div class="text-gray-600">Discussions</div>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 text-center card-hover">
+                <div class="text-4xl font-bold text-green-600 mb-2">50+</div>
+                <div class="text-gray-600">Experts Online</div>
+            </div>
+        </div>
+
+        <!-- Community Experts -->
+        <div class="mb-12">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Meet Our Experts</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Expert 1 -->
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 text-center transition-all card-hover">
+                    <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Expert" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-green-100">
+                    <h3 class="font-medium text-lg text-gray-900">Dr. Sarah Johnson</h3>
+                    <p class="text-green-600 text-sm mb-3">Botanist & Plant Pathologist</p>
+                    <p class="text-gray-600 text-sm mb-4">Specializes in plant diseases and organic treatment methods with over 10 years of experience.</p>
+                    <button class="text-green-600 text-sm font-medium hover:underline">View Profile</button>
+                </div>
+
+                <!-- Expert 2 -->
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 text-center transition-all card-hover">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Expert" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-green-100">
+                    <h3 class="font-medium text-lg text-gray-900">Michael Chen</h3>
+                    <p class="text-green-600 text-sm mb-3">Horticulture Specialist</p>
+                    <p class="text-gray-600 text-sm mb-4">Expert in urban gardening and sustainable plant care practices.</p>
+                    <button class="text-green-600 text-sm font-medium hover:underline">View Profile</button>
+                </div>
+
+                <!-- Expert 3 -->
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 text-center transition-all card-hover">
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Expert" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-green-100">
+                    <h3 class="font-medium text-lg text-gray-900">Priya Patel</h3>
+                    <p class="text-green-600 text-sm mb-3">Organic Gardening Coach</p>
+                    <p class="text-gray-600 text-sm mb-4">Helps beginners create thriving organic gardens with natural pest control methods.</p>
+                    <button class="text-green-600 text-sm font-medium hover:underline">View Profile</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div>
+            <h3 class="text-lg font-medium mb-4">AgriSense</h3>
+            <p class="text-gray-400 text-sm">Empowering farmers with AI-powered agricultural solutions for better yields and sustainable farming.</p>
+          </div>
+          <div>
+            <h4 class="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-4">Quick Links</h4>
+            <ul class="space-y-2">
+              <li><a href="index.html" class="text-gray-400 hover:text-white">Home</a></li>
+              <li><a href="disease-detection.html" class="text-gray-400 hover:text-white">Disease Detection</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white">Crop Recommendation</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white">Soil Testing</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-4">Support</h4>
+            <ul class="space-y-2">
+              <li><a href="#" class="text-gray-400 hover:text-white">Help Center</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white">Contact Us</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white">FAQs</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-4">Connect With Us</h4>
+            <div class="flex space-x-4 mb-4">
+              <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+              <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+              <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+              <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-youtube"></i></a>
+              <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-whatsapp"></i></a>
+            </div>
+            <p class="text-sm text-gray-400 mb-2">Subscribe to our newsletter</p>
+            <div class="flex">
+              <input type="email" placeholder="Your email" class="px-3 py-2 text-sm text-gray-900 rounded-l-md focus:outline-none w-full">
+              <button class="bg-green-600 text-white px-4 py-2 rounded-r-md hover:bg-green-700 text-sm">
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-400">
+          <p>&copy; 2025 AgriSense. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            const mobileNav = document.getElementById('mobileNav');
+            mobileNav.classList.toggle('hidden');
+        });
+
+        // New Post Modal
+        function openNewPostModal() {
+            document.getElementById('newPostModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeNewPostModal() {
+            document.getElementById('newPostModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('newPostModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeNewPostModal();
+            }
+        });
+
+        // Handle form submission
+        document.getElementById('newPostForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const postData = {
+                title: formData.get('title'),
+                category: formData.get('category'),
+                description: formData.get('description'),
+                isAnonymous: formData.get('isAnonymous') === 'on',
+                images: []
+            };
+            
+            // Get image files
+            const imageInput = document.getElementById('postImages');
+            if (imageInput.files.length > 0) {
+                postData.images = Array.from(imageInput.files).map(file => URL.createObjectURL(file));
+            }
+            
+            // Add the new post to the discussion
+            addNewPost(postData);
+            
+            // Close modal and reset form
+            closeNewPostModal();
+            this.reset();
+            document.getElementById('imagePreview').innerHTML = '';
+        });
+        
+        // Handle image upload and preview
+        function handleImageUpload(event) {
+            const files = event.target.files;
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = '';
+            
+            if (files.length > 0) {
+                // Limit to 1 image
+                const file = files[0];
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const imgContainer = document.createElement('div');
+                        imgContainer.className = 'relative w-full max-w-xs mx-auto';
+                        imgContainer.innerHTML = `
+                            <img src="${e.target.result}" alt="Preview" class="w-full h-auto rounded-md">
+                            <button type="button" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600 transition-colors" 
+                                onclick="this.parentElement.remove(); document.getElementById('postImages').value = '';">
+                                &times;
+                            </button>
+                        `;
+                        preview.innerHTML = ''; // Clear any existing preview
+                        preview.appendChild(imgContainer);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        }
+        
+        // Simple function to clear file input when removing image
+        function updateFileInput() {
+            document.getElementById('postImages').value = '';
+        }
+        
+        // Add new post to the discussion
+        function addNewPost(postData) {
+            const discussionContainer = document.querySelector('.space-y-4');
+            const newPost = document.createElement('div');
+            newPost.className = 'bg-white p-6 rounded-lg shadow-sm border border-gray-100 transition-all hover:shadow-md';
+            newPost.innerHTML = `
+                <div class="flex items-start">
+                    <img src="${postData.isAnonymous ? 'https://ui-avatars.com/api/?name=Anonymous&background=random' : 'https://randomuser.me/api/portraits/lego/1.jpg'}" 
+                         alt="User" class="w-12 h-12 rounded-full mr-4 border-2 border-green-200">
+                    <div class="flex-1">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start">
+                            <h3 class="font-medium text-lg text-gray-900">${postData.title}</h3>
+                            <div class="flex items-center mt-1 sm:mt-0">
+                                <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">${postData.category}</span>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-1">Posted by ${postData.isAnonymous ? 'Anonymous' : 'You'} • Just now</p>
+                        <p class="mt-2 text-gray-700">${postData.description}</p>
+                        
+                        ${postData.images.length > 0 ? `
+                        <div class="mt-4">
+                            ${postData.images.map((img, index) => `
+                                <div class="post-image-container">
+                                    <img src="${img}" alt="Post image ${index + 1}" class="post-image">
+                                </div>
+                            `).join('')}
+                        </div>
+                        ` : ''}
+                        
+                        <div class="mt-3 flex items-center text-sm text-gray-500">
+                            <button class="flex items-center text-gray-500 hover:text-green-600 mr-4">
+                                <i class="far fa-comment-alt mr-1"></i> 0 comments
+                            </button>
+                            <button class="flex items-center text-gray-500 hover:text-green-600">
+                                <i class="far fa-heart mr-1"></i> 0 likes
+                            </button>
+                        </div>
+                        
+                        <!-- Comment input -->
+                        <div class="mt-3 pt-3 border-t">
+                            <div class="flex items-start">
+                                <img src="https://randomuser.me/api/portraits/lego/1.jpg" alt="You" class="comment-avatar mr-2">
+                                <div class="flex-1 relative">
+                                    <div class="flex items-center">
+                                        <input type="text" placeholder="Write a comment..." 
+                                            class="flex-1 border border-gray-300 rounded-l-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+                                        <button class="bg-green-600 text-white p-2 rounded-r-md hover:bg-green-700">
+                                            <i class="fas fa-paper-plane"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Insert the new post at the top of the discussion
+            discussionContainer.insertBefore(newPost, discussionContainer.firstChild);
+            
+            // Show success message
+            alert('Your post has been published successfully!');
+        }
+
+        // Voice recording functionality
+        const voiceButton = document.getElementById('voiceButton');
+        const recordingIndicator = document.getElementById('recordingIndicator');
+        
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
+
+        // Check for browser support
+        if (navigator.mediaDevices && window.MediaRecorder) {
+            voiceButton.addEventListener('click', toggleRecording);
+        } else {
+            voiceButton.style.display = 'none';
+        }
+
+        async function toggleRecording() {
+            if (isRecording) {
+                // Stop recording
+                mediaRecorder.stop();
+                voiceButton.innerHTML = '<i class="fas fa-microphone"></i>';
+                recordingIndicator.classList.add('hidden');
+                isRecording = false;
+            } else {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    
+                    mediaRecorder.ondataavailable = (e) => {
+                        if (e.data.size > 0) {
+                            audioChunks.push(e.data);
+                        }
+                    };
+                    
+                    mediaRecorder.onstop = () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        // Here you would typically upload the audioBlob to your server
+                        console.log('Audio recorded:', audioBlob);
+                        // For demo, we'll just show a success message
+                        alert('Voice comment recorded! In a real app, this would be sent to the server.');
+                    };
+                    
+                    mediaRecorder.start();
+                    voiceButton.innerHTML = '<i class="fas fa-stop"></i>';
+                    recordingIndicator.classList.remove('hidden');
+                    isRecording = true;
+                    
+                    // Auto-stop after 2 minutes
+                    setTimeout(() => {
+                        if (isRecording) {
+                            mediaRecorder.stop();
+                            voiceButton.innerHTML = '<i class="fas fa-microphone"></i>';
+                            recordingIndicator.classList.add('hidden');
+                            isRecording = false;
+                            
+                            // Stop all tracks in the stream
+                            stream.getTracks().forEach(track => track.stop());
+                        }
+                    }, 120000);
+                    
+                } catch (err) {
+                    console.error('Error accessing microphone:', err);
+                    alert('Could not access microphone. Please ensure you have granted microphone permissions.');
+                }
+            }
+        }
+
+        // Language selector
+        document.getElementById('languageSelect')?.addEventListener('change', function(e) {
+            // In a real app, this would change the language
+            console.log('Language changed to:', e.target.value);
+            // For demo, we'll just show an alert
+            alert('Language changed to: ' + e.target.options[e.target.selectedIndex].text);
+        });
+
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('#mobileNav a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('mobileNav').classList.add('hidden');
+            });
+        });
+    </script>
+    <script>
+      // Update language selector to retranslate the page
+      document.getElementById('languageSelect')?.addEventListener('change', function(e) {
+        const lang = e.target.value;
+        localStorage.setItem('agrisense_lang', lang);
+        updateTranslations();
+        
+        // Reset any translated posts to show in the new language
+        document.querySelectorAll('.bg-white[data-translated]').forEach(post => {
+          const translateBtn = post.querySelector('button[onclick^="translatePost"]');
+          if (translateBtn) {
+            post.dataset.translated = ''; // Reset to force retranslation
+            translatePost(translateBtn);
+          }
+        });
+      });
+      
+      // Initialize translations on page load
+      document.addEventListener('DOMContentLoaded', function() {
+        const savedLang = localStorage.getItem('agrisense_lang') || 'en';
+        const languageSelect = document.getElementById('languageSelect');
+        if (languageSelect) {
+          languageSelect.value = savedLang;
+          updateTranslations();
+        }
+      });
+    </script>
+  </body>
+</html>

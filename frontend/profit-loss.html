@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-translate="profit-loss-title">Profit & Loss Calculator | AgriSense</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    .pulse-green { animation: pulseGreen 2s infinite }
+    @keyframes pulseGreen { 0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.7)} 70%{box-shadow:0 0 0 10px rgba(34,197,94,0)} }
+    .card-hover{transition:all .3s ease}
+    .card-hover:hover{transform:translateY(-5px);box-shadow:0 10px 25px rgba(0,0,0,.15)}
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    .hero-bg{background:linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)),url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%234ade80" width="1200" height="600"/><path fill="%2322c55e" d="M0 400c200-50 400-100 600-80s400 50 600 20v260H0z"/><path fill="%2316a34a" d="M0 500c300-30 600-60 1200 0v100H0z"/></svg>');background-size:cover;background-position:center}
+  </style>
+</head>
+<body class="bg-gray-50 font-sans">
+  <!-- Offline Banner -->
+  <div class="bg-green-600 text-white text-center py-2 text-sm" data-translate="offline-banner">🌐 Works Partially Offline in Low Connectivity Regions</div>
+  
+  <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center"><span
+              class="text-2xl">🌱</span></div>
+          <div>
+            <h1 class="text-xl font-bold text-gray-800" data-translate="site-name">AgriSense</h1>
+            <p class="text-xs text-gray-600" data-translate="site-tagline">AI Crop Recommendation System</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <select id="languageSelect" class="px-3 py-1 border border-gray-300 rounded-md text-sm bg-white">
+            <option value="en">English</option>
+            <option value="hi">हिंदी</option>
+            <option value="kn">ಕನ್ನಡ</option>
+          </select>
+          <button id="mobileMenuBtn" class="md:hidden p-2"><span class="text-2xl">☰</span></button>
+        </div>
+      </div>
+      <nav class="hidden md:block mt-4">
+        <ul class="flex flex-wrap space-x-6 text-sm font-medium">
+          <li><a href="index.html" class="hover:text-green-600 transition-colors" data-translate="nav-home">Home</a></li>
+          <li><a href="crop-recommendation.html" class="hover:text-green-600 transition-colors" data-translate="nav-crop">Crop Recommendation</a></li>
+          <li><a href="pest-detection.html" class="hover:text-green-600 transition-colors" data-translate="nav-pest">Pest Detection</a></li>
+          <li><a href="soil-testing.html" class="hover:text-green-600 transition-colors" data-translate="nav-soil">Soil Testing</a></li>
+          <li><a href="dashboard.html" class="hover:text-green-600 transition-colors" data-translate="nav-dashboard">Dashboard</a></li>
+          <li><a href="community.html" class="hover:text-green-600 transition-colors" data-translate="nav-community">Community</a></li>
+          <li><a href="about.html" class="hover:text-green-600 transition-colors" data-translate="nav-about">About</a></li>
+        </ul>
+      </nav>
+      <!-- Mobile Nav -->
+      <nav id="mobileNav" class="hidden md:hidden mt-4 border-t pt-4">
+        <ul class="space-y-2">
+          <li><a href="index.html" class="block py-2 hover:bg-gray-50 rounded px-2">Home</a></li>
+          <li><a href="crop-recommendation.html" class="block py-2 hover:bg-gray-50 rounded px-2">Crop Recommendation</a></li>
+          <li><a href="pest-detection.html" class="block py-2 hover:bg-gray-50 rounded px-2">Pest Detection</a></li>
+          <li><a href="soil-testing.html" class="block py-2 hover:bg-gray-50 rounded px-2">Soil Testing</a></li>
+          <li><a href="dashboard.html" class="block py-2 hover:bg-gray-50 rounded px-2">Dashboard</a></li>
+          <li><a href="community.html" class="block py-2 hover:bg-gray-50 rounded px-2">Community</a></li>
+          <li><a href="about.html" class="block py-2 hover:bg-gray-50 rounded px-2">About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="py-10">
+    <div class="container mx-auto px-4">
+      <div class="max-w-6xl mx-auto">
+        <!-- Page Header -->
+        <div class="mb-8">
+          <div class="text-center mb-10">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-3" data-translate="profit-loss-title">Profit & Loss Calculator</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto" data-translate="profit-loss-subtitle">Calculate your farming profits, analyze expenses, and optimize your agricultural business for better returns</p>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <!-- Input Form -->
+          <div class="md:col-span-2">
+            <div class="bg-white rounded-xl shadow-md p-6 card-hover">
+              <h3 class="text-xl font-semibold text-gray-800 mb-6" data-translate="enter-details">Enter Your Farming Details</h3>
+              
+              <!-- Basic Information -->
+              <div class="mb-8">
+                <h4 class="text-lg font-medium text-gray-700 mb-4 flex items-center">
+                  <i class="fas fa-info-circle text-green-500 mr-2"></i> <span data-translate="basic-info">Basic Information</span>
+                </h4>
+                <div class="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="crop-name">Crop Name</label>
+                    <input type="text" id="cropName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" placeholder="e.g., Rice, Wheat, etc.">
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1" data-translate="land-area">Land Area (acres)</label>
+                    <div class="relative">
+                      <input type="number" id="landArea" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" placeholder="0.0" step="0.01" min="0">
+                      <span class="absolute right-3 top-2.5 text-gray-500">acres</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Costs Section -->
+              <div class="mb-8">
+                <div class="flex justify-between items-center mb-4">
+                  <h4 class="text-lg font-medium text-gray-700 flex items-center">
+                    <i class="fas fa-money-bill-wave text-red-500 mr-2"></i> <span data-translate="costs">Costs</span>
+                  </h4>
+                  <button id="addCostBtn" class="text-sm text-green-600 hover:text-green-700 flex items-center">
+                    <i class="fas fa-plus-circle mr-1"></i> <span data-translate="add-cost">Add Cost</span>
+                  </button>
+                </div>
+                <div id="costInputs" class="space-y-3">
+                  <!-- Cost items will be added here dynamically -->
+                </div>
+                <div class="mt-4 p-3 bg-gray-50 rounded-lg">
+                  <div class="flex justify-between font-medium">
+                    <span data-translate="total-costs">Total Costs:</span>
+                    <span id="totalCosts">₹0.00</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Revenue Section -->
+              <div class="mb-6">
+                <div class="flex justify-between items-center mb-4">
+                  <h4 class="text-lg font-medium text-gray-700 flex items-center">
+                    <i class="fas fa-chart-line text-green-500 mr-2"></i> <span data-translate="revenue">Revenue</span>
+                  </h4>
+                  <button id="addRevenueBtn" class="text-sm text-green-600 hover:text-green-700 flex items-center">
+                    <i class="fas fa-plus-circle mr-1"></i> <span data-translate="add-revenue">Add Revenue</span>
+                  </button>
+                </div>
+                <div id="revenueInputs" class="space-y-3">
+                  <!-- Revenue items will be added here dynamically -->
+                </div>
+                <div class="mt-4 p-3 bg-gray-50 rounded-lg">
+                  <div class="flex justify-between font-medium">
+                    <span data-translate="total-revenue">Total Revenue:</span>
+                    <span id="totalRevenue">₹0.00</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="flex space-x-3 mt-8">
+                <button id="calculateBtn" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center">
+                  <i class="fas fa-calculator mr-2"></i> <span data-translate="calculate">Calculate</span>
+                </button>
+                <button id="resetBtn" class="px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+                  <i class="fas fa-redo"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Results Panel -->
+          <div class="md:col-span-1">
+            <div id="resultsPanel" class="bg-white rounded-xl shadow-md p-6 sticky top-6">
+              <h3 class="text-xl font-semibold text-gray-800 mb-6">Results</h3>
+              
+              <!-- Initial State - Before Calculation -->
+              <div id="initialState" class="text-center py-8">
+                <div class="bg-blue-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                  <i class="fas fa-calculator text-blue-500 text-2xl"></i>
+                </div>
+                <h4 class="text-lg font-medium text-gray-700 mb-2" data-translate="results-initial-title">Your Profit & Loss Results</h4>
+                <p class="text-gray-500 text-sm mb-4" data-translate="results-initial-desc">Enter your farming details and click 'Calculate' to see your profit/loss analysis.</p>
+                <div class="flex items-center justify-center space-x-2 text-gray-400">
+                  <i class="fas fa-arrow-left"></i>
+                  <span class="text-sm" data-translate="results-initial-hint">Start by adding costs and revenue</span>
+                </div>
+              </div>
+              
+              <!-- Results State (initially hidden) -->
+              <div id="resultsState" class="hidden">
+              <h3 class="text-xl font-semibold text-gray-800 mb-6">Results</h3>
+              
+              <div class="space-y-6">
+                <div class="text-center p-4 rounded-lg bg-gray-50">
+                  <p class="text-sm text-gray-600">Crop</p>
+                  <p id="resultCrop" class="text-lg font-medium text-gray-800">-</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="text-center p-4 rounded-lg bg-green-50">
+                    <p class="text-sm text-green-600">Total Revenue</p>
+                    <p id="resultRevenue" class="text-xl font-bold text-green-700">₹0.00</p>
+                  </div>
+                  <div class="text-center p-4 rounded-lg bg-red-50">
+                    <p class="text-sm text-red-600">Total Costs</p>
+                    <p id="resultCosts" class="text-xl font-bold text-red-700">₹0.00</p>
+                  </div>
+                </div>
+
+                <div id="profitResult" class="text-center p-6 rounded-lg bg-green-100 hidden">
+                  <p class="text-sm text-green-700">Profit</p>
+                  <p id="profitAmount" class="text-3xl font-bold text-green-800">₹0.00</p>
+                  <p id="profitPerAcre" class="text-sm text-green-600 mt-1">₹0.00 per acre</p>
+                </div>
+
+                <div id="lossResult" class="text-center p-6 rounded-lg bg-red-100 hidden">
+                  <p class="text-sm text-red-700">Loss</p>
+                  <p id="lossAmount" class="text-3xl font-bold text-red-800">₹0.00</p>
+                  <p id="lossPerAcre" class="text-sm text-red-600 mt-1">₹0.00 per acre</p>
+                </div>
+
+              </div> <!-- End of resultsState -->
+              
+              <div class="mt-6">
+                  <button id="saveBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center">
+                    <i class="far fa-save mr-2"></i> Save to Dashboard
+                  </button>
+                  <button id="printBtn" class="w-full mt-3 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 py-3 px-6 rounded-lg font-medium transition-colors flex items-center justify-center">
+                    <i class="fas fa-print mr-2"></i> Print Report
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-12">
+    <div class="container mx-auto px-4">
+      <div class="grid md:grid-cols-3 gap-8">
+        <div>
+          <div class="flex items-center space-x-3 mb-4">
+            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+              <span class="text-xl">🌱</span>
+            </div>
+            <span class="text-xl font-bold">AgriSense</span>
+          </div>
+          <p class="text-gray-300 mb-4">Empowering farmers with AI-powered agricultural solutions for sustainable and profitable farming.</p>
+          <div class="text-sm text-gray-400">© 2025 AgriSense Team | Built with Love</div>
+        </div>
+        <div>
+          <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+          <ul class="space-y-2 text-gray-300">
+            <li><a href="index.html" class="hover:text-green-400 transition-colors">Home</a></li>
+            <li><a href="crop-recommendation.html" class="hover:text-green-400 transition-colors">Crop Recommendation</a></li>
+            <li><a href="disease-detection.html" class="hover:text-green-400 transition-colors">Disease Detection</a></li>
+            <li><a href="dashboard.html" class="hover:text-green-400 transition-colors">Dashboard</a></li>
+            <li><a href="profit-loss.html" class="hover:text-green-400 transition-colors font-medium">Profit & Loss</a></li>
+            <li><a href="about.html" class="hover:text-green-400 transition-colors">About</a></li>
+            <li><a href="contact.html" class="hover:text-green-400 transition-colors">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-lg font-semibold mb-4">Features</h4>
+          <ul class="space-y-2 text-gray-300">
+            <li>AI Crop Recommendations</li>
+            <li>Disease Detection</li>
+            <li>Profit & Loss Calculator</li>
+            <li>Yield Predictions</li>
+            <li>Market Price Analysis</li>
+            <li>Multilingual Support</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Template for cost/revenue items -->
+  <template id="itemTemplate">
+    <div class="flex items-start space-x-2 item-row">
+      <div class="flex-1">
+        <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 item-description" placeholder="Description">
+      </div>
+      <div class="w-32">
+        <div class="relative">
+          <span class="absolute left-2 top-2 text-gray-500">₹</span>
+          <input type="number" class="w-full pl-6 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 item-amount" placeholder="0.00" step="0.01" min="0">
+        </div>
+      </div>
+      <button class="text-red-500 hover:text-red-700 remove-item" type="button">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </template>
+
+  <script src="js/common.js"></script>
+  <script type="module" src="js/chatbot.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Mobile menu toggle
+      document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('mobileNav')?.classList.toggle('hidden');
+      });
+      // Initialize the view
+      toggleResultsView(false);
+      // DOM Elements
+      const costInputs = document.getElementById('costInputs');
+      const revenueInputs = document.getElementById('revenueInputs');
+      const addCostBtn = document.getElementById('addCostBtn');
+      const addRevenueBtn = document.getElementById('addRevenueBtn');
+      const calculateBtn = document.getElementById('calculateBtn');
+      const resetBtn = document.getElementById('resetBtn');
+      const saveBtn = document.getElementById('saveBtn');
+      const printBtn = document.getElementById('printBtn');
+      const resultsPanel = document.getElementById('resultsPanel');
+      const itemTemplate = document.getElementById('itemTemplate');
+
+      // Add cost item
+      function addCostItem() {
+        const item = createItemElement();
+        costInputs.appendChild(item);
+        updateTotal('cost');
+      }
+
+      // Add revenue item
+      function addRevenueItem() {
+        const item = createItemElement();
+        revenueInputs.appendChild(item);
+        updateTotal('revenue');
+      }
+
+      // Create a new item element from template
+      function createItemElement() {
+        const item = itemTemplate.content.cloneNode(true);
+        const removeBtn = item.querySelector('.remove-item');
+        const amountInput = item.querySelector('.item-amount');
+        
+        // Add remove functionality
+        removeBtn.addEventListener('click', function() {
+          this.closest('.item-row').remove();
+          updateTotal('all');
+        });
+
+        // Update total when amount changes
+        amountInput.addEventListener('input', function() {
+          updateTotal(this.closest('#costInputs') ? 'cost' : 'revenue');
+        });
+
+        return item;
+      }
+
+      // Update total costs or revenue
+      function updateTotal(type) {
+        if (type === 'cost' || type === 'all') {
+          const costItems = costInputs.querySelectorAll('.item-amount');
+          const totalCost = Array.from(costItems).reduce((sum, input) => {
+            return sum + (parseFloat(input.value) || 0);
+          }, 0);
+          document.getElementById('totalCosts').textContent = `₹${totalCost.toFixed(2)}`;
+        }
+        
+        if (type === 'revenue' || type === 'all') {
+          const revenueItems = revenueInputs.querySelectorAll('.item-amount');
+          const totalRevenue = Array.from(revenueItems).reduce((sum, input) => {
+            return sum + (parseFloat(input.value) || 0);
+          }, 0);
+          document.getElementById('totalRevenue').textContent = `₹${totalRevenue.toFixed(2)}`;
+        }
+      }
+
+      // Show/hide initial state and results
+      function toggleResultsView(showResults) {
+        const initialState = document.getElementById('initialState');
+        const resultsState = document.getElementById('resultsState');
+        
+        if (showResults) {
+          initialState.classList.add('hidden');
+          resultsState.classList.remove('hidden');
+        } else {
+          initialState.classList.remove('hidden');
+          resultsState.classList.add('hidden');
+        }
+      }
+
+      // Calculate profit/loss
+      function calculate() {
+        // If no costs or revenue added, don't calculate
+        const costItems = costInputs.querySelectorAll('.item-row').length;
+        const revenueItems = revenueInputs.querySelectorAll('.item-row').length;
+        
+        if (costItems === 0 && revenueItems === 0) {
+          return; // Don't show results if no data entered
+        }
+        
+        const cropName = document.getElementById('cropName').value || 'Your Crop';
+        const landArea = parseFloat(document.getElementById('landArea').value) || 1;
+        
+        const totalCost = parseFloat(document.getElementById('totalCosts').textContent.replace('₹', '')) || 0;
+        const totalRevenue = parseFloat(document.getElementById('totalRevenue').textContent.replace('₹', '')) || 0;
+        
+        const profitLoss = totalRevenue - totalCost;
+        const perAcre = Math.abs(profitLoss / landArea);
+        
+        // Update results
+        document.getElementById('resultCrop').textContent = cropName;
+        document.getElementById('resultRevenue').textContent = `₹${totalRevenue.toFixed(2)}`;
+        document.getElementById('resultCosts').textContent = `₹${totalCost.toFixed(2)}`;
+        
+        // Show appropriate result (profit or loss)
+        if (profitLoss >= 0) {
+          document.getElementById('profitResult').classList.remove('hidden');
+          document.getElementById('lossResult').classList.add('hidden');
+          document.getElementById('profitAmount').textContent = `₹${profitLoss.toFixed(2)}`;
+          document.getElementById('profitPerAcre').textContent = `₹${perAcre.toFixed(2)} per acre`;
+        } else {
+          document.getElementById('lossResult').classList.remove('hidden');
+          document.getElementById('profitResult').classList.add('hidden');
+          document.getElementById('lossAmount').textContent = `₹${Math.abs(profitLoss).toFixed(2)}`;
+          document.getElementById('lossPerAcre').textContent = `₹${perAcre.toFixed(2)} per acre`;
+        }
+        
+        // Show results state and hide initial state
+        toggleResultsView(true);
+        
+        // Scroll to results
+        resultsPanel.scrollIntoView({ behavior: 'smooth' });
+      }
+
+      // Reset form
+      function resetForm() {
+        document.getElementById('cropName').value = '';
+        document.getElementById('landArea').value = '';
+        costInputs.innerHTML = '';
+        revenueInputs.innerHTML = '';
+        document.getElementById('totalCosts').textContent = '₹0.00';
+        document.getElementById('totalRevenue').textContent = '₹0.00';
+        resultsPanel.classList.add('hidden');
+        
+        // Add default items
+        addCostItem();
+        addRevenueItem();
+      }
+
+      // Save to dashboard
+      function saveToDashboard() {
+        const cropName = document.getElementById('cropName').value || 'Untitled Calculation';
+        const totalCost = parseFloat(document.getElementById('totalCosts').textContent.replace('₹', '')) || 0;
+        const totalRevenue = parseFloat(document.getElementById('totalRevenue').textContent.replace('₹', '')) || 0;
+        const profitLoss = totalRevenue - totalCost;
+        
+        // Get existing calculations or initialize empty array
+        const savedCalculations = JSON.parse(localStorage.getItem('profitLossCalculations') || '[]');
+        
+        // Add new calculation
+        savedCalculations.unshift({
+          cropName,
+          totalCost,
+          totalRevenue,
+          profitLoss,
+          date: new Date().toLocaleDateString('en-IN', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          })
+        });
+        
+        // Limit to last 20 calculations
+        if (savedCalculations.length > 20) {
+          savedCalculations.pop();
+        }
+        
+        // Save to localStorage
+        localStorage.setItem('profitLossCalculations', JSON.stringify(savedCalculations));
+        
+        // Show success message
+        showToast('Calculation saved to dashboard!');
+        
+        // Optional: Open dashboard in a new tab
+        // window.open('dashboard.html', '_blank');
+      }
+      
+      // Show toast notification
+      function showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 opacity-0 translate-y-4';
+        toast.innerHTML = `
+          <div class="flex items-center">
+            <i class="fas fa-check-circle mr-2"></i>
+            <span>${message}</span>
+          </div>
+        `;
+        document.body.appendChild(toast);
+        
+        // Trigger reflow
+        void toast.offsetWidth;
+        
+        // Show toast
+        toast.classList.remove('opacity-0', 'translate-y-4');
+        toast.classList.add('opacity-100', 'translate-y-0');
+        
+        // Hide after 3 seconds
+        setTimeout(() => {
+          toast.classList.remove('opacity-100', 'translate-y-0');
+          toast.classList.add('opacity-0', 'translate-y-4');
+          
+          // Remove from DOM after animation
+          setTimeout(() => {
+            toast.remove();
+          }, 300);
+        }, 3000);
+      }
+
+      // Print report
+      function printReport() {
+        window.print();
+      }
+
+      // Reset form
+      function resetForm() {
+        // Clear all inputs
+        document.getElementById('cropName').value = '';
+        document.getElementById('landArea').value = '';
+        
+        // Clear all cost and revenue items
+        costInputs.innerHTML = '';
+        revenueInputs.innerHTML = '';
+        
+        // Reset totals
+        document.getElementById('totalCosts').textContent = '₹0.00';
+        document.getElementById('totalRevenue').textContent = '₹0.00';
+        
+        // Show initial state
+        toggleResultsView(false);
+      }
+
+      // Event Listeners
+      addCostBtn.addEventListener('click', addCostItem);
+      addRevenueBtn.addEventListener('click', addRevenueItem);
+      calculateBtn.addEventListener('click', calculate);
+      resetBtn.addEventListener('click', resetForm);
+      saveBtn?.addEventListener('click', saveToDashboard);
+      printBtn?.addEventListener('click', printReport);
+
+      // Add initial items
+      addCostItem();
+      addRevenueItem();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgriSense - AI Assistant</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <style>
+    .typing-dot {
+      height: 10px;
+      width: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      margin: 0 2px;
+      animation: typingAnimation 1.4s infinite ease-in-out;
+      background-color: #22c55e;
+    }
+    
+    .typing-dot:nth-child(1) { animation-delay: 0s; }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    
+    @keyframes typingAnimation {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-5px); }
+    }
+    
+    .chat-container {
+      height: calc(100vh - 200px);
+      max-height: 800px;
+    }
+    
+    .message-container {
+      scroll-behavior: smooth;
+    }
+    
+    .user-message {
+      background-color: #f0fdf4;
+      border-left: 4px solid #22c55e;
+    }
+    
+    .bot-message {
+      background-color: #f8fafc;
+      border-left: 4px solid #e2e8f0;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 font-sans">
+  <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center"><span
+              class="text-2xl">🌱</span></div>
+          <div>
+            <h1 class="text-xl font-bold text-gray-800" data-translate="site-name">AgriSense</h1>
+            <p class="text-xs text-gray-600" data-translate="site-tagline">AI Crop Recommendation System</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <select id="languageSelect" class="px-3 py-1 border border-gray-300 rounded-md text-sm bg-white">
+            <option value="en">English</option>
+            <option value="hi">हिंदी</option>
+            <option value="kn">ಕನ್ನಡ</option>
+          </select>
+          <button id="mobileMenuBtn" class="md:hidden p-2"><span class="text-2xl">☰</span></button>
+        </div>
+      </div>
+      <nav class="hidden md:block mt-4">
+        <ul class="flex flex-wrap space-x-6 text-sm font-medium">
+          <li><a href="index.html" class="hover:text-green-600 transition-colors" data-translate="nav-home">Home</a></li>
+          <li><a href="crop-recommendation.html" class="hover:text-green-600 transition-colors" data-translate="nav-crop">Crop Recommendation</a></li>
+          <li><a href="pest-detection.html" class="hover:text-green-600 transition-colors" data-translate="nav-pest">Pest Detection</a></li>
+          <li><a href="soil-testing.html" class="hover:text-green-600 transition-colors" data-translate="nav-soil">Soil Testing</a></li>
+          <li><a href="dashboard.html" class="hover:text-green-600 transition-colors" data-translate="nav-dashboard">Dashboard</a></li>
+          <li><a href="community.html" class="hover:text-green-600 transition-colors" data-translate="nav-community">Community</a></li>
+          <li><a href="about.html" class="hover:text-green-600 transition-colors" data-translate="nav-about">About</a></li>
+        </ul>
+      </nav>
+      <!-- Mobile Nav -->
+      <nav id="mobileNav" class="hidden md:hidden mt-4 border-t pt-4">
+        <ul class="space-y-2">
+          <li><a href="index.html" class="block py-2 hover:bg-gray-50 rounded px-2">Home</a></li>
+          <li><a href="crop-recommendation.html" class="block py-2 hover:bg-gray-50 rounded px-2">Crop Recommendation</a></li>
+          <li><a href="pest-detection.html" class="block py-2 hover:bg-gray-50 rounded px-2">Pest Detection</a></li>
+          <li><a href="soil-testing.html" class="block py-2 hover:bg-gray-50 rounded px-2">Soil Testing</a></li>
+          <li><a href="dashboard.html" class="block py-2 hover:bg-gray-50 rounded px-2">Dashboard</a></li>
+          <li><a href="community.html" class="block py-2 hover:bg-gray-50 rounded px-2">Community</a></li>
+          <li><a href="about.html" class="block py-2 hover:bg-gray-50 rounded px-2">About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container mx-auto px-4 py-8">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">AgriSense AI Assistant</h1>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">Get instant, AI-powered assistance for all your farming queries and challenges</p>
+      </div>
+      
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div class="p-6 border-b border-gray-200">
+          <div class="flex items-center">
+            <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mr-4">
+              <img src="chatbotlogo.webp" alt="AI Assistant" class="w-8 h-8">
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-800">AgriBot</h2>
+              <p class="text-green-600 text-sm">Online</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Chat Container -->
+        <div class="chat-container flex flex-col">
+          <!-- Messages -->
+          <div id="chatMessages" class="flex-1 overflow-y-auto p-6 space-y-4 message-container">
+            <!-- Welcome Message -->
+            <div class="bot-message rounded-lg p-4 max-w-3xl">
+              <div class="flex items-start space-x-3">
+                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                  <img src="chatbotlogo.webp" alt="Bot" class="w-5 h-5">
+                </div>
+                <div>
+                  <p class="font-medium text-gray-800">AgriBot</p>
+                  <div class="text-gray-700 mt-1">
+                    <p>Hello! I'm AgriBot, your AI farming assistant. How can I help you today? You can ask me about:</p>
+                    <ul class="list-disc pl-5 mt-2 space-y-1">
+                      <li>Crop recommendations for your soil type</li>
+                      <li>Pest identification and control</li>
+                      <li>Farming best practices</li>
+                      <li>Weather impact on crops</li>
+                      <li>And any other farming-related questions!</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Input Area -->
+          <div class="border-t border-gray-200 p-4 bg-gray-50">
+            <form id="chatForm" class="flex items-center space-x-2">
+              <div class="flex-1 relative">
+                <input 
+                  type="text" 
+                  id="userInput" 
+                  placeholder="Type your message here..." 
+                  class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  autocomplete="off"
+                >
+                <button 
+                  type="button" 
+                  id="voiceInputBtn" 
+                  class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-green-600 focus:outline-none"
+                  title="Voice input"
+                >
+                  <i class="fas fa-microphone"></i>
+                </button>
+              </div>
+              <button 
+                type="submit" 
+                class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition flex items-center"
+              >
+                <span>Send</span>
+                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                </svg>
+              </button>
+            </form>
+            <div class="mt-2 text-xs text-gray-500 text-center">
+              <p>AgriBot may produce inaccurate information. Always verify important information.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Features Section -->
+      <div class="mt-16">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">How AgriBot Can Help You</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="bg-white p-6 rounded-xl shadow-md">
+            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
+              <i class="fas fa-seedling text-green-600 text-xl"></i>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">Crop Advice</h3>
+            <p class="text-gray-600">Get personalized recommendations for crops based on your soil type, climate, and resources.</p>
+          </div>
+          
+          <div class="bg-white p-6 rounded-xl shadow-md">
+            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+              <i class="fas fa-bug text-blue-600 text-xl"></i>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">Pest Control</h3>
+            <p class="text-gray-600">Identify pests and get organic and chemical solutions to protect your crops.</p>
+          </div>
+          
+          <div class="bg-white p-6 rounded-xl shadow-md">
+            <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
+              <i class="fas fa-cloud-sun text-purple-600 text-xl"></i>
+            </div>
+            <h3 class="text-lg font-semibold mb-2">Weather Insights</h3>
+            <p class="text-gray-600">Understand how weather patterns might affect your farming activities.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-12 mt-16">
+    <div class="container mx-auto px-4">
+      <div class="grid md:grid-cols-4 gap-8">
+        <div>
+          <div class="flex items-center space-x-3 mb-4">
+            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+              <span class="text-xl">🌱</span>
+            </div>
+            <span class="text-xl font-bold">AgriSense</span>
+          </div>
+          <p class="text-gray-400 text-sm">Empowering farmers with AI-driven agricultural solutions for sustainable and profitable farming.</p>
+        </div>
+        
+        <div>
+          <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+          <ul class="space-y-2">
+            <li><a href="index.html" class="text-gray-400 hover:text-white transition">Home</a></li>
+            <li><a href="crop-recommendation.html" class="text-gray-400 hover:text-white transition">Crop Recommendation</a></li>
+            <li><a href="pest-detection.html" class="text-gray-400 hover:text-white transition">Pest Detection</a></li>
+            <li><a href="ai-assistant.html" class="text-gray-400 hover:text-white transition">AI Assistant</a></li>
+            <li><a href="govt-schemes.html" class="text-gray-400 hover:text-white transition">Government Schemes</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="text-lg font-semibold mb-4">Contact</h3>
+          <ul class="space-y-2 text-gray-400">
+            <li class="flex items-center space-x-2">
+              <i class="fas fa-envelope"></i>
+              <span>support@agrisense.com</span>
+            </li>
+            <li class="flex items-center space-x-2">
+              <i class="fas fa-phone"></i>
+              <span>+91 98765 43210</span>
+            </li>
+            <li class="flex items-center space-x-2">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>Bengaluru, Karnataka, India</span>
+            </li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="text-lg font-semibold mb-4">Follow Us</h3>
+          <div class="flex space-x-4">
+            <a href="#" class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-green-600 transition">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-green-600 transition">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-green-600 transition">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-green-600 transition">
+              <i class="fab fa-youtube"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
+        <p>&copy; 2025 AgriSense. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/chatbot.js"></script>
+  <script src="js/openrouter.js"></script>
+  <script>
+    // Mobile menu toggle
+    document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+      const nav = document.querySelector('nav');
+      nav.classList.toggle('hidden');
+      nav.classList.toggle('block');
+    });
+
+    // Chat functionality
+    const chatForm = document.getElementById('chatForm');
+    const userInput = document.getElementById('userInput');
+    const chatMessages = document.getElementById('chatMessages');
+    const voiceInputBtn = document.getElementById('voiceInputBtn');
+    
+    // Speech recognition setup
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognition;
+    
+    if (SpeechRecognition) {
+      recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        userInput.value = transcript;
+        // Auto-submit the form after voice input
+        setTimeout(() => {
+          chatForm.dispatchEvent(new Event('submit'));
+        }, 500);
+      };
+      
+      recognition.onerror = (event) => {
+        console.error('Speech recognition error', event.error);
+        addMessage('Error: Could not process voice input', 'bot');
+      };
+      
+      voiceInputBtn.addEventListener('click', () => {
+        try {
+          recognition.start();
+          voiceInputBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';
+          voiceInputBtn.classList.add('text-red-500');
+          
+          // Add a visual indicator that the assistant is listening
+          const indicator = document.createElement('div');
+          indicator.className = 'absolute -top-10 right-0 bg-red-500 text-white px-3 py-1 rounded-lg text-sm';
+          indicator.textContent = 'Listening...';
+          voiceInputBtn.parentNode.appendChild(indicator);
+          
+          setTimeout(() => {
+            if (indicator.parentNode) {
+              indicator.parentNode.removeChild(indicator);
+            }
+          }, 3000);
+          
+        } catch (error) {
+          console.error('Speech recognition failed:', error);
+          addMessage('Error: Could not access microphone. Please check permissions.', 'bot');
+        }
+      });
+      
+      recognition.onspeechend = () => {
+        recognition.stop();
+        voiceInputBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+        voiceInputBtn.classList.remove('text-red-500');
+      };
+    } else {
+      // Hide voice button if not supported
+      voiceInputBtn.style.display = 'none';
+    }
+    
+    // Add message to chat
+    function addMessage(message, sender) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${sender}-message rounded-lg p-4 max-w-3xl`;
+      
+      const messageContent = `
+        <div class="flex items-start space-x-3">
+          <div class="flex-shrink-0 w-8 h-8 rounded-full ${sender === 'user' ? 'bg-green-100' : 'bg-gray-100'} flex items-center justify-center">
+            ${sender === 'user' ? 
+              '<i class="fas fa-user text-green-600"></i>' : 
+              '<img src="chatbotlogo.webp" alt="Bot" class="w-5 h-5">'}
+          </div>
+          <div>
+            <p class="font-medium text-gray-800">${sender === 'user' ? 'You' : 'AgriBot'}</p>
+            <div class="text-gray-700 mt-1">
+              ${sender === 'bot' && message === '...' ? 
+                '<div class="typing-indicator flex space-x-1 py-2"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>' : 
+                message.replace(/\n/g, '<br>')}
+            </div>
+          </div>
+        </div>
+      `;
+      
+      messageDiv.innerHTML = messageContent;
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      
+      // Return the message element for updating if needed
+      return messageDiv;
+    }
+    
+    // Handle form submission
+    chatForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const message = userInput.value.trim();
+      if (!message) return;
+      
+      // Add user message to chat
+      addMessage(message, 'user');
+      userInput.value = '';
+      
+      // Show typing indicator
+      const typingIndicator = addMessage('...', 'bot');
+      
+      try {
+        // Get response from OpenRouter
+        const response = await getOpenRouterResponse(message);
+        
+        // Remove typing indicator and add actual response
+        chatMessages.removeChild(typingIndicator);
+        addMessage(response, 'bot');
+        
+      } catch (error) {
+        console.error('Error getting AI response:', error);
+        chatMessages.removeChild(typingIndicator);
+        addMessage('Sorry, I encountered an error. Please try again later.', 'bot');
+      }
+    });
+    
+    // Allow Enter key to submit (Shift+Enter for new line)
+    userInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        chatForm.dispatchEvent(new Event('submit'));
+      }
+    });
+    
+    // Auto-resize textarea
+    userInput.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = (this.scrollHeight) + 'px';
+    });
+  </script>
+</body>
+</html>

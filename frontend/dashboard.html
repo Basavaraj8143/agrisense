@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgriSense - Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body class="bg-gray-50 font-sans">
+  <!-- Offline Banner -->
+  <div class="bg-green-600 text-white text-center py-2 text-sm">🌐 Works Partially Offline in Low Connectivity Regions</div>
+  <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center"><span
+              class="text-2xl">🌱</span></div>
+          <div>
+            <h1 class="text-xl font-bold text-gray-800" data-translate="site-name">AgriSense</h1>
+            <p class="text-xs text-gray-600" data-translate="site-tagline">AI Crop Recommendation System</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <select id="languageSelect" class="px-3 py-1 border border-gray-300 rounded-md text-sm bg-white">
+            <option value="en">English</option>
+            <option value="hi">हिंदी</option>
+            <option value="kn">ಕನ್ನಡ</option>
+          </select>
+          <button id="mobileMenuBtn" class="md:hidden p-2"><span class="text-2xl">☰</span></button>
+        </div>
+      </div>
+      <nav class="hidden md:block mt-4">
+        <ul class="flex flex-wrap space-x-6 text-sm font-medium">
+          <li><a href="index.html" class="hover:text-green-600 transition-colors" data-translate="nav-home">Home</a></li>
+          <li><a href="crop-recommendation.html" class="hover:text-green-600 transition-colors" data-translate="nav-crop">Crop Recommendation</a></li>
+          <li><a href="pest-detection.html" class="hover:text-green-600 transition-colors" data-translate="nav-pest">Pest Detection</a></li>
+          <li><a href="soil-testing.html" class="hover:text-green-600 transition-colors" data-translate="nav-soil">Soil Testing</a></li>
+          <li><a href="dashboard.html" class="hover:text-green-600 transition-colors" data-translate="nav-dashboard">Dashboard</a></li>
+          <li><a href="community.html" class="hover:text-green-600 transition-colors" data-translate="nav-community">Community</a></li>
+          <li><a href="about.html" class="hover:text-green-600 transition-colors" data-translate="nav-about">About</a></li>
+        </ul>
+      </nav>
+      <!-- Mobile Nav -->
+      <nav id="mobileNav" class="hidden md:hidden mt-4 border-t pt-4">
+        <ul class="space-y-2">
+          <li><a href="index.html" class="block py-2 hover:bg-gray-50 rounded px-2">Home</a></li>
+          <li><a href="crop-recommendation.html" class="block py-2 hover:bg-gray-50 rounded px-2">Crop Recommendation</a></li>
+          <li><a href="pest-detection.html" class="block py-2 hover:bg-gray-50 rounded px-2">Pest Detection</a></li>
+          <li><a href="soil-testing.html" class="block py-2 hover:bg-gray-50 rounded px-2">Soil Testing</a></li>
+          <li><a href="dashboard.html" class="block py-2 hover:bg-gray-50 rounded px-2">Dashboard</a></li>
+          <li><a href="community.html" class="block py-2 hover:bg-gray-50 rounded px-2">Community</a></li>
+          <li><a href="about.html" class="block py-2 hover:bg-gray-50 rounded px-2">About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Dashboard Header -->
+    <div class="bg-gradient-to-r from-green-600 to-green-700 text-white py-12">
+      <div class="container mx-auto px-4 text-center">
+        <h1 class="text-4xl font-bold mb-3">Your Farming Dashboard</h1>
+        <p class="text-lg text-green-100 max-w-3xl mx-auto">Track your learning progress, saved calculations, and farming insights in one place</p>
+      </div>
+    </div>
+
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="page-section bg-gray-50 py-12">
+      <div class="container mx-auto px-4">
+        <div class="grid lg:grid-cols-3 gap-8">
+          <div class="bg-white rounded-xl p-6 shadow-lg">
+            <h3 class="text-xl font-semibold mb-4">Recommended Crops Distribution</h3>
+            <div class="h-[300px]"><canvas id="cropDistChart"></canvas></div>
+          </div>
+          <div class="bg-white rounded-xl p-6 shadow-lg">
+            <h3 class="text-xl font-semibold mb-4">Predicted Yield per Crop</h3>
+            <div class="h-[300px]"><canvas id="yieldChart"></canvas></div>
+          </div>
+          <div class="bg-white rounded-xl p-6 shadow-lg">
+            <h3 class="text-xl font-semibold mb-4">Market Price Trends</h3>
+            <div class="h-[300px]"><canvas id="priceChart"></canvas></div>
+          </div>
+        </div>
+        <!-- Stats Cards -->
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
+          <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow border-l-4 border-green-500">
+            <div class="flex items-center">
+              <div class="p-3 rounded-full bg-green-100 text-green-600 mr-4">
+                <i class="fas fa-users text-xl"></i>
+              </div>
+              <div>
+                <div class="text-2xl font-bold text-gray-800">1,247</div>
+                <div class="text-sm text-gray-600">Active Farmers</div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow border-l-4 border-blue-500">
+            <div class="flex items-center">
+              <div class="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
+                <i class="fas fa-chart-line text-xl"></i>
+              </div>
+              <div>
+                <div class="text-2xl font-bold text-gray-800">89%</div>
+                <div class="text-sm text-gray-600">Prediction Accuracy</div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow border-l-4 border-purple-500">
+            <div class="flex items-center">
+              <div class="p-3 rounded-full bg-purple-100 text-purple-600 mr-4">
+                <i class="fas fa-rupee-sign text-xl"></i>
+              </div>
+              <div>
+                <div class="text-2xl font-bold text-gray-800">₹12L+</div>
+                <div class="text-sm text-gray-600">Cost Savings</div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow border-l-4 border-orange-500">
+            <div class="flex items-center">
+              <div class="p-3 rounded-full bg-orange-100 text-orange-600 mr-4">
+                <i class="fas fa-seedling text-xl"></i>
+              </div>
+              <div>
+                <div class="text-2xl font-bold text-gray-800">156+</div>
+                <div class="text-sm text-gray-600">Crop Varieties</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Saved Learning Courses Section -->
+        <div class="mt-16">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-2xl font-bold text-gray-800 flex items-center">
+              <i class="fas fa-graduation-cap text-green-600 mr-3"></i>
+              Your Learning Journey
+            </h3>
+            <a href="learning.html" class="text-green-600 hover:text-green-700 text-sm font-medium flex items-center">
+              View All Courses <i class="fas fa-arrow-right ml-1"></i>
+            </a>
+          </div>
+          
+          <div id="savedCourses" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Saved courses will be dynamically inserted here -->
+            <div id="noCourses" class="col-span-full text-center py-12 px-6 bg-white rounded-xl shadow-sm border-2 border-dashed border-gray-200">
+              <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-50 text-green-500 mb-4">
+                <i class="fas fa-book-open text-2xl"></i>
+              </div>
+              <h4 class="text-lg font-medium text-gray-700 mb-2">No Courses Yet</h4>
+              <p class="text-gray-500 max-w-md mx-auto mb-4">You haven't saved any courses yet. Start your learning journey by exploring our courses.</p>
+              <a href="learning.html" class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                <i class="fas fa-book-reader mr-2"></i> Browse Courses
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Saved Calculations Section -->
+        <!-- Saved Crops Section -->
+        <div class="mt-12">
+          <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+            <i class="fas fa-seedling text-green-600 mr-3"></i>
+            Your Saved Crops
+          </h3>
+          <div id="savedCropsContainer" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            <!-- Saved crops will be loaded here -->
+            <div id="noCropsMessage" class="col-span-full text-center py-8 text-gray-500">
+              <i class="fas fa-seedling text-4xl text-gray-200 mb-3"></i>
+              <p>No crops saved yet. Get recommendations to add crops to your dashboard.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Saved Calculations Section -->
+        <div class="mt-16">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-2xl font-bold text-gray-800 flex items-center">
+              <i class="fas fa-calculator text-blue-600 mr-3"></i>
+              Your Saved Calculations
+            </h3>
+          </div>
+          
+          <div id="savedCalculations" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Saved calculations will be dynamically inserted here -->
+            <div id="noCalculations" class="col-span-full text-center py-12 px-6 bg-white rounded-xl shadow-sm border-2 border-dashed border-gray-200">
+              <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 text-blue-500 mb-4">
+                <i class="fas fa-calculator text-2xl"></i>
+              </div>
+              <h4 class="text-lg font-medium text-gray-700 mb-2">No Calculations Yet</h4>
+              <p class="text-gray-500 max-w-md mx-auto mb-4">Your saved profit/loss calculations will appear here. Start by using the calculator.</p>
+              <a href="profit-loss.html" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                <i class="fas fa-calculator mr-2"></i> Go to Calculator
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg transform translate-y-full opacity-0 transition-all duration-300">
+    <div class="flex items-center space-x-3"><span class="text-xl">✅</span><span id="toastMessage">Success!</span></div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-12">
+    <div class="container mx-auto px-4">
+      <div class="grid md:grid-cols-3 gap-8">
+        <div>
+          <div class="flex items-center space-x-3 mb-4"><div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center"><span class="text-xl">🌱</span></div><span class="text-xl font-bold">AgriSense</span></div>
+          <p class="text-gray-300 mb-4">Empowering farmers with AI-powered agricultural solutions for sustainable and profitable farming.</p>
+          <div class="text-sm text-gray-400">© 2025 AgriSense Team | Built for Smart India Hackathon</div>
+        </div>
+        <div>
+          <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+          <ul class="space-y-2 text-gray-300">
+            <li><a href="home.html" class="hover:text-green-400 transition-colors">Home</a></li>
+            <li><a href="crop-recommendation.html" class="hover:text-green-400 transition-colors">Crop Recommendation</a></li>
+            <li><a href="disease-detection.html" class="hover:text-green-400 transition-colors">Disease Detection</a></li>
+            <li><a href="about.html" class="hover:text-green-400 transition-colors">About</a></li>
+            <li><a href="contact.html" class="hover:text-green-400 transition-colors">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-lg font-semibold mb-4">Features</h4>
+          <ul class="space-y-2 text-gray-300">
+            <li>AI Crop Recommendations</li>
+            <li>Disease Detection</li>
+            <li>Yield Predictions</li>
+            <li>Market Price Analysis</li>
+            <li>Multilingual Support</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/common.js"></script>
+  <script src="dashboard.js"></script>
+  <script src="js/chatbot.js"></script>
+  
+  <script>
+  // Convert hex color to rgba with opacity
+  function hexToRgba(hex, opacity) {
+    // Remove # if present
+    hex = hex.replace('#', '');
+    
+    // Parse r, g, b values
+    let r = parseInt(hex.substring(0, 2), 16);
+    let g = parseInt(hex.substring(2, 4), 16);
+    let b = parseInt(hex.substring(4, 6), 16);
+    
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+  }
+    // Mobile nav toggle & toast
+    document.getElementById('mobileMenuBtn')?.addEventListener('click', () => document.getElementById('mobileNav')?.classList.toggle('hidden'));
+
+    // Load saved data when dashboard loads
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('DOM fully loaded, initializing dashboard...');
+      console.log('LocalStorage contents:', JSON.stringify(localStorage, null, 2));
+      
+      loadSavedCalculations();
+      loadSavedCourses();
+      
+      // Debug: Check if the savedCourses element exists
+      console.log('savedCourses element:', document.getElementById('savedCourses'));
+    });
+
+    // Function to load and display saved calculations
+    function loadSavedCalculations() {
+      const savedCalculations = JSON.parse(localStorage.getItem('profitLossCalculations') || '[]');
+      const container = document.getElementById('savedCalculations');
+      const noCalculationsMsg = document.getElementById('noCalculations');
+      
+      if (!container) return;
+      
+      if (savedCalculations.length === 0) {
+        noCalculationsMsg?.classList.remove('hidden');
+        return;
+      }
+      
+      noCalculationsMsg?.classList.add('hidden');
+      container.innerHTML = '';
+      
+      savedCalculations.forEach((calc, index) => {
+        const isProfit = calc.profitLoss >= 0;
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-xl p-6 shadow-lg border-l-4 ' + (isProfit ? 'border-green-500' : 'border-red-500');
+        card.innerHTML = `
+          <div class="flex justify-between items-start mb-2">
+            <h4 class="text-lg font-semibold">${calc.cropName || 'Untitled Calculation'}</h4>
+            <button onclick="deleteCalculation(${index})" class="text-gray-400 hover:text-red-500">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="grid grid-cols-2 gap-4 mt-4">
+            <div class="text-center p-3 bg-gray-50 rounded-lg">
+              <p class="text-sm text-gray-600">Revenue</p>
+              <p class="font-semibold text-green-600">₹${parseFloat(calc.totalRevenue).toFixed(2)}</p>
+            </div>
+            <div class="text-center p-3 bg-gray-50 rounded-lg">
+              <p class="text-sm text-gray-600">Costs</p>
+              <p class="font-semibold text-red-600">₹${parseFloat(calc.totalCost).toFixed(2)}</p>
+            </div>
+          </div>
+          <div class="mt-4 p-3 rounded-lg text-center ${isProfit ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}">
+            <p class="text-sm">${isProfit ? 'Profit' : 'Loss'}</p>
+            <p class="text-xl font-bold">₹${Math.abs(parseFloat(calc.profitLoss)).toFixed(2)}</p>
+            <p class="text-xs mt-1">${calc.date || ''}</p>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+    
+    // Function to load and display saved courses
+    function loadSavedCourses() {
+      console.log('Loading saved courses...');
+      const savedCoursesData = localStorage.getItem('savedCourses');
+      console.log('Raw savedCourses from localStorage:', savedCoursesData);
+      
+      const savedCourses = JSON.parse(savedCoursesData || '[]');
+      console.log('Parsed saved courses:', savedCourses);
+      
+      const container = document.getElementById('savedCourses');
+      const noCoursesMsg = document.getElementById('noCourses');
+      
+      if (!container) {
+        console.error('Container element not found');
+        return;
+      }
+      
+      if (!savedCourses || savedCourses.length === 0) {
+        console.log('No saved courses found');
+        noCoursesMsg?.classList.remove('hidden');
+        return;
+      }
+      
+      console.log(`Found ${savedCourses.length} saved courses`);
+      
+      noCoursesMsg?.classList.add('hidden');
+      container.innerHTML = '';
+      
+      savedCourses.forEach((course, index) => {
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow';
+        card.innerHTML = `
+          <div class="flex justify-between items-start mb-4">
+            <div class="flex items-center">
+              <div class="w-12 h-12 rounded-full flex items-center justify-center mr-3" style="background-color: ${hexToRgba(course.color || '#10B981', 0.1)}">
+                <i class="fas fa-${course.icon || 'leaf'}" style="color: ${course.color || '#10B981'}"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold text-lg">${course.title}</h4>
+                <p class="text-sm text-gray-500">Saved on ${new Date(course.savedAt).toLocaleDateString()}</p>
+              </div>
+            </div>
+            <button onclick="deleteSavedCourse(${index})" class="text-gray-400 hover:text-red-500">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <p class="text-gray-600 text-sm mb-4 line-clamp-2">${course.description || 'No description available.'}</p>
+          <div class="flex justify-between items-center">
+            <a href="learning.html" class="text-sm font-medium text-green-600 hover:text-green-700">
+              Continue Learning →
+            </a>
+            <div class="h-2 bg-gray-200 rounded-full w-3/4">
+              <div class="h-full bg-green-500 rounded-full" style="width: 0%" id="progress-${index}"></div>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+        
+        // Calculate and display progress
+        setTimeout(() => {
+          const progressElement = document.getElementById(`progress-${index}`);
+          if (progressElement) {
+            const completedModules = JSON.parse(localStorage.getItem('completedModules') || '{}');
+            const courseModules = Object.keys(completedModules).filter(key => 
+              key.startsWith(course.id + '-')
+            );
+            const completedCount = courseModules.filter(key => completedModules[key]).length;
+            const totalModules = 5; // This should match the actual number of modules in the course
+            const progressPercent = Math.round((completedCount / totalModules) * 100);
+            progressElement.style.width = `${progressPercent}%`;
+            progressElement.textContent = `${progressPercent}%`;
+          }
+        }, 100);
+      });
+    }
+    
+    // Function to delete a saved course
+    window.deleteSavedCourse = function(index) {
+      const savedCourses = JSON.parse(localStorage.getItem('savedCourses') || '[]');
+      if (index >= 0 && index < savedCourses.length) {
+        savedCourses.splice(index, 1);
+        localStorage.setItem('savedCourses', JSON.stringify(savedCourses));
+        loadSavedCourses();
+        showToast('Course removed from your dashboard');
+      }
+    };
+    
+    // Function to delete a saved calculation
+    window.deleteCalculation = function(index) {
+      const savedCalculations = JSON.parse(localStorage.getItem('profitLossCalculations') || '[]');
+      savedCalculations.splice(index, 1);
+      localStorage.setItem('profitLossCalculations', JSON.stringify(savedCalculations));
+      loadSavedCalculations();
+      showToast('Calculation deleted');
+    };
+    
+    // Make showToast available globally
+    window.showToast = function showToast(message){
+      const t=document.getElementById('toast'),m=document.getElementById('toastMessage');m.textContent=message;t.classList.remove('translate-y-full','opacity-0');t.classList.add('translate-y-0','opacity-100');setTimeout(()=>{t.classList.add('translate-y-full','opacity-0');t.classList.remove('translate-y-0','opacity-100')},2500)
+    }
+
+    // Chart Functions
+    function initializeCharts() {
+        // Wait a bit for the DOM to be ready
+        setTimeout(() => {
+            createCropDistributionChart();
+            createYieldChart();
+            createPriceChart();
+        }, 100);
+    }
+
+    function createCropDistributionChart() {
+        const ctx = document.getElementById('cropDistChart');
+        if (!ctx) return;
+
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Wheat', 'Rice', 'Maize', 'Others'],
+                datasets: [{
+                    data: [40, 30, 20, 10],
+                    backgroundColor: ['#22c55e', '#16a34a', '#15803d', '#166534']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 12
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function createYieldChart() {
+        const ctx = document.getElementById('yieldChart');
+        if (!ctx) return;
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Rice', 'Wheat', 'Maize', 'Cotton'],
+                datasets: [{
+                    label: 'Yield (quintals/acre)',
+                    data: [28, 35, 42, 18],
+                    backgroundColor: '#3b82f6'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    }
+
+    function createPriceChart() {
+        const ctx = document.getElementById('priceChart');
+        if (!ctx) return;
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                datasets: [
+                    {
+                        label: 'Wheat Price (₹/qtl)',
+                        data: [2200, 2250, 2300, 2280, 2350],
+                        borderColor: '#8b5cf6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        fill: true,
+                        tension: 0.1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: false
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    }
+
+    initializeCharts();
+</script>
+</body>
+</html>

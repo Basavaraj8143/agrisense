@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-translate="home-title">AgriSense - Home</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .pulse-green {
+      animation: pulseGreen 2s infinite
+    }
+
+    @keyframes pulseGreen {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, .7)
+      }
+
+      70% {
+        box-shadow: 0 0 0 10px rgba(34, 197, 94, 0)
+      }
+    }
+
+    .card-hover {
+      transition: all .3s ease
+    }
+
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, .15)
+    }
+
+    .hero-bg {
+      background: linear-gradient(rgba(0, 0, 0, .5), rgba(0, 0, 0, .5)), url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 1200 600\"><rect fill=\"%234ade80\" width=\"1200\" height=\"600\"/><path fill=\"%2322c55e\" d=\"M0 400c200-50 400-100 600-80s400 50 600 20v260H0z\"/><path fill=\"%2316a34a\" d=\"M0 500c300-30 600-60 1200 0v100H0z\"/></svg>');
+      background-size: cover;
+      background-position: center
+    }
+
+    /* Chatbot Typing Indicator */
+    .typing-dot {
+      height: 10px;
+      width: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      margin: 0 2px;
+      animation: typingAnimation 1.4s infinite ease-in-out;
+    }
+
+    .typing-dot:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    .typing-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes typingAnimation {
+
+      0%,
+      60%,
+      100% {
+        transform: translateY(0);
+      }
+
+      30% {
+        transform: translateY(-5px);
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 font-sans">
+  <!-- Offline Banner -->
+  <div class="bg-green-600 text-white text-center py-2 text-sm" data-translate="offline-banner">🌐 Works Partially
+    Offline in Low Connectivity Regions</div>
+  <!-- Header -->
+  <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center"><span
+              class="text-2xl">🌱</span></div>
+          <div>
+            <h1 class="text-xl font-bold text-gray-800" data-translate="site-name">AgriSense</h1>
+            <p class="text-xs text-gray-600" data-translate="site-tagline">AI Crop Recommendation System</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <select id="languageSelect" class="px-3 py-1 border border-gray-300 rounded-md text-sm bg-white">
+            <option value="en">English</option>
+            <option value="hi">हिंदी</option>
+            <option value="kn">ಕನ್ನಡ</option>
+          </select>
+          <button id="mobileMenuBtn" class="md:hidden p-2"><span class="text-2xl">☰</span></button>
+        </div>
+      </div>
+      <nav class="hidden md:block mt-4">
+        <ul class="flex flex-wrap space-x-6 text-sm font-medium">
+          <li><a href="index.html" class="hover:text-green-600 transition-colors" data-translate="nav-home">Home</a>
+          </li>
+          <li><a href="crop-recommendation.html" class="hover:text-green-600 transition-colors"
+              data-translate="nav-crop">Crop Recommendation</a></li>
+          <li><a href="pest-detection.html" class="hover:text-green-600 transition-colors"
+              data-translate="nav-pest">Pest Detection</a></li>
+          <li><a href="soil-testing.html" class="hover:text-green-600 transition-colors" data-translate="nav-soil">Soil
+              Testing</a></li>
+          <li><a href="dashboard.html" class="hover:text-green-600 transition-colors"
+              data-translate="nav-dashboard">Dashboard</a></li>
+          <li><a href="community.html" class="hover:text-green-600 transition-colors"
+              data-translate="nav-community">Community</a></li>
+          <li><a href="about.html" class="hover:text-green-600 transition-colors" data-translate="nav-about">About</a>
+          </li>
+        </ul>
+      </nav>
+      <!-- Mobile Nav -->
+      <nav id="mobileNav" class="hidden md:hidden mt-4 border-t pt-4">
+        <ul class="space-y-2">
+          <li><a href="index.html" class="block py-2 hover:bg-gray-50 rounded px-2">Home</a></li>
+          <li><a href="crop-recommendation.html" class="block py-2 hover:bg-gray-50 rounded px-2">Crop
+              Recommendation</a></li>
+          <li><a href="pest-detection.html" class="block py-2 hover:bg-gray-50 rounded px-2">Pest Detection</a></li>
+          <li><a href="soil-testing.html" class="block py-2 hover:bg-gray-50 rounded px-2">Soil Testing</a></li>
+          <li><a href="dashboard.html" class="block py-2 hover:bg-gray-50 rounded px-2">Dashboard</a></li>
+          <li><a href="community.html" class="block py-2 hover:bg-gray-50 rounded px-2">Community</a></li>
+          <li><a href="about.html" class="block py-2 hover:bg-gray-50 rounded px-2">About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero-bg min-h-[500px] flex items-center justify-center text-white relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-b from-black/30 to-black/50"></div>
+      <div class="text-center px-4 max-w-5xl mx-auto relative z-10">
+
+        <h1 class="text-4xl md:text-6xl font-bold mb-6 animate-fade-in" data-translate="hero-title">Empowering Farmers
+          with AI</h1>
+        <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed" data-translate="hero-subtitle">Discover
+          our AI-powered solutions for better yields and sustainable farming practices.</p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="crop-recommendation.html"
+            class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-all transform hover:scale-105 flex items-center"
+            data-translate="crop-rec-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+            </svg>
+            <span>Crop Recommendation</span>
+          </a>
+          <a href="soil-testing.html"
+            class="bg-white/10 hover:bg-white/20 text-white font-semibold py-3 px-6 rounded-lg backdrop-blur-sm transition-all hover:scale-105 flex items-center"
+            data-translate="soil-kit-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+            </svg>
+            <span>Soil Testing Kit</span>
+          </a>
+        </div>
+      </div>
+      <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+        <a href="#services"
+          class="animate-bounce inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm text-white">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd"
+              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+              clip-rule="evenodd" />
+          </svg>
+        </a>
+      </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="bg-white py-12 border-b">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <div>
+            <div class="text-4xl font-bold text-green-600 mb-2">10K+</div>
+            <div class="text-gray-600" data-translate="farmers-helped">Farmers Helped</div>
+          </div>
+          <div>
+            <div class="text-4xl font-bold text-green-600 mb-2">50+</div>
+            <div class="text-gray-600" data-translate="crop-varieties">Crop Varieties</div>
+          </div>
+          <div>
+            <div class="text-4xl font-bold text-green-600 mb-2">95%</div>
+            <div class="text-gray-600" data-translate="accuracy-rate">Accuracy Rate</div>
+          </div>
+          <div>
+            <div class="text-4xl font-bold text-green-600 mb-2">24/7</div>
+            <div class="text-gray-600" data-translate="ai-support">AI Support</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 bg-gray-50 scroll-mt-20">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+          <span class="inline-block bg-green-100 text-green-800 text-sm font-semibold px-4 py-1 rounded-full mb-4">Our
+            Services</span>
+          <h2 class="text-4xl font-bold text-gray-900 mb-4" data-translate="services-title">AI-Powered Farming Solutions
+          </h2>
+          <p class="text-gray-600 text-lg max-w-3xl mx-auto" data-translate="services-subtitle">Empowering farmers with
+            cutting-edge technology for better yields and sustainable farming practices</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <!-- Row 1 -->
+          <div class="bg-white rounded-2xl p-8 shadow-lg card-hover border-2 border-transparent hover:border-green-500">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-6">
+              <span class="text-4xl">🌱</span>
+            </div>
+            <h4 class="text-2xl font-bold mb-4 text-gray-800" data-translate="feature-crop-rec">Crop Recommendation</h4>
+            <p class="text-gray-600 mb-6 leading-relaxed" data-translate="feature-crop-rec-desc">Get AI-powered crop
+              suggestions based on your soil parameters, weather conditions, and regional data for optimal yields.</p>
+            <a href="crop-recommendation.html"
+              class="inline-flex items-center text-green-600 font-semibold hover:text-green-700 transition-colors"><span
+                data-translate="explore-feature">Explore Feature</span> <span class="ml-2">→</span></a>
+          </div>
+          <div class="bg-white rounded-2xl p-8 shadow-lg card-hover border-2 border-transparent hover:border-green-500">
+            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6">
+              <span class="text-4xl">🐛</span>
+            </div>
+            <h4 class="text-2xl font-bold mb-4 text-gray-800" data-translate="feature-pest-detection">Pest Detection
+            </h4>
+            <p class="text-gray-600 mb-6 leading-relaxed" data-translate="feature-pest-desc">Identify common pests
+              affecting your crops with image recognition and get organic and chemical treatment solutions.</p>
+            <a href="pest-detection.html"
+              class="inline-flex items-center text-green-600 font-semibold hover:text-green-700 transition-colors"><span
+                data-translate="explore-feature">Explore Feature</span> <span class="ml-2">→</span></a>
+          </div>
+
+
+          <!-- Row 2 -->
+          <div class="bg-white rounded-2xl p-8 shadow-lg card-hover border-2 border-transparent hover:border-green-500">
+            <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-6">
+              <span class="text-4xl">📊</span>
+            </div>
+            <h4 class="text-2xl font-bold mb-4 text-gray-800" data-translate="feature-profit-loss">Profit/Loss</h4>
+            <p class="text-gray-600 mb-6 leading-relaxed" data-translate="feature-profit-loss-desc">Track your farming
+              expenses and income to calculate profit/loss and optimize your farming business.</p>
+            <a href="profit-loss.html"
+              class="inline-flex items-center text-green-600 font-semibold hover:text-green-700 transition-colors"><span
+                data-translate="calculate-now">Calculate Now</span> <span class="ml-2">→</span></a>
+          </div>
+          <div class="bg-white rounded-2xl p-8 shadow-lg card-hover border-2 border-transparent hover:border-green-500">
+            <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mb-6">
+              <span class="text-4xl">🤖</span>
+            </div>
+            <h4 class="text-2xl font-bold mb-4 text-gray-800" data-translate="feature-ai-assistant">AI Assistant</h4>
+            <p class="text-gray-600 mb-6 leading-relaxed" data-translate="feature-ai-assistant-desc">Get instant answers
+              to all your farming questions with our 24/7 AI-powered agricultural assistant.</p>
+            <a href="ai-assistant.html"
+              class="inline-flex items-center text-green-600 font-semibold hover:text-green-700 transition-colors"><span
+                data-translate="chat-now">Chat Now</span> <span class="ml-2">→</span></a>
+          </div>
+          <div class="bg-white rounded-2xl p-8 shadow-lg card-hover border-2 border-transparent hover:border-green-500">
+            <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mb-6">
+              <span class="text-4xl">👥</span>
+            </div>
+            <h4 class="text-2xl font-bold mb-4 text-gray-800" data-translate="feature-community">Community</h4>
+            <p class="text-gray-600 mb-6 leading-relaxed" data-translate="feature-community-desc">Connect with fellow
+              farmers, share experiences, and get expert advice in our farming community.</p>
+            <a href="community.html"
+              class="inline-flex items-center text-green-600 font-semibold hover:text-green-700 transition-colors"><span
+                data-translate="join-community">Join Community</span> <span class="ml-2">→</span></a>
+          </div>
+
+          <!-- Row 3 -->
+          <div class="bg-white rounded-2xl p-8 shadow-lg card-hover border-2 border-transparent hover:border-green-500">
+            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6">
+              <span class="text-4xl">📅</span>
+            </div>
+            <h4 class="text-2xl font-bold mb-4 text-gray-800" data-translate="feature-crop-calendar">Crop Calendar</h4>
+            <p class="text-gray-600 mb-6 leading-relaxed" data-translate="feature-crop-calendar-desc">Plan your farming
+              activities with our crop calendar featuring optimal sowing and harvesting times.</p>
+            <a href="crop-calendar.html"
+              class="inline-flex items-center text-green-600 font-semibold hover:text-green-700 transition-colors"><span
+                data-translate="view-calendar">View Calendar</span> <span class="ml-2">→</span></a>
+          </div>
+          <div class="bg-white rounded-2xl p-8 shadow-lg card-hover border-2 border-transparent hover:border-green-500">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-6">
+              <span class="text-4xl">📚</span>
+            </div>
+            <h4 class="text-2xl font-bold mb-4 text-gray-800" data-translate="feature-learning-hub">Learning Hub</h4>
+            <p class="text-gray-600 mb-6 leading-relaxed" data-translate="feature-learning-hub-desc">Access farming
+              guides, tutorials, and best practices to enhance your agricultural knowledge.</p>
+            <a href="learning.html"
+              class="inline-flex items-center text-green-600 font-semibold hover:text-green-700 transition-colors"><span
+                data-translate="start-learning">Start Learning</span> <span class="ml-2">→</span></a>
+          </div>
+          <div class="bg-white rounded-2xl p-8 shadow-lg card-hover border-2 border-transparent hover:border-green-500">
+            <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mb-6">
+              <span class="text-4xl">🧪</span>
+            </div>
+            <h4 class="text-2xl font-bold mb-4 text-gray-800" data-translate="feature-soil-testing">Soil Testing</h4>
+            <p class="text-gray-600 mb-6 leading-relaxed" data-translate="feature-soil-testing-desc">Get detailed soil
+              analysis and recommendations to improve soil health and crop productivity.</p>
+            <a href="soil-testing.html"
+              class="inline-flex items-center text-green-600 font-semibold hover:text-green-700 transition-colors"><span
+                data-translate="test-your-soil">Test Your Soil</span> <span class="ml-2">→</span></a>
+          </div>
+
+          <!-- Row 4 -->
+          <div class="bg-white rounded-2xl p-8 shadow-lg card-hover border-2 border-transparent hover:border-green-500">
+            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6">
+              <span class="text-4xl">🏛️</span>
+            </div>
+            <h4 class="text-2xl font-bold mb-4 text-gray-800" data-translate="feature-govt-schemes">Govt Schemes</h4>
+            <p class="text-gray-600 mb-6 leading-relaxed" data-translate="feature-govt-schemes-desc">Discover and apply
+              for government agricultural schemes and subsidies available for farmers.</p>
+            <a href="govt-schemes.html"
+              class="inline-flex items-center text-green-600 font-semibold hover:text-green-700 transition-colors"><span
+                data-translate="view-schemes">View Schemes</span> <span class="ml-2">→</span></a>
+          </div>
+          <div class="bg-white rounded-2xl p-8 shadow-lg card-hover border-2 border-transparent hover:border-green-500">
+            <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-6">
+              <span class="text-4xl">📞</span>
+            </div>
+            <h4 class="text-2xl font-bold mb-4 text-gray-800" data-translate="feature-helplines">Helplines</h4>
+            <p class="text-gray-600 mb-6 leading-relaxed" data-translate="feature-helplines-desc">Access important
+              government and agricultural helpline numbers for immediate assistance and support.</p>
+            <a href="helplines.html"
+              class="inline-flex items-center text-green-600 font-semibold hover:text-green-700 transition-colors"><span
+                data-translate="view-helplines">View Helplines</span> <span class="ml-2">→</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="py-20 bg-white">
+      <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+          <h3 class="text-4xl font-bold text-gray-800 mb-4" data-translate="how-it-works-title">How AgriSense Works</h3>
+          <p class="text-gray-600 text-lg max-w-3xl mx-auto" data-translate="how-it-works-subtitle">Simple steps to
+            transform your farming with AI technology</p>
+        </div>
+        <div class="grid md:grid-cols-4 gap-8 max-w-6xl mx-auto">
+          <div class="text-center">
+            <div
+              class="w-20 h-20 bg-green-500 text-white rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-6 shadow-lg">
+              1</div>
+            <h4 class="text-xl font-bold mb-3" data-translate="step-1-title">1. Input Your Data</h4>
+            <p class="text-gray-600" data-translate="step-1-desc">Enter details about your farm location, soil type, and
+              other relevant parameters.</p>
+          </div>
+          <div class="text-center">
+            <div
+              class="w-20 h-20 bg-green-500 text-white rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-6 shadow-lg">
+              2</div>
+            <h4 class="text-xl font-bold mb-3" data-translate="step-2-title">2. Get AI Analysis</h4>
+            <p class="text-gray-600" data-translate="step-2-desc">Our advanced algorithms analyze your data to provide
+              personalized recommendations.</p>
+          </div>
+          <div class="text-center">
+            <div
+              class="w-20 h-20 bg-green-500 text-white rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-6 shadow-lg">
+              3</div>
+            <h4 class="text-xl font-bold mb-3" data-translate="step-3-title">3. Get Results</h4>
+            <p class="text-gray-600" data-translate="step-3-desc">Receive personalized recommendations instantly.</p>
+          </div>
+          <div class="text-center">
+            <div
+              class="w-20 h-20 bg-green-500 text-white rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-6 shadow-lg">
+              4</div>
+            <h4 class="text-xl font-bold mb-3" data-translate="step-4-title">4. Grow Better</h4>
+            <p class="text-gray-600" data-translate="step-4-desc">Implement insights and watch your yields improve.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="bg-gradient-to-r from-green-600 to-green-500 py-20 text-white">
+      <div class="container mx-auto px-4 text-center">
+        <h3 class="text-4xl font-bold mb-6" data-translate="cta-title">Ready to Transform Your Farming?</h3>
+        <p class="text-gray-600 text-lg max-w-3xl mx-auto mb-8" data-translate="cta-subtitle">Join thousands of farmers
+          who are already benefiting from AI-powered agricultural insights.</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="crop-recommendation.html"
+            class="bg-white text-green-600 hover:bg-gray-100 px-8 py-4 rounded-lg font-bold text-lg shadow-xl transition-all transform hover:scale-105"
+            data-translate="get-started-button">Start Now - It's Free! 🚀</a>
+          <a href="about.html"
+            class="bg-green-700 hover:bg-green-800 text-white px-8 py-4 rounded-lg font-bold text-lg shadow-xl transition-all transform hover:scale-105 border-2 border-white"
+            data-translate="learn-more-button">Learn More</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Contact Section -->
+  <section id="contact" class="page-section bg-gray-50 py-16">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold text-center mb-12" data-translate="contact-title">Contact Us</h2>
+        <div class="grid md:grid-cols-2 gap-8">
+          <div class="bg-white rounded-xl p-6 shadow-lg">
+            <form id="contactForm">
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm font-medium mb-2">Your Name</label>
+                  <input type="text" id="contactName"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    required />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium mb-2">Email Address</label>
+                  <input type="email" id="contactEmail"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    required />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium mb-2">Message</label>
+                  <textarea id="contactMessage" rows="4"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    required></textarea>
+                </div>
+                <button type="submit"
+                  class="w-full bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-lg font-semibold transition-colors">Send
+                  Message</button>
+              </div>
+            </form>
+          </div>
+          <div class="bg-white rounded-xl p-6 shadow-lg">
+            <h3 class="text-xl font-semibold mb-6">Get in Touch</h3>
+            <div class="space-y-6">
+              <div class="flex items-center space-x-4">
+                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center"><span
+                    class="text-2xl">📧</span></div>
+                <div>
+                  <div class="font-semibold">Email</div>
+                  <div class="text-gray-600">contact@agrisense.in</div>
+                </div>
+              </div>
+              <div class="flex items-center space-x-4">
+                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center"><span
+                    class="text-2xl">📱</span></div>
+                <div>
+                  <div class="font-semibold">Phone</div>
+                  <div class="text-gray-600">+91 9876543210</div>
+                </div>
+              </div>
+              <div class="flex items-center space-x-4">
+                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center"><span
+                    class="text-2xl">🌐</span></div>
+                <div>
+                  <div class="font-semibold">Website</div>
+                  <div class="text-gray-600">www.agrisense.in</div>
+                </div>
+              </div>
+              <div class="pt-6 border-t">
+                <h4 class="font-semibold mb-4">Follow Us</h4>
+                <div class="flex space-x-4">
+                  <a href="#"
+                    class="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600 transition-colors"><span
+                      class="text-sm font-bold">f</span></a>
+                  <a href="#"
+                    class="w-10 h-10 bg-blue-400 text-white rounded-full flex items-center justify-center hover:bg-blue-500 transition-colors"><span
+                      class="text-sm font-bold">t</span></a>
+                  <a href="#"
+                    class="w-10 h-10 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"><span
+                      class="text-sm font-bold">yt</span></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-12">
+    <div class="container mx-auto px-4">
+      <div class="grid md:grid-cols-3 gap-8">
+        <div>
+          <div class="flex items-center space-x-3 mb-4">
+            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center"><span
+                class="text-xl">🌱</span></div><span class="text-xl font-bold">AgriSense</span>
+          </div>
+          <p class="text-gray-600 mb-4" data-translate="testimonial-1">"AgriSense helped me increase my crop yield by
+            30% with their smart recommendations. The disease detection feature saved my entire tomato crop!"</p>
+          <div class="text-sm text-gray-400">© 2025 AgriSense Team | Built with Love</div>
+        </div>
+        <div>
+          <h4 class="text-white font-bold mb-4" data-translate="quick-links">Quick Links</h4>
+          <ul class="space-y-2 text-gray-300">
+            <li><a href="home.html" class="hover:text-green-400 transition-colors">Home</a></li>
+            <li><a href="crop-recommendation.html" class="hover:text-green-400 transition-colors">Crop
+                Recommendation</a></li>
+            <li><a href="disease-detection.html" class="hover:text-green-400 transition-colors">Disease Detection</a>
+            </li>
+            <li><a href="about.html" class="hover:text-green-400 transition-colors">About</a></li>
+            <li><a href="contact.html" class="hover:text-green-400 transition-colors">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-bold mb-4" data-translate="contact-us">Contact Us</h4>
+          <ul class="space-y-2 text-gray-300">
+            <li>AI Crop Recommendations</li>
+            <li>Disease Detection</li>
+            <li>Yield Predictions</li>
+            <li>Market Price Analysis</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/common.js"></script>
+  <script src="js/config.js"></script>
+  <script type="module" src="js/chatbot.js"></script>
+  <script>
+    // Mobile menu toggle
+    document.getElementById('mobileMenuBtn')?.addEventListener('click', () => document.getElementById('mobileNav')?.classList.toggle('hidden'));
+    // CTA navigates to crop recommendation page
+    document.getElementById('ctaBtn')?.addEventListener('click', () => { window.location.href = 'crop-recommendation.html'; });
+  </script>
+</body>
+
+</html>
