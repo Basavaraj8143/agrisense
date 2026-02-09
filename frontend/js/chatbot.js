@@ -189,7 +189,7 @@ let currentLanguage = 'en';
         const formData = new FormData();
         formData.append('file', audioBlob, 'recording.wav');
 
-        const API_URL = (window.CONFIG?.API_BASE_URL || 'http://127.0.0.1:5000') + '/api/transcribe';
+        const API_URL = (window.CONFIG?.API_BASE_URL !== undefined ? window.CONFIG.API_BASE_URL : 'http://127.0.0.1:5000') + '/api/transcribe';
 
         const response = await fetch(API_URL, {
           method: "POST",

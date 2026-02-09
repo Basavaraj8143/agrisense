@@ -2,7 +2,7 @@
 
 export async function getOpenRouterResponse(message, history) {
   // Use the backend proxy instead of direct API call
-  const API_URL = (window.CONFIG?.API_BASE_URL || 'http://127.0.0.1:5000') + '/api/chat';
+  const API_URL = (window.CONFIG?.API_BASE_URL !== undefined ? window.CONFIG.API_BASE_URL : 'http://127.0.0.1:5000') + '/api/chat';
 
   const payload = {
     model: "meta-llama/llama-3-8b-instruct:free", // Updated to a more stable free model
