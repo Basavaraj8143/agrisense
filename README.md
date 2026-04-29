@@ -4,6 +4,15 @@
 
 ![AgriSense Hero](https://images.unsplash.com/photo-1625246333195-5512a67a9981?auto=format&fit=crop&q=80&w=2000)
 
+## Rebuild Roadmap (Active)
+The repository is currently entering a staged rebuild to support backend-focused production architecture:
+- Main API service: Node.js + Express (`backend-node/`)
+- Frontend application: React (`frontend/`, migration in progress)
+- ML inference service: Python (`ml-service/`)
+- Planning and contracts: `coreplan.md` and `shared-docs/`
+
+Legacy implementation remains available in existing `backend/` and `frontend/` assets during migration.
+
 ## 🌟 Key Features
 
 AgriSense offers a wide array of tools tailored for the modern farmer:
