@@ -5,6 +5,13 @@
 - Created DB schema and indexing document: `shared-docs/db-schema.md`
 - Created response/error standard: `shared-docs/response-standard.md`
 - Finalized feature-wise storage decisions for auth, crop, pest, plans, and optional chat/logs
+- Added profile management contract:
+  - `GET /api/profile/me`
+  - `PATCH /api/profile/me`
+  - `PATCH /api/profile/password`
+- Added Google Sign-In contract:
+  - `POST /api/auth/google`
+- Added account-linking safety rules (`AUTH_ACCOUNT_LINK_REQUIRED`)
 
 ## Ready for Day 3
 - Scaffold Node project in `backend-node/`
@@ -23,4 +30,6 @@
 - Validation library:
   - Option A: Joi
   - Option B: Zod
-
+- Token strategy:
+  - Option A: access token only (faster MVP)
+  - Option B: access + refresh token (better production)

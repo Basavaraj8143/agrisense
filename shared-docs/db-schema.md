@@ -13,15 +13,29 @@ Fields:
 - `_id` (ObjectId)
 - `name` (string, required)
 - `email` (string, required, unique, lowercase)
-- `passwordHash` (string, required)
+- `passwordHash` (string, nullable for Google-only users)
+- `authProvider` (string, enum: `local|google|hybrid`, default `local`)
+- `googleId` (string, nullable)
+- `avatarUrl` (string, nullable)
+- `emailVerified` (boolean, default `false`)
 - `role` (string, enum: `user|admin`, default `user`)
 - `preferredLanguage` (string, enum: `en|hi|kn`, default `en`)
+- `phone` (string, nullable)
+- `location` (string, nullable)
+- `farmSizeAcres` (number, nullable)
+- `defaultSoilType` (string, nullable)
 - `createdAt` (date)
 - `updatedAt` (date)
 
 Indexes:
 - unique: `email`
+- sparse unique: `googleId`
 - standard: `createdAt` (optional)
+
+Notes:
+- `authProvider=local`: `passwordHash` required.
+- `authProvider=google`: `googleId` required.
+- `authProvider=hybrid`: both local + Google linked to same user.
 
 ## 2) `crop_queries`
 Purpose: store recommendation requests and output summary.
@@ -143,8 +157,12 @@ Indexes:
 - Raw large binary images in MongoDB
 - Full third-party response blobs unless needed
 
+## Account Linking Rules
+- If a local account exists and Google login comes with same email, do not auto-merge.
+- Require explicit account linking verification flow (future endpoint).
+- Track provider state via `authProvider` and presence of `googleId`.
+
 ## Data Retention Guidance
 - `api_logs`: 7-14 days
 - `chat_messages`: cap by count (example 50 latest per session) or archive
 - query collections: retain for user history and analytics
-

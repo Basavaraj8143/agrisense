@@ -103,6 +103,137 @@ Success `200`
 }
 ```
 
+### POST `/api/auth/google`
+Purpose: sign in/up using Google ID token from frontend.
+
+Request
+```json
+{
+  "idToken": "google_id_token_from_client"
+}
+```
+
+Success `200`
+```json
+{
+  "success": true,
+  "message": "Google authentication successful",
+  "data": {
+    "user": {
+      "id": "user_id",
+      "name": "Basava",
+      "email": "basava@example.com",
+      "avatarUrl": "https://...",
+      "authProvider": "google"
+    },
+    "token": "jwt_token"
+  }
+}
+```
+
+Conflict `409` (email already exists as local account, no implicit link)
+```json
+{
+  "success": false,
+  "message": "Account exists with email/password. Link required.",
+  "error": {
+    "code": "AUTH_ACCOUNT_LINK_REQUIRED"
+  }
+}
+```
+
+## Profile
+
+### GET `/api/profile/me`
+Purpose: fetch complete user profile for settings/dashboard.
+
+Headers:
+- `Authorization: Bearer <jwt>`
+
+Success `200`
+```json
+{
+  "success": true,
+  "message": "Profile fetched",
+  "data": {
+    "id": "user_id",
+    "name": "Basava",
+    "email": "basava@example.com",
+    "avatarUrl": "https://...",
+    "preferredLanguage": "en",
+    "phone": "+91xxxxxxxxxx",
+    "location": "Bagalkot",
+    "farmSizeAcres": 4.5,
+    "defaultSoilType": "black"
+  }
+}
+```
+
+### PATCH `/api/profile/me`
+Purpose: update editable profile fields.
+
+Headers:
+- `Authorization: Bearer <jwt>`
+
+Request
+```json
+{
+  "name": "Basava R",
+  "preferredLanguage": "kn",
+  "phone": "+91xxxxxxxxxx",
+  "location": "Jamkhandi",
+  "farmSizeAcres": 5.0,
+  "defaultSoilType": "alluvial"
+}
+```
+
+Success `200`
+```json
+{
+  "success": true,
+  "message": "Profile updated",
+  "data": {
+    "id": "user_id",
+    "name": "Basava R",
+    "preferredLanguage": "kn"
+  }
+}
+```
+
+### PATCH `/api/profile/password`
+Purpose: change password for local users.
+
+Headers:
+- `Authorization: Bearer <jwt>`
+
+Request
+```json
+{
+  "currentPassword": "OldStrongPass@123",
+  "newPassword": "NewStrongPass@123"
+}
+```
+
+Success `200`
+```json
+{
+  "success": true,
+  "message": "Password updated successfully",
+  "data": {}
+}
+```
+
+Forbidden `403` for Google-only account:
+```json
+{
+  "success": false,
+  "message": "Password change is not available for Google-only accounts",
+  "error": {
+    "code": "AUTH_PASSWORD_NOT_APPLICABLE"
+  }
+}
+```
+
 ## Crop Recommendation
 
 ### POST `/api/crop/recommend`
@@ -190,3 +321,9 @@ Success `200`
 - `PATCH /api/plans/:id`
 - `DELETE /api/plans/:id`
 
+## Auth/Account Security Rules
+- Never trust Google profile data without verifying `idToken` server-side.
+- Verify token audience against your Google client ID.
+- Do not auto-link local and Google accounts with same email silently.
+- Return `409 AUTH_ACCOUNT_LINK_REQUIRED` and add explicit linking flow later.
+- Do not return `passwordHash` in any response.

@@ -68,6 +68,8 @@ Rules:
 - `AUTH_REQUIRED`
 - `AUTH_INVALID_TOKEN`
 - `AUTH_FORBIDDEN`
+- `AUTH_ACCOUNT_LINK_REQUIRED`
+- `AUTH_PASSWORD_NOT_APPLICABLE`
 - `RESOURCE_NOT_FOUND`
 - `CONFLICT_DUPLICATE`
 - `RATE_LIMITED`
@@ -84,4 +86,3 @@ Rules:
 - Include `requestId` in API response and server logs.
 - Log shape:
   - `requestId`, `userId`, `route`, `statusCode`, `durationMs`
-
