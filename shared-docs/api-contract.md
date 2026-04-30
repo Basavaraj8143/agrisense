@@ -236,6 +236,69 @@ Forbidden `403` for Google-only account:
 
 ## Crop Recommendation
 
+### POST `/api/location/resolve`
+Purpose: resolve location from either uploaded GPS-tagged image flow or manual coordinates.
+
+Headers:
+- `Authorization: Bearer <jwt>`
+
+Request (image/ocr/gps resolved on client, then posted)
+```json
+{
+  "mode": "image_gps",
+  "lat": 16.154062,
+  "lng": 75.658530,
+  "district": "Bagalkot",
+  "taluk": "Bagalakote taluk"
+}
+```
+
+Request (manual location mode)
+```json
+{
+  "mode": "manual_location",
+  "district": "Bagalkot",
+  "taluk": "Jamkhandi"
+}
+```
+
+Success `200`
+```json
+{
+  "success": true,
+  "message": "Location resolved",
+  "data": {
+    "mode": "image_gps",
+    "lat": 16.154062,
+    "lng": 75.65853,
+    "district": "Bagalkot",
+    "taluk": "Bagalakote taluk"
+  }
+}
+```
+
+### GET `/api/soil-profile?district={district}&taluk={taluk}`
+Purpose: auto-fill regional NPK and pH defaults.
+
+Headers:
+- `Authorization: Bearer <jwt>`
+
+Success `200`
+```json
+{
+  "success": true,
+  "message": "Soil profile fetched",
+  "data": {
+    "N": 130,
+    "P": 45,
+    "K": 170,
+    "ph": 7,
+    "source": "district_average",
+    "confidence": "medium"
+  }
+}
+```
+
 ### POST `/api/crop/recommend`
 Purpose: validate user inputs, call ML service, store query, return recommendation.
 
@@ -245,14 +308,23 @@ Headers:
 Request
 ```json
 {
-  "district": "Bagalkot",
-  "taluk": "Jamkhandi",
+  "location": {
+    "mode": "image_gps",
+    "lat": 16.154062,
+    "lng": 75.658530,
+    "district": "Bagalkot",
+    "taluk": "Bagalakote taluk"
+  },
   "soilType": "black",
   "season": "kharif",
   "n": 120,
   "p": 45,
   "k": 160,
-  "ph": 6.8
+  "ph": 6.8,
+  "autofill": {
+    "used": true,
+    "source": "district_average"
+  }
 }
 ```
 
@@ -277,7 +349,8 @@ Success `200`
     ],
     "meta": {
       "source": "ml-service",
-      "latencyMs": 421
+      "latencyMs": 421,
+      "autofillUsed": true
     }
   }
 }

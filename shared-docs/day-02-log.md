@@ -12,6 +12,9 @@
 - Added Google Sign-In contract:
   - `POST /api/auth/google`
 - Added account-linking safety rules (`AUTH_ACCOUNT_LINK_REQUIRED`)
+- Added current production crop flow contract:
+  - location mode support (`image_gps`, `manual_location`)
+  - soil autofill endpoint and source/confidence tracking
 
 ## Ready for Day 3
 - Scaffold Node project in `backend-node/`

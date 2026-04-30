@@ -44,14 +44,21 @@ Fields:
 - `_id`
 - `userId` (ObjectId, ref `users`, required)
 - `input` (object):
-  - `district` (string)
-  - `taluk` (string)
+  - `location` (object):
+    - `mode` (string enum: `image_gps|manual_location`)
+    - `lat` (number, nullable)
+    - `lng` (number, nullable)
+    - `district` (string)
+    - `taluk` (string)
   - `soilType` (string)
   - `season` (string)
   - `n` (number)
   - `p` (number)
   - `k` (number)
   - `ph` (number)
+  - `autofill` (object):
+    - `used` (boolean)
+    - `source` (string enum: `taluk_average|district_average|default_fallback|manual`)
 - `result` (object):
   - `primaryCrop` (object)
   - `alternatives` (array)
@@ -64,7 +71,8 @@ Fields:
 
 Indexes:
 - compound: `userId + createdAt(desc)`
-- optional: `input.district + input.season`
+- optional: `input.location.district + input.season`
+- optional geo/analytics: `input.location.lat + input.location.lng`
 
 ## 3) `pest_queries`
 Purpose: store pest image analysis summary.
