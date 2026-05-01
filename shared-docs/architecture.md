@@ -5,6 +5,12 @@
 - backend-node (Express main API)
 - ml-service (Python inference)
 
+## Locked Implementation Decisions (as of Day 3)
+- Database: MongoDB (Atlas-ready)
+- Node ORM/ODM: Mongoose
+- Backend framework: Express
+- Auth approach: JWT (Day 4 implementation)
+
 ## Communication
 - Frontend -> Node API over HTTPS JSON
 - Node API -> ML service over internal HTTP JSON

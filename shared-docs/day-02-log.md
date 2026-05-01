@@ -5,6 +5,7 @@
 - Created DB schema and indexing document: `shared-docs/db-schema.md`
 - Created response/error standard: `shared-docs/response-standard.md`
 - Finalized feature-wise storage decisions for auth, crop, pest, plans, and optional chat/logs
+
 - Added profile management contract:
   - `GET /api/profile/me`
   - `PATCH /api/profile/me`
@@ -26,13 +27,7 @@
   - centralized error handler
 - Implement `/api/health`
 
-## Open Decisions (to lock before coding auth)
-- DB driver style:
-  - Option A: Mongoose
-  - Option B: Prisma + MongoDB
-- Validation library:
-  - Option A: Joi
-  - Option B: Zod
-- Token strategy:
-  - Option A: access token only (faster MVP)
-  - Option B: access + refresh token (better production)
+## Decision Status (Updated)
+- DB decision locked: `MongoDB + Mongoose`
+- Validation library: pending final lock (`Joi` vs `Zod`)
+- Token strategy: pending final lock (access-only vs access+refresh)
