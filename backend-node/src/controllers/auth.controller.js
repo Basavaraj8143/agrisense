@@ -1,7 +1,6 @@
 const bcrypt = require("bcryptjs");
-const mongoose = require("mongoose");
-
 const User = require("../models/user.model");
+const { ensureDbConnected } = require("../utils/ensure-db-connected");
 const { HttpError } = require("../utils/http-error");
 const { createAccessToken } = require("../utils/token");
 
@@ -15,12 +14,6 @@ function toUserView(user) {
     avatarUrl: user.avatarUrl,
     role: user.role,
   };
-}
-
-function ensureDbConnected() {
-  if (mongoose.connection.readyState !== 1) {
-    throw new HttpError(503, "Database unavailable", "SERVICE_UNAVAILABLE");
-  }
 }
 
 async function register(req, res, next) {
