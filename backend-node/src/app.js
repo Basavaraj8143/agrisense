@@ -7,6 +7,7 @@ const rateLimit = require("express-rate-limit");
 const healthRouter = require("./routes/health.routes");
 const authRouter = require("./routes/auth.routes");
 const cropRouter = require("./routes/crop.routes");
+const pestRouter = require("./routes/pest.routes");
 const { notFoundHandler, errorHandler } = require("./middlewares/error.middleware");
 
 const app = express();
@@ -36,6 +37,7 @@ app.use(express.json({ limit: "1mb" }));
 app.use("/api/health", healthRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/crop", cropRouter);
+app.use("/api/pest", pestRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

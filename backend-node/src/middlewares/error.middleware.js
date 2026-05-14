@@ -1,3 +1,5 @@
+const multer = require("multer");
+
 function notFoundHandler(req, res, next) {
   return res.status(404).json({
     success: false,
@@ -13,6 +15,27 @@ function notFoundHandler(req, res, next) {
 }
 
 function errorHandler(err, req, res, next) {
+  if (err instanceof multer.MulterError) {
+    const isFileSizeLimit = err.code === "LIMIT_FILE_SIZE";
+
+    return res.status(isFileSizeLimit ? 413 : 400).json({
+      success: false,
+      message: isFileSizeLimit ? "Uploaded image exceeds the allowed size" : "Upload failed",
+      error: {
+        code: "VALIDATION_ERROR",
+        details: [
+          {
+            field: "image",
+            issue: isFileSizeLimit ? "Upload a file smaller than the configured limit" : err.message,
+          },
+        ],
+      },
+      meta: {
+        timestamp: new Date().toISOString(),
+      },
+    });
+  }
+
   const statusCode = err.statusCode || 500;
   const message = err.message || "Internal server error";
 

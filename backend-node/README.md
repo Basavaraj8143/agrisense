@@ -17,6 +17,15 @@ Node/Express main backend service for AgriSense rebuild.
   - `GET /api/auth/me` (protected)
 - Payload validation using `zod`
 
+## Day 6 pest detection
+- Protected pest detection endpoint: `POST /api/pest/detect`
+- Multipart image upload handling with in-memory validation
+- Configurable pest provider abstraction:
+  - `mock`
+  - `kindwise`
+  - `ml-service`
+- Pest query persistence with provider metadata and image hash logging
+
 ## Run locally
 ```bash
 npm install
