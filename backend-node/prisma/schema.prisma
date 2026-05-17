@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AuthProvider {
+  local
+  google
+  hybrid
+}
+
+enum UserRole {
+  user
+  admin
+}
+
+enum PreferredLanguage {
+  en
+  hi
+  kn
+}
+
+model User {
+  id                String            @id @default(uuid())
+  name              String
+  email             String            @unique
+  passwordHash      String?
+  authProvider      AuthProvider      @default(local)
+  googleId          String?           @unique
+  avatarUrl         String?
+  emailVerified     Boolean           @default(false)
+  role              UserRole          @default(user)
+  preferredLanguage PreferredLanguage @default(en)
+  phone             String?
+  location          String?
+  farmSizeAcres     Float?
+  defaultSoilType   String?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  cropQueries       CropQuery[]
+  pestQueries       PestQuery[]
+
+  @@map("users")
+}
+
+model CropQuery {
+  id        String   @id @default(uuid())
+  userId    String
+  input     Json
+  result    Json
+  meta      Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("crop_queries")
+}
+
+model PestQuery {
+  id        String   @id @default(uuid())
+  userId    String
+  imageUrl  String?
+  imageHash String?
+  result    Json
+  provider  Json
+  meta      Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([imageHash])
+  @@map("pest_queries")
+}

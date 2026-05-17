@@ -10,7 +10,7 @@ function createAccessToken(user) {
 
   return jwt.sign(
     {
-      sub: user._id.toString(),
+      sub: user.id.toString(),
       email: user.email,
       role: user.role,
     },

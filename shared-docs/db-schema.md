@@ -1,176 +1,139 @@
-# DB Schema (Day 2)
+# DB Schema
 
 ## Database Choice
-- Primary recommendation for MVP: **MongoDB**
-- Reason: faster iteration for semi-structured ML response payloads
+- Active database: **PostgreSQL**
+- Node ORM: **Prisma**
+- Reason: stronger relational integrity for auth/history/dashboard data while still supporting semi-structured ML payloads via `JSONB`
 
-## Collections
+## Tables
 
 ## 1) `users`
 Purpose: authentication and profile.
 
 Fields:
-- `_id` (ObjectId)
-- `name` (string, required)
-- `email` (string, required, unique, lowercase)
-- `passwordHash` (string, nullable for Google-only users)
-- `authProvider` (string, enum: `local|google|hybrid`, default `local`)
-- `googleId` (string, nullable)
-- `avatarUrl` (string, nullable)
-- `emailVerified` (boolean, default `false`)
-- `role` (string, enum: `user|admin`, default `user`)
-- `preferredLanguage` (string, enum: `en|hi|kn`, default `en`)
-- `phone` (string, nullable)
-- `location` (string, nullable)
-- `farmSizeAcres` (number, nullable)
-- `defaultSoilType` (string, nullable)
-- `createdAt` (date)
-- `updatedAt` (date)
+- `id` (UUID primary key)
+- `name` (text, required)
+- `email` (text, required, unique)
+- `password_hash` (text, nullable for Google-only users)
+- `auth_provider` (enum: `local|google|hybrid`, default `local`)
+- `google_id` (text, nullable, unique)
+- `avatar_url` (text, nullable)
+- `email_verified` (boolean, default `false`)
+- `role` (enum: `user|admin`, default `user`)
+- `preferred_language` (enum: `en|hi|kn`, default `en`)
+- `phone` (text, nullable)
+- `location` (text, nullable)
+- `farm_size_acres` (numeric, nullable)
+- `default_soil_type` (text, nullable)
+- `created_at` (timestamp)
+- `updated_at` (timestamp)
 
 Indexes:
 - unique: `email`
-- sparse unique: `googleId`
-- standard: `createdAt` (optional)
+- unique: `google_id`
+- optional: `created_at`
 
 Notes:
-- `authProvider=local`: `passwordHash` required.
-- `authProvider=google`: `googleId` required.
-- `authProvider=hybrid`: both local + Google linked to same user.
+- `auth_provider=local`: `password_hash` required.
+- `auth_provider=google`: `google_id` required.
+- `auth_provider=hybrid`: both local + Google linked to same user.
 
 ## 2) `crop_queries`
 Purpose: store recommendation requests and output summary.
 
 Fields:
-- `_id`
-- `userId` (ObjectId, ref `users`, required)
-- `input` (object):
-  - `location` (object):
-    - `mode` (string enum: `image_gps|manual_location`)
-    - `lat` (number, nullable)
-    - `lng` (number, nullable)
-    - `district` (string)
-    - `taluk` (string)
-  - `soilType` (string)
-  - `season` (string)
-  - `n` (number)
-  - `p` (number)
-  - `k` (number)
-  - `ph` (number)
-  - `autofill` (object):
-    - `used` (boolean)
-    - `source` (string enum: `taluk_average|district_average|default_fallback|manual`)
-- `result` (object):
-  - `primaryCrop` (object)
-  - `alternatives` (array)
-- `meta` (object):
-  - `source` (string, example `ml-service`)
-  - `latencyMs` (number)
-  - `requestId` (string)
-- `createdAt`
-- `updatedAt`
+- `id` (UUID primary key)
+- `user_id` (UUID foreign key -> `users.id`)
+- `input` (`JSONB`, required)
+- `result` (`JSONB`, required)
+- `meta` (`JSONB`, required)
+- `created_at` (timestamp)
+- `updated_at` (timestamp)
+
+Expected JSON structure:
+- `input`
+  - `location`
+  - `soilType`
+  - `season`
+  - `n`
+  - `p`
+  - `k`
+  - `ph`
+  - `autofill`
+- `result`
+  - `primaryCrop`
+  - `alternatives`
+- `meta`
+  - `source`
+  - `latencyMs`
+  - `requestId`
 
 Indexes:
-- compound: `userId + createdAt(desc)`
-- optional: `input.location.district + input.season`
-- optional geo/analytics: `input.location.lat + input.location.lng`
+- compound: `user_id + created_at(desc)`
+- optional expression indexes for analytics on `input->location->district` and `input->season`
 
 ## 3) `pest_queries`
 Purpose: store pest image analysis summary.
 
 Fields:
-- `_id`
-- `userId` (ObjectId, ref `users`, required)
-- `imageUrl` (string, file location/object storage key)
-- `imageHash` (string, optional dedupe)
-- `result` (object):
-  - `scientificName` (string)
-  - `confidencePercent` (number)
-  - `commonNames` (string)
-  - `treatmentSummary` (string)
-- `provider` (object):
-  - `name` (string)
-  - `providerResponseId` (string)
-- `meta` (object):
-  - `source` (string)
-  - `latencyMs` (number)
-  - `requestId` (string)
-- `createdAt`
-- `updatedAt`
+- `id` (UUID primary key)
+- `user_id` (UUID foreign key -> `users.id`)
+- `image_url` (text, nullable)
+- `image_hash` (text, nullable)
+- `result` (`JSONB`, required)
+- `provider` (`JSONB`, required)
+- `meta` (`JSONB`, required)
+- `created_at` (timestamp)
+- `updated_at` (timestamp)
+
+Expected JSON structure:
+- `result`
+  - `scientificName`
+  - `confidencePercent`
+  - `commonNames`
+  - `treatmentSummary`
+- `provider`
+  - `name`
+  - `providerResponseId`
+- `meta`
+  - `source`
+  - `latencyMs`
+  - `requestId`
 
 Indexes:
-- compound: `userId + createdAt(desc)`
-- optional: `imageHash`
+- compound: `user_id + created_at(desc)`
+- optional: `image_hash`
 
-## 4) `saved_plans`
+## 4) `saved_plans` (future)
 Purpose: user dashboard crop plan tracker.
 
-Fields:
-- `_id`
-- `userId` (ObjectId, ref `users`, required)
-- `cropName` (string, required)
-- `status` (string enum: `planned|planted|harvested`, default `planned`)
-- `district` (string, optional)
-- `season` (string, optional)
-- `notes` (string, optional)
-- `targetDate` (date, optional)
-- `createdAt`
-- `updatedAt`
+Suggested fields:
+- `id` (UUID primary key)
+- `user_id` (UUID foreign key)
+- `crop_name`
+- `status` (`planned|planted|harvested`)
+- `district`
+- `season`
+- `notes`
+- `target_date`
+- `created_at`
+- `updated_at`
 
-Indexes:
-- compound: `userId + status`
-- compound: `userId + createdAt(desc)`
-
-## 5) `chat_sessions` (optional Phase 4)
-Fields:
-- `_id`
-- `userId` (ObjectId, ref `users`)
-- `title` (string)
-- `createdAt`
-- `updatedAt`
-
-Indexes:
-- compound: `userId + createdAt(desc)`
-
-## 6) `chat_messages` (optional Phase 4)
-Fields:
-- `_id`
-- `sessionId` (ObjectId, ref `chat_sessions`)
-- `role` (string enum: `user|assistant|system`)
-- `content` (string)
-- `createdAt`
-
-Indexes:
-- compound: `sessionId + createdAt`
-
-## 7) `api_logs` (optional)
-Purpose: short-retention observability.
-
-Fields:
-- `_id`
-- `requestId` (string)
-- `userId` (ObjectId, nullable)
-- `route` (string)
-- `method` (string)
-- `statusCode` (number)
-- `durationMs` (number)
-- `createdAt` (date)
-
-Indexes:
-- `createdAt`
-- optional TTL index (7-14 days)
+## 5) `chat_sessions` and `chat_messages` (optional future)
+Suggested for later phases if chat persistence is needed.
 
 ## What Not To Store
 - Plain text passwords
 - Hardcoded API keys
-- Raw large binary images in MongoDB
+- Raw large binary images in PostgreSQL
 - Full third-party response blobs unless needed
 
 ## Account Linking Rules
 - If a local account exists and Google login comes with same email, do not auto-merge.
 - Require explicit account linking verification flow (future endpoint).
-- Track provider state via `authProvider` and presence of `googleId`.
+- Track provider state via `auth_provider` and presence of `google_id`.
 
 ## Data Retention Guidance
-- `api_logs`: 7-14 days
-- `chat_messages`: cap by count (example 50 latest per session) or archive
-- query collections: retain for user history and analytics
+- `api_logs`: 7-14 days if added later
+- query tables: retain for user history and analytics
+- store uploaded images in object storage, not the relational database

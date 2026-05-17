@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken");
-const mongoose = require("mongoose");
-
-const User = require("../models/user.model");
+const { prisma } = require("../db/prisma");
+const { isDbConnected } = require("../db/connect");
 const { HttpError } = require("../utils/http-error");
 
 async function requireAuth(req, res, next) {
@@ -25,11 +24,22 @@ async function requireAuth(req, res, next) {
 
     const decoded = jwt.verify(token, jwtSecret);
 
-    if (mongoose.connection.readyState !== 1) {
+    if (!isDbConnected()) {
       return next(new HttpError(503, "Database unavailable", "SERVICE_UNAVAILABLE"));
     }
 
-    const user = await User.findById(decoded.sub).select("-passwordHash");
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.sub },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        preferredLanguage: true,
+        authProvider: true,
+        avatarUrl: true,
+        role: true,
+      },
+    });
     if (!user) {
       return next(new HttpError(401, "User not found for token", "AUTH_INVALID_TOKEN"));
     }

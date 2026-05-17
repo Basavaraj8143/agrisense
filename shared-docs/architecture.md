@@ -5,9 +5,9 @@
 - backend-node (Express main API)
 - ml-service (Python inference)
 
-## Locked Implementation Decisions (as of Day 3)
-- Database: MongoDB (Atlas-ready)
-- Node ORM/ODM: Mongoose
+## Current Implementation Decisions
+- Database: PostgreSQL
+- Node ORM: Prisma
 - Backend framework: Express
 - Auth approach: JWT (Day 4 implementation)
 

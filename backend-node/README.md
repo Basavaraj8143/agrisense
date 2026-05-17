@@ -33,12 +33,19 @@ Node/Express main backend service for AgriSense rebuild.
 - Crop recommendations fall back to Node rule logic if `ml-service` is unavailable
 - Pest detection returns a graceful `503` message if `ml-service` cannot be reached
 
+## Database
+- Primary database: PostgreSQL
+- ORM: Prisma
+- Schema source: `prisma/schema.prisma`
+
 ## Run locally
 ```bash
 npm install
+npx prisma migrate dev --name init_postgres
+npm run prisma:generate
 npm run dev
 ```
 
 Server starts on `http://localhost:4000` by default.
 
-For full auth flow, set `.env` values from `.env.example` and ensure MongoDB is reachable.
+For full auth flow, set `.env` values from `.env.example`, ensure PostgreSQL is reachable, and use a valid `DATABASE_URL`.

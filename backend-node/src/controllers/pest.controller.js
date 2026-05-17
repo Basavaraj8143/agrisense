@@ -1,6 +1,6 @@
 const { createHash } = require("crypto");
 
-const PestQuery = require("../models/pest-query.model");
+const { prisma } = require("../db/prisma");
 const { detectPest } = require("../services/pest-inference.service");
 const { ensureDbConnected } = require("../utils/ensure-db-connected");
 const { HttpError } = require("../utils/http-error");
@@ -54,21 +54,23 @@ async function detect(req, res, next) {
 
     const latencyMs = Date.now() - startedAt;
 
-    const pestQuery = await PestQuery.create({
-      userId: req.user._id,
-      imageUrl: detection.result.imageUrl,
-      imageHash,
-      result: {
-        scientificName: detection.result.scientificName,
-        confidencePercent: detection.result.confidencePercent,
-        commonNames: detection.result.commonNames,
-        treatmentSummary: detection.result.treatmentSummary,
-      },
-      provider: detection.provider,
-      meta: {
-        source: detection.source,
-        latencyMs,
-        requestId,
+    const pestQuery = await prisma.pestQuery.create({
+      data: {
+        userId: req.user.id,
+        imageUrl: detection.result.imageUrl,
+        imageHash,
+        result: {
+          scientificName: detection.result.scientificName,
+          confidencePercent: detection.result.confidencePercent,
+          commonNames: detection.result.commonNames,
+          treatmentSummary: detection.result.treatmentSummary,
+        },
+        provider: detection.provider,
+        meta: {
+          source: detection.source,
+          latencyMs,
+          requestId,
+        },
       },
     });
 
@@ -76,7 +78,7 @@ async function detect(req, res, next) {
       success: true,
       message: "Pest analysis completed",
       data: {
-        queryId: pestQuery._id,
+        queryId: pestQuery.id,
         scientificName: detection.result.scientificName,
         confidencePercent: detection.result.confidencePercent,
         commonNames: detection.result.commonNames,

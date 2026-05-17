@@ -1,4 +1,4 @@
-const CropQuery = require("../models/crop-query.model");
+const { prisma } = require("../db/prisma");
 const {
   recommendCrops,
   requestCropRecommendationFromMlService,
@@ -55,17 +55,19 @@ async function recommend(req, res, next) {
 
     const latencyMs = Date.now() - startedAt;
 
-    const cropQuery = await CropQuery.create({
-      userId: req.user._id,
-      input,
-      result: {
-        primaryCrop: result.primaryCrop,
-        alternatives: result.alternatives,
-      },
-      meta: {
-        source,
-        latencyMs,
-        requestId,
+    const cropQuery = await prisma.cropQuery.create({
+      data: {
+        userId: req.user.id,
+        input,
+        result: {
+          primaryCrop: result.primaryCrop,
+          alternatives: result.alternatives,
+        },
+        meta: {
+          source,
+          latencyMs,
+          requestId,
+        },
       },
     });
 
@@ -73,7 +75,7 @@ async function recommend(req, res, next) {
       success: true,
       message: responseMessage,
       data: {
-        queryId: cropQuery._id,
+        queryId: cropQuery.id,
         primaryCrop: result.primaryCrop,
         alternatives: result.alternatives,
         meta: {
