@@ -9,6 +9,7 @@ function notFoundHandler(req, res, next) {
       details: [{ field: "route", issue: req.originalUrl }],
     },
     meta: {
+      requestId: req.requestId || null,
       timestamp: new Date().toISOString(),
     },
   });
@@ -31,6 +32,7 @@ function errorHandler(err, req, res, next) {
         ],
       },
       meta: {
+        requestId: req.requestId || null,
         timestamp: new Date().toISOString(),
       },
     });
@@ -51,6 +53,7 @@ function errorHandler(err, req, res, next) {
       details: err.details || [],
     },
     meta: {
+      requestId: req.requestId || null,
       timestamp: new Date().toISOString(),
     },
   });

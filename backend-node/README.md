@@ -26,6 +26,13 @@ Node/Express main backend service for AgriSense rebuild.
   - `ml-service`
 - Pest query persistence with provider metadata and image hash logging
 
+## Day 8 ml-service wiring
+- Crop and pest flows call `ml-service` over HTTP
+- Shared request IDs are forwarded with `X-Request-Id`
+- Retry and timeout behavior is configurable through environment variables
+- Crop recommendations fall back to Node rule logic if `ml-service` is unavailable
+- Pest detection returns a graceful `503` message if `ml-service` cannot be reached
+
 ## Run locally
 ```bash
 npm install

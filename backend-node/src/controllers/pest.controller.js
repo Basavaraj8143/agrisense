@@ -1,9 +1,10 @@
-const { createHash, randomUUID } = require("crypto");
+const { createHash } = require("crypto");
 
 const PestQuery = require("../models/pest-query.model");
 const { detectPest } = require("../services/pest-inference.service");
 const { ensureDbConnected } = require("../utils/ensure-db-connected");
 const { HttpError } = require("../utils/http-error");
+const { logInfo, logWarn } = require("../utils/logger");
 
 async function detect(req, res, next) {
   const startedAt = Date.now();
@@ -17,13 +18,40 @@ async function detect(req, res, next) {
       ]);
     }
 
-    const requestId = `pest_${randomUUID()}`;
+    const requestId = req.requestId;
     const imageHash = createHash("sha256").update(req.file.buffer).digest("hex");
-    const detection = await detectPest({
-      fileBuffer: req.file.buffer,
-      mimeType: req.file.mimetype,
-      originalName: req.file.originalname,
-    });
+    let detection;
+
+    try {
+      detection = await detectPest({
+        fileBuffer: req.file.buffer,
+        mimeType: req.file.mimetype,
+        originalName: req.file.originalname,
+        requestId,
+      });
+
+      logInfo("Pest detection resolved through ml-service", {
+        requestId,
+        upstreamRequestId: detection.upstreamRequestId,
+      });
+    } catch (error) {
+      if (error.code === "ML_SERVICE_UNAVAILABLE") {
+        logWarn("Pest detection failed because ml-service is unavailable", {
+          requestId,
+          issue: error.message,
+        });
+
+        throw new HttpError(
+          503,
+          "Pest analysis is temporarily unavailable because the ML service could not be reached. Please try again shortly.",
+          "ML_SERVICE_UNAVAILABLE",
+          error.details || []
+        );
+      }
+
+      throw error;
+    }
+
     const latencyMs = Date.now() - startedAt;
 
     const pestQuery = await PestQuery.create({
@@ -57,6 +85,7 @@ async function detect(req, res, next) {
           source: detection.source,
           latencyMs,
           requestId,
+          upstreamRequestId: detection.upstreamRequestId,
         },
       },
       meta: {

@@ -1,3 +1,6 @@
+const { HttpError } = require("../utils/http-error");
+const { requestMlService } = require("../utils/ml-service-client");
+
 const cropProfiles = [
   {
     name: "Cotton",
@@ -119,6 +122,36 @@ function recommendCrops(payload) {
   };
 }
 
+async function requestCropRecommendationFromMlService(payload, { requestId }) {
+  const response = await requestMlService({
+    path: process.env.ML_SERVICE_CROP_PATH || "/ml/recommend",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+    requestId,
+    operationName: "crop-recommendation",
+  });
+
+  const result = response.payload?.data?.result;
+  if (!result?.primaryCrop) {
+    throw new HttpError(
+      503,
+      "ML service returned an invalid crop recommendation response",
+      "ML_SERVICE_UNAVAILABLE",
+      [{ field: "mlService", issue: "Missing primaryCrop in response payload" }]
+    );
+  }
+
+  return {
+    result,
+    upstreamRequestId: response.upstreamRequestId,
+    latencyMs: response.latencyMs,
+  };
+}
+
 module.exports = {
   recommendCrops,
+  requestCropRecommendationFromMlService,
 };
