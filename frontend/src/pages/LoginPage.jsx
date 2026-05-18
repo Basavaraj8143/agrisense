@@ -1,7 +1,7 @@
 import { startTransition, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 
-import { ApiError } from "../lib/api-client";
+import { ApiError, toFieldErrors } from "../lib/api-client";
 import { useAuth } from "../context/AuthContext";
 
 const initialForm = {
@@ -10,26 +10,38 @@ const initialForm = {
 };
 
 function LoginPage() {
+  const location = useLocation();
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { isAuthenticated, login, user } = useAuth();
   const [form, setForm] = useState(initialForm);
   const [errorMessage, setErrorMessage] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
+
+  const redirectTo = location.state?.from || "/dashboard";
+
+  if (isAuthenticated) {
+    return <Navigate to={redirectTo} replace />;
+  }
 
   async function handleSubmit(event) {
     event.preventDefault();
     setSubmitting(true);
     setErrorMessage("");
+    setFieldErrors({});
 
     try {
       await login(form);
       startTransition(() => {
-        navigate("/dashboard");
+        navigate(redirectTo, { replace: true });
       });
     } catch (error) {
-      setErrorMessage(
-        error instanceof ApiError ? error.message : "Unable to sign in right now. Please try again."
-      );
+      if (error instanceof ApiError) {
+        setFieldErrors(toFieldErrors(error.details));
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage("Unable to sign in right now. Please try again.");
+      }
     } finally {
       setSubmitting(false);
     }
@@ -39,12 +51,17 @@ function LoginPage() {
     <section className="page auth-page">
       <div className="shell-container auth-layout">
         <div className="auth-copy">
-          <p className="eyebrow">Authentication foundation</p>
-          <h2>Sign in through the new React frontend.</h2>
+          <p className="eyebrow">Secure sign in</p>
+          <h2>Return to your farm workspace and protected recommendation tools.</h2>
           <p>
-            The form is already pointed at the Node auth endpoints, and successful sessions persist the JWT token for
-            protected routes.
+            This login now talks directly to the Node auth API, restores the JWT session, and opens crop and pest flows
+            without leaving the React app.
           </p>
+          <div className="surface-card auth-highlight">
+            <p className="card-kicker">Current session target</p>
+            <strong>{location.state?.from ? `Continue to ${location.state.from}` : "Open your dashboard"}</strong>
+            <p>{user?.email ? `Signed in as ${user.email}` : "Use the same credentials created in the Register flow."}</p>
+          </div>
         </div>
 
         <form className="auth-card" onSubmit={handleSubmit}>
@@ -55,8 +72,10 @@ function LoginPage() {
               value={form.email}
               onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))}
               placeholder="farmer@example.com"
+              autoComplete="email"
               required
             />
+            {fieldErrors.email ? <small className="field-hint field-hint-error">{fieldErrors.email}</small> : null}
           </label>
 
           <label className="field">
@@ -66,8 +85,10 @@ function LoginPage() {
               value={form.password}
               onChange={(event) => setForm((current) => ({ ...current, password: event.target.value }))}
               placeholder="StrongPass@123"
+              autoComplete="current-password"
               required
             />
+            {fieldErrors.password ? <small className="field-hint field-hint-error">{fieldErrors.password}</small> : null}
           </label>
 
           {errorMessage ? <p className="form-error">{errorMessage}</p> : null}

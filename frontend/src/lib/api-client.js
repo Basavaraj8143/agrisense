@@ -34,6 +34,17 @@ async function apiRequest(path, { method = "GET", body, token } = {}) {
   return payload;
 }
 
+function toFieldErrors(details = []) {
+  return details.reduce((accumulator, detail) => {
+    if (!detail?.field || !detail?.issue) {
+      return accumulator;
+    }
+
+    accumulator[detail.field] = detail.issue;
+    return accumulator;
+  }, {});
+}
+
 export const authApi = {
   async login(credentials) {
     const payload = await apiRequest("/api/auth/login", {
@@ -62,4 +73,16 @@ export const authApi = {
   },
 };
 
-export { ApiError, apiBaseUrl };
+export const cropApi = {
+  async recommend(payload, token) {
+    const response = await apiRequest("/api/crop/recommend", {
+      method: "POST",
+      body: payload,
+      token,
+    });
+
+    return response.data;
+  },
+};
+
+export { ApiError, apiBaseUrl, toFieldErrors };

@@ -82,13 +82,13 @@ function AppShell() {
       <footer className="site-footer">
         <div className="shell-container footer-grid">
           <div>
-            <p className="eyebrow">Day 9 foundation</p>
-            <h2 className="footer-title">React shell, routing, and auth-ready plumbing.</h2>
+            <p className="eyebrow">Day 10 shipped</p>
+            <h2 className="footer-title">Protected auth and crop flows are now live in React.</h2>
           </div>
           <div className="footer-copy">
             <p>
-              Legacy HTML pages remain in this folder as reference while the new frontend routes move feature-by-feature
-              onto the Node + ML architecture.
+              The app shell now carries real authenticated routes, while Day 11 can focus on pest analysis, dashboard
+              history, and polish instead of rebuilding core flow pieces.
             </p>
           </div>
         </div>

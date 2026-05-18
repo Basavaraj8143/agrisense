@@ -2,16 +2,16 @@ import { Link } from "react-router-dom";
 
 const routeCards = [
   {
-    title: "Auth-ready entry",
-    body: "Login and registration routes are wired into a shared auth context so Day 10 can focus on form polish and edge cases.",
+    title: "Auth flow live",
+    body: "Register and login now enforce backend-aligned validation, persist the JWT, and route users into protected screens.",
   },
   {
-    title: "Clean app shell",
-    body: "Navigation, header, footer, and page layout are centralized to avoid copying structure across feature screens.",
+    title: "Protected crop flow",
+    body: "The crop screen now submits to the real Node API and renders normalized recommendation cards with metadata.",
   },
   {
     title: "Backend-first flow",
-    body: "The frontend is already pointed at the Node API, which means the React work stays aligned with the rebuild architecture.",
+    body: "React stays aligned with the rebuild architecture by calling the Node API, which then brokers ML work through the Python service.",
   },
 ];
 
@@ -23,8 +23,8 @@ function HomePage() {
           <p className="eyebrow">Phase 4 begins</p>
           <h2 className="hero-title">A field console for farmers, rebuilt around the new Node and ML services.</h2>
           <p className="hero-text">
-            Day 9 establishes the React foundation: routing, app shell, auth state, and the shared API plumbing that the
-            next feature screens will sit on.
+            Day 10 turns the React foundation into a working user flow: authentication, protected routes, and crop
+            recommendations that come back in the new backend response shape.
           </p>
 
           <div className="hero-actions">
@@ -32,7 +32,7 @@ function HomePage() {
               Create account
             </Link>
             <Link to="/crop" className="secondary-button">
-              Preview crop route
+              Open crop workflow
             </Link>
           </div>
         </div>
@@ -40,13 +40,13 @@ function HomePage() {
         <div className="hero-panel">
           <div className="metric-card">
             <span className="metric-label">Current milestone</span>
-            <strong className="metric-value">Day 9</strong>
-            <p>React foundation, routing, app shell, API client, auth token persistence.</p>
+            <strong className="metric-value">Day 10</strong>
+            <p>Auth screens, protected crop flow, client validation, and API-connected results cards.</p>
           </div>
           <div className="metric-card muted">
             <span className="metric-label">Next handoff</span>
-            <strong className="metric-value">Day 10</strong>
-            <p>Feature screens for auth and crop workflows plug into this base instead of starting from scratch.</p>
+            <strong className="metric-value">Day 11</strong>
+            <p>Pest upload, dashboard history, and broader empty/loading/responsive polish build on this flow.</p>
           </div>
         </div>
       </div>
