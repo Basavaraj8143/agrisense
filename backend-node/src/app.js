@@ -15,6 +15,21 @@ const app = express();
 
 morgan.token("request-id", (req) => req.requestId || "-");
 
+function getAllowedOrigins() {
+  const rawValue = process.env.CORS_ORIGIN;
+
+  if (!rawValue || rawValue.trim() === "*") {
+    return [];
+  }
+
+  return rawValue
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean);
+}
+
+const allowedOrigins = getAllowedOrigins();
+
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 300,
@@ -36,7 +51,13 @@ const limiter = rateLimit({
 app.use(helmet());
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "*",
+    origin(origin, callback) {
+      if (allowedOrigins.length === 0 || !origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error(`Origin ${origin} is not allowed by CORS`));
+    },
   })
 );
 app.use(attachRequestContext);

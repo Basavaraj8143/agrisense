@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useAuth } from "../context/AuthContext";
 import { ApiError, cropApi, toFieldErrors } from "../lib/api-client";
+import { extractCoordinatesFromImage, reverseGeocodeCoordinates } from "../lib/image-location";
 
 const initialForm = {
-  mode: "manual_location",
+  locationMethod: "image_upload",
   district: "",
   taluk: "",
   lat: "",
@@ -53,8 +54,16 @@ function formatScore(score) {
   return `${Math.round(score * 100)}% match`;
 }
 
+function hasCoordinates(form) {
+  return form.lat !== "" && form.lng !== "" && !Number.isNaN(Number(form.lat)) && !Number.isNaN(Number(form.lng));
+}
+
 function validateCropForm(form) {
   const errors = {};
+
+  if (form.locationMethod === "image_upload" && !form.locationImage) {
+    errors.locationImage = "Upload a field image or switch to manual location entry.";
+  }
 
   if (form.district.trim().length < 2) {
     errors["location.district"] = "District is required.";
@@ -64,17 +73,19 @@ function validateCropForm(form) {
     errors["location.taluk"] = "Taluk is required.";
   }
 
-  if (form.mode === "image_gps") {
+  if (hasCoordinates(form)) {
     const lat = Number(form.lat);
     const lng = Number(form.lng);
 
-    if (Number.isNaN(lat) || lat < -90 || lat > 90) {
+    if (lat < -90 || lat > 90) {
       errors["location.lat"] = "Latitude must be between -90 and 90.";
     }
 
-    if (Number.isNaN(lng) || lng < -180 || lng > 180) {
+    if (lng < -180 || lng > 180) {
       errors["location.lng"] = "Longitude must be between -180 and 180.";
     }
+  } else if (form.locationMethod === "image_upload" && (form.lat !== "" || form.lng !== "")) {
+    errors["location.lat"] = "Provide both latitude and longitude, or leave both blank.";
   }
 
   [
@@ -96,7 +107,7 @@ function validateCropForm(form) {
 function toPayload(form) {
   const payload = {
     location: {
-      mode: form.mode,
+      mode: hasCoordinates(form) ? "image_gps" : "manual_location",
       district: form.district.trim(),
       taluk: form.taluk.trim(),
     },
@@ -112,7 +123,7 @@ function toPayload(form) {
     },
   };
 
-  if (form.mode === "image_gps") {
+  if (hasCoordinates(form)) {
     payload.location.lat = Number(form.lat);
     payload.location.lng = Number(form.lng);
   }
@@ -140,11 +151,129 @@ function CropResultCard({ title, crop, featured = false }) {
 
 function CropPage() {
   const { token, user } = useAuth();
-  const [form, setForm] = useState(initialForm);
+  const [form, setForm] = useState(() => ({ ...initialForm, locationImage: null }));
+  const [imagePreviewUrl, setImagePreviewUrl] = useState("");
+  const [locationStatus, setLocationStatus] = useState("");
+  const [geolocating, setGeolocating] = useState(false);
+  const [extractingLocation, setExtractingLocation] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
   const [result, setResult] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!form.locationImage) {
+      setImagePreviewUrl("");
+      return undefined;
+    }
+
+    const objectUrl = URL.createObjectURL(form.locationImage);
+    setImagePreviewUrl(objectUrl);
+
+    return () => {
+      URL.revokeObjectURL(objectUrl);
+    };
+  }, [form.locationImage]);
+
+  function updateForm(updater) {
+    setForm((current) => {
+      const nextValue = typeof updater === "function" ? updater(current) : updater;
+      return nextValue;
+    });
+  }
+
+  async function autofillLocationFromCoordinates(lat, lng, sourceLabel) {
+    updateForm((current) => ({
+      ...current,
+      lat: lat.toFixed(6),
+      lng: lng.toFixed(6),
+    }));
+
+    setLocationStatus(`Coordinates extracted from ${sourceLabel}. Resolving district and taluk...`);
+
+    try {
+      const location = await reverseGeocodeCoordinates(lat, lng);
+      updateForm((current) => ({
+        ...current,
+        lat: lat.toFixed(6),
+        lng: lng.toFixed(6),
+        district: location.district || current.district,
+        taluk: location.taluk || current.taluk,
+      }));
+
+      if (location.label) {
+        setLocationStatus(`Coordinates detected from ${sourceLabel}. Autofilled location: ${location.label}.`);
+      } else {
+        setLocationStatus(`Coordinates detected from ${sourceLabel}. Please confirm district and taluk manually.`);
+      }
+    } catch {
+      setLocationStatus(`Coordinates detected from ${sourceLabel}. Please confirm district and taluk manually.`);
+    }
+  }
+
+  async function handleImageChange(event) {
+    const nextFile = event.target.files?.[0] || null;
+    setFieldErrors((current) => ({ ...current, locationImage: undefined }));
+    setLocationStatus("");
+
+    if (!nextFile) {
+      updateForm((current) => ({ ...current, locationImage: null }));
+      return;
+    }
+
+    if (!nextFile.type.startsWith("image/")) {
+      updateForm((current) => ({ ...current, locationImage: null }));
+      setFieldErrors((current) => ({ ...current, locationImage: "Please choose an image file." }));
+      return;
+    }
+
+    updateForm((current) => ({ ...current, locationImage: nextFile }));
+    setExtractingLocation(true);
+
+    try {
+      const coordinates = await extractCoordinatesFromImage(nextFile, (status) => setLocationStatus(status));
+
+      if (!coordinates) {
+        setLocationStatus("No coordinates were found in the image. You can still enter location manually or use current location.");
+        return;
+      }
+
+      await autofillLocationFromCoordinates(
+        coordinates.lat,
+        coordinates.lng,
+        coordinates.source === "exif" ? "image GPS metadata" : "OCR text"
+      );
+    } catch {
+      setLocationStatus("Could not extract coordinates from this image. You can still continue with manual location entry.");
+    } finally {
+      setExtractingLocation(false);
+    }
+  }
+
+  async function handleUseCurrentLocation() {
+    if (!navigator.geolocation) {
+      setLocationStatus("Device geolocation is not available in this browser.");
+      return;
+    }
+
+    setGeolocating(true);
+    setLocationStatus("Getting your current device coordinates...");
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        await autofillLocationFromCoordinates(position.coords.latitude, position.coords.longitude, "device location");
+        setGeolocating(false);
+      },
+      () => {
+        setLocationStatus("Unable to access device location. You can still continue by entering district and taluk.");
+        setGeolocating(false);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+      }
+    );
+  }
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -174,21 +303,30 @@ function CropPage() {
     }
   }
 
+  function resetForm() {
+    setForm({ ...initialForm, locationImage: null });
+    setImagePreviewUrl("");
+    setLocationStatus("");
+    setFieldErrors({});
+    setErrorMessage("");
+    setResult(null);
+  }
+
   return (
     <section className="page page-crop">
       <div className="shell-container crop-hero">
         <div>
-          <p className="eyebrow">Day 10 crop flow</p>
-          <h2>Build a field-ready recommendation from location, soil, and nutrient inputs.</h2>
+          <p className="eyebrow">Crop recommendation</p>
+          <h2>Upload a field image or enter your location manually before building the recommendation.</h2>
           <p className="hero-text">
-            Signed in as {user?.name || "farmer"}. This form now submits to the protected Node crop API and renders the
-            normalized ML-backed response shape inside the React app.
+            Signed in as {user?.name || "farmer"}. This flow now supports the legacy-style image-first entry while still
+            keeping a direct manual location option for faster use.
           </p>
         </div>
         <div className="surface-card crop-summary-card">
           <p className="card-kicker">What this screen covers</p>
           <ul className="compact-list">
-            <li>Client-side validation aligned with the Node contract</li>
+            <li>Image-assisted or manual location entry</li>
             <li>Protected request using your stored JWT token</li>
             <li>Primary crop and alternative recommendation cards</li>
             <li>Latency, source, and autofill metadata from the backend</li>
@@ -201,40 +339,113 @@ function CropPage() {
           <div className="section-heading">
             <div>
               <p className="card-kicker">Recommendation inputs</p>
-              <h3>Farm profile</h3>
+              <h3>Location and field profile</h3>
             </div>
-            <p>Provide the same fields the backend validates so your first result is production-real, not mocked.</p>
+            <p>Choose the input path that matches how the farmer actually starts the workflow.</p>
           </div>
 
+          <div className="location-mode-grid">
+            <button
+              type="button"
+              className={`location-mode-card ${form.locationMethod === "image_upload" ? "is-active" : ""}`}
+              onClick={() => updateForm((current) => ({ ...current, locationMethod: "image_upload" }))}
+            >
+              <span className="location-mode-title">Upload field image</span>
+              <span className="location-mode-copy">Start with a field photo, then confirm location details below.</span>
+            </button>
+
+            <button
+              type="button"
+              className={`location-mode-card ${form.locationMethod === "manual_location" ? "is-active" : ""}`}
+              onClick={() =>
+                updateForm((current) => ({
+                  ...current,
+                  locationMethod: "manual_location",
+                  locationImage: null,
+                  lat: "",
+                  lng: "",
+                }))
+              }
+            >
+              <span className="location-mode-title">Enter location manually</span>
+              <span className="location-mode-copy">Skip the image and provide district and taluk directly.</span>
+            </button>
+          </div>
+
+          {form.locationMethod === "image_upload" ? (
+            <div className="location-assist-block">
+              <label className="upload-dropzone">
+                <input type="file" accept="image/*" onChange={handleImageChange} />
+                <span className="upload-title">{form.locationImage ? form.locationImage.name : "Choose a field image"}</span>
+                <span className="upload-subtitle">We will try GPS metadata first, then OCR text, and autofill the location fields if coordinates are found.</span>
+              </label>
+
+              {fieldErrors.locationImage ? <p className="form-error">{fieldErrors.locationImage}</p> : null}
+
+              {imagePreviewUrl ? (
+                <div className="image-preview-card">
+                  <img src={imagePreviewUrl} alt="Field image preview" className="image-preview" />
+                </div>
+              ) : null}
+
+              <div className="location-helper-card">
+                <div>
+                  <p className="card-kicker">Optional coordinates</p>
+                  <p className="helper-copy">
+                    If image extraction fails, you can still use current device coordinates or type district and taluk yourself.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  className="secondary-button inline-button"
+                  onClick={handleUseCurrentLocation}
+                  disabled={geolocating || extractingLocation}
+                >
+                  {geolocating ? "Getting location..." : "Use current location"}
+                </button>
+              </div>
+
+              {locationStatus ? <p className="field-hint status-note">{locationStatus}</p> : null}
+
+              <div className="field-grid field-grid-two">
+                <label className="field">
+                  <span>Latitude</span>
+                  <input
+                    type="number"
+                    step="0.000001"
+                    value={form.lat}
+                    onChange={(event) => updateForm((current) => ({ ...current, lat: event.target.value }))}
+                    placeholder="16.154062"
+                  />
+                  {fieldErrors["location.lat"] ? (
+                    <small className="field-hint field-hint-error">{fieldErrors["location.lat"]}</small>
+                  ) : null}
+                </label>
+
+                <label className="field">
+                  <span>Longitude</span>
+                  <input
+                    type="number"
+                    step="0.000001"
+                    value={form.lng}
+                    onChange={(event) => updateForm((current) => ({ ...current, lng: event.target.value }))}
+                    placeholder="75.658530"
+                  />
+                  {fieldErrors["location.lng"] ? (
+                    <small className="field-hint field-hint-error">{fieldErrors["location.lng"]}</small>
+                  ) : null}
+                </label>
+              </div>
+            </div>
+          ) : null}
+
           <div className="field-grid field-grid-two">
-            <label className="field">
-              <span>Location mode</span>
-              <select value={form.mode} onChange={(event) => setForm((current) => ({ ...current, mode: event.target.value }))}>
-                <option value="manual_location">Manual location</option>
-                <option value="image_gps">Image GPS / coordinates</option>
-              </select>
-            </label>
-
-            <label className="field">
-              <span>Soil type</span>
-              <select
-                value={form.soilType}
-                onChange={(event) => setForm((current) => ({ ...current, soilType: event.target.value }))}
-              >
-                {soilOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-
             <label className="field">
               <span>District</span>
               <input
                 type="text"
                 value={form.district}
-                onChange={(event) => setForm((current) => ({ ...current, district: event.target.value }))}
+                onChange={(event) => updateForm((current) => ({ ...current, district: event.target.value }))}
                 placeholder="Bagalkot"
                 required
               />
@@ -248,7 +459,7 @@ function CropPage() {
               <input
                 type="text"
                 value={form.taluk}
-                onChange={(event) => setForm((current) => ({ ...current, taluk: event.target.value }))}
+                onChange={(event) => updateForm((current) => ({ ...current, taluk: event.target.value }))}
                 placeholder="Jamkhandi"
                 required
               />
@@ -257,43 +468,20 @@ function CropPage() {
               ) : null}
             </label>
 
-            {form.mode === "image_gps" ? (
-              <>
-                <label className="field">
-                  <span>Latitude</span>
-                  <input
-                    type="number"
-                    step="0.000001"
-                    value={form.lat}
-                    onChange={(event) => setForm((current) => ({ ...current, lat: event.target.value }))}
-                    placeholder="16.154062"
-                    required
-                  />
-                  {fieldErrors["location.lat"] ? (
-                    <small className="field-hint field-hint-error">{fieldErrors["location.lat"]}</small>
-                  ) : null}
-                </label>
-
-                <label className="field">
-                  <span>Longitude</span>
-                  <input
-                    type="number"
-                    step="0.000001"
-                    value={form.lng}
-                    onChange={(event) => setForm((current) => ({ ...current, lng: event.target.value }))}
-                    placeholder="75.658530"
-                    required
-                  />
-                  {fieldErrors["location.lng"] ? (
-                    <small className="field-hint field-hint-error">{fieldErrors["location.lng"]}</small>
-                  ) : null}
-                </label>
-              </>
-            ) : null}
+            <label className="field">
+              <span>Soil type</span>
+              <select value={form.soilType} onChange={(event) => updateForm((current) => ({ ...current, soilType: event.target.value }))}>
+                {soilOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
 
             <label className="field">
               <span>Season</span>
-              <select value={form.season} onChange={(event) => setForm((current) => ({ ...current, season: event.target.value }))}>
+              <select value={form.season} onChange={(event) => updateForm((current) => ({ ...current, season: event.target.value }))}>
                 {seasonOptions.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -308,9 +496,7 @@ function CropPage() {
                 <input
                   type="checkbox"
                   checked={form.autofillUsed}
-                  onChange={(event) =>
-                    setForm((current) => ({ ...current, autofillUsed: event.target.checked }))
-                  }
+                  onChange={(event) => updateForm((current) => ({ ...current, autofillUsed: event.target.checked }))}
                 />
                 <span>Mark nutrient values as estimated from a saved source</span>
               </label>
@@ -323,7 +509,7 @@ function CropPage() {
                 <span>Autofill source</span>
                 <select
                   value={form.autofillSource}
-                  onChange={(event) => setForm((current) => ({ ...current, autofillSource: event.target.value }))}
+                  onChange={(event) => updateForm((current) => ({ ...current, autofillSource: event.target.value }))}
                 >
                   {autofillOptions.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -351,7 +537,7 @@ function CropPage() {
                 min="0"
                 max="300"
                 value={form.n}
-                onChange={(event) => setForm((current) => ({ ...current, n: event.target.value }))}
+                onChange={(event) => updateForm((current) => ({ ...current, n: event.target.value }))}
               />
               {fieldErrors.n ? <small className="field-hint field-hint-error">{fieldErrors.n}</small> : null}
             </label>
@@ -363,7 +549,7 @@ function CropPage() {
                 min="0"
                 max="300"
                 value={form.p}
-                onChange={(event) => setForm((current) => ({ ...current, p: event.target.value }))}
+                onChange={(event) => updateForm((current) => ({ ...current, p: event.target.value }))}
               />
               {fieldErrors.p ? <small className="field-hint field-hint-error">{fieldErrors.p}</small> : null}
             </label>
@@ -375,7 +561,7 @@ function CropPage() {
                 min="0"
                 max="300"
                 value={form.k}
-                onChange={(event) => setForm((current) => ({ ...current, k: event.target.value }))}
+                onChange={(event) => updateForm((current) => ({ ...current, k: event.target.value }))}
               />
               {fieldErrors.k ? <small className="field-hint field-hint-error">{fieldErrors.k}</small> : null}
             </label>
@@ -388,7 +574,7 @@ function CropPage() {
                 max="14"
                 step="0.1"
                 value={form.ph}
-                onChange={(event) => setForm((current) => ({ ...current, ph: event.target.value }))}
+                onChange={(event) => updateForm((current) => ({ ...current, ph: event.target.value }))}
               />
               {fieldErrors.ph ? <small className="field-hint field-hint-error">{fieldErrors.ph}</small> : null}
             </label>
@@ -398,18 +584,9 @@ function CropPage() {
 
           <div className="form-actions">
             <button type="submit" className="primary-button" disabled={submitting}>
-              {submitting ? "Generating recommendation..." : "Recommend crops"}
+              {submitting ? "Generating recommendation..." : extractingLocation ? "Finishing image extraction..." : "Recommend crops"}
             </button>
-            <button
-              type="button"
-              className="secondary-button"
-              onClick={() => {
-                setForm(initialForm);
-                setFieldErrors({});
-                setErrorMessage("");
-                setResult(null);
-              }}
-            >
+            <button type="button" className="secondary-button" onClick={resetForm}>
               Reset form
             </button>
           </div>
@@ -459,8 +636,8 @@ function CropPage() {
               <p className="card-kicker">Awaiting submission</p>
               <h3>Your recommendation will appear here.</h3>
               <p>
-                Submit the protected crop form to view the primary crop, alternative options, backend latency, and
-                source metadata returned by the new API flow.
+                Upload a field image or enter the location manually, then submit the crop form to see the recommendation
+                cards and backend metadata.
               </p>
             </div>
           )}

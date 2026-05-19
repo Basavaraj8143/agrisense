@@ -48,4 +48,19 @@ npm run dev
 
 Server starts on `http://localhost:4000` by default.
 
-For full auth flow, set `.env` values from `.env.example`, ensure PostgreSQL is reachable, and use a valid `DATABASE_URL`.
+For full auth flow, set `.env` values from `.env.example`, ensure your Neon PostgreSQL project is reachable, and use valid `DATABASE_URL` and `DIRECT_URL` values.
+
+## Neon Setup
+Use Neon as the PostgreSQL provider for local development and testing.
+
+Recommended environment variables:
+
+```env
+DATABASE_URL=postgresql://YOUR_USER:YOUR_PASSWORD@YOUR_NEON_POOLER_HOST/YOUR_DB?sslmode=require&channel_binding=require
+DIRECT_URL=postgresql://YOUR_USER:YOUR_PASSWORD@YOUR_NEON_DIRECT_HOST/YOUR_DB?sslmode=require&channel_binding=require
+```
+
+Notes:
+- `DATABASE_URL` should use the Neon pooled connection string for app runtime.
+- `DIRECT_URL` should use the Neon direct connection string for Prisma migrations.
+- If you only have one Neon URL temporarily, you can set both variables to the same value, but a separate direct URL is the better Prisma setup.

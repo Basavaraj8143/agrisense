@@ -388,6 +388,13 @@ select {
   line-height: 1.5;
 }
 
+.status-note {
+  padding: 0.75rem 0.9rem;
+  border-radius: 1rem;
+  background: rgba(225, 242, 213, 0.6);
+  border: 1px solid rgba(33, 95, 55, 0.12);
+}
+
 .field-hint-error {
   color: #a13f32;
 }
@@ -509,6 +516,59 @@ select {
 
 .checkbox-field {
   align-content: start;
+}
+
+.location-mode-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.location-mode-card {
+  display: grid;
+  gap: 0.4rem;
+  text-align: left;
+  padding: 1rem 1.1rem;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(20, 38, 28, 0.12);
+  background: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: 180ms ease;
+}
+
+.location-mode-card:hover,
+.location-mode-card.is-active {
+  border-color: rgba(33, 95, 55, 0.28);
+  background: rgba(225, 242, 213, 0.72);
+  box-shadow: 0 12px 28px rgba(33, 95, 55, 0.08);
+}
+
+.location-mode-title {
+  font-weight: 700;
+}
+
+.location-mode-copy,
+.helper-copy {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.location-assist-block {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.location-helper-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.1rem;
+  border-radius: 1.2rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.76);
 }
 
 .toggle-row {
@@ -711,6 +771,7 @@ select {
   .dashboard-grid,
   .dashboard-hero,
   .metric-grid,
+  .location-mode-grid,
   .route-hero,
   .auth-layout,
   .footer-grid,
@@ -723,6 +784,11 @@ select {
   }
 
   .section-heading {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .location-helper-card {
     align-items: start;
     flex-direction: column;
   }

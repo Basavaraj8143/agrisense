@@ -13,14 +13,23 @@ const apiBaseUrl = configuredBaseUrl.replace(/\/$/, "");
 
 async function apiRequest(path, { method = "GET", body, token } = {}) {
   const isFormData = typeof FormData !== "undefined" && body instanceof FormData;
-  const response = await fetch(`${apiBaseUrl}${path}`, {
-    method,
-    headers: {
-      ...(isFormData ? {} : { "Content-Type": "application/json" }),
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    body: body ? (isFormData ? body : JSON.stringify(body)) : undefined,
-  });
+  let response;
+
+  try {
+    response = await fetch(`${apiBaseUrl}${path}`, {
+      method,
+      headers: {
+        ...(isFormData ? {} : { "Content-Type": "application/json" }),
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: body ? (isFormData ? body : JSON.stringify(body)) : undefined,
+    });
+  } catch (error) {
+    throw new ApiError(
+      "Unable to reach the backend API. Check that the backend is running and that CORS/API host settings match your frontend URL.",
+      0
+    );
+  }
 
   const payload = await response.json().catch(() => null);
 
