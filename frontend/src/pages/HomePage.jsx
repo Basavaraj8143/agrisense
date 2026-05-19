@@ -10,8 +10,8 @@ const routeCards = [
     body: "The crop screen now submits to the real Node API and renders normalized recommendation cards with metadata.",
   },
   {
-    title: "Backend-first flow",
-    body: "React stays aligned with the rebuild architecture by calling the Node API, which then brokers ML work through the Python service.",
+    title: "Pest and dashboard live",
+    body: "Pest upload, recent history, and dashboard summaries now read from protected backend APIs instead of placeholders.",
   },
 ];
 
@@ -20,11 +20,11 @@ function HomePage() {
     <section className="page page-home">
       <div className="shell-container hero-grid">
         <div className="hero-copy">
-          <p className="eyebrow">Phase 4 begins</p>
+          <p className="eyebrow">Feature complete MVP</p>
           <h2 className="hero-title">A field console for farmers, rebuilt around the new Node and ML services.</h2>
           <p className="hero-text">
-            Day 10 turns the React foundation into a working user flow: authentication, protected routes, and crop
-            recommendations that come back in the new backend response shape.
+            Day 11 completes the frontend MVP with pest upload, live dashboard history, and stronger loading, error,
+            and empty states across the protected experience.
           </p>
 
           <div className="hero-actions">
@@ -40,13 +40,13 @@ function HomePage() {
         <div className="hero-panel">
           <div className="metric-card">
             <span className="metric-label">Current milestone</span>
-            <strong className="metric-value">Day 10</strong>
-            <p>Auth screens, protected crop flow, client validation, and API-connected results cards.</p>
+            <strong className="metric-value">Day 11</strong>
+            <p>Pest upload, dashboard history, protected flows, and polished empty/loading/error states.</p>
           </div>
           <div className="metric-card muted">
             <span className="metric-label">Next handoff</span>
-            <strong className="metric-value">Day 11</strong>
-            <p>Pest upload, dashboard history, and broader empty/loading/responsive polish build on this flow.</p>
+            <strong className="metric-value">Day 12</strong>
+            <p>Testing, unhappy-path validation, and bug hardening can now focus on a full working MVP.</p>
           </div>
         </div>
       </div>

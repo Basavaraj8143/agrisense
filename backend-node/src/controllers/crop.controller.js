@@ -6,6 +6,16 @@ const {
 const { ensureDbConnected } = require("../utils/ensure-db-connected");
 const { logInfo, logWarn } = require("../utils/logger");
 
+function toHistoryLimit(value) {
+  const parsed = Number.parseInt(value, 10);
+
+  if (!Number.isFinite(parsed) || parsed < 1) {
+    return 5;
+  }
+
+  return Math.min(parsed, 20);
+}
+
 async function recommend(req, res, next) {
   const startedAt = Date.now();
 
@@ -97,6 +107,48 @@ async function recommend(req, res, next) {
   }
 }
 
+async function history(req, res, next) {
+  try {
+    ensureDbConnected();
+
+    const limit = toHistoryLimit(req.query.limit);
+    const items = await prisma.cropQuery.findMany({
+      where: {
+        userId: req.user.id,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: limit,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Crop recommendation history fetched",
+      data: {
+        items: items.map((item) => ({
+          id: item.id,
+          createdAt: item.createdAt,
+          location: item.input?.location || null,
+          soilType: item.input?.soilType || null,
+          season: item.input?.season || null,
+          autofill: item.input?.autofill || null,
+          primaryCrop: item.result?.primaryCrop || null,
+          alternatives: item.result?.alternatives || [],
+          meta: item.meta || {},
+        })),
+      },
+      meta: {
+        requestId: req.requestId,
+        timestamp: new Date().toISOString(),
+      },
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
+
 module.exports = {
   recommend,
+  history,
 };

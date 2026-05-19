@@ -7,6 +7,7 @@ const { cropRecommendationSchema } = require("../validators/crop.validators");
 
 const router = express.Router();
 
+router.get("/history", requireAuth, cropController.history);
 router.post("/recommend", requireAuth, validateBody(cropRecommendationSchema), cropController.recommend);
 
 module.exports = router;

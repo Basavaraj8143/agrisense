@@ -435,6 +435,26 @@ select {
   gap: 1.4rem;
 }
 
+.pest-layout,
+.dashboard-grid,
+.dashboard-hero,
+.metric-grid {
+  display: grid;
+  gap: 1.4rem;
+}
+
+.pest-layout,
+.dashboard-grid {
+  grid-template-columns: 1.05fr 0.95fr;
+  margin-top: 1.4rem;
+  align-items: start;
+}
+
+.dashboard-hero,
+.metric-grid {
+  grid-template-columns: 1.1fr 0.9fr;
+}
+
 .crop-layout {
   margin-top: 1.4rem;
   align-items: start;
@@ -528,6 +548,82 @@ select {
   margin-top: 1rem;
 }
 
+.history-stack {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.history-card {
+  padding: 1rem 1.05rem;
+  border-radius: 1.2rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.history-card p,
+.state-copy {
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.history-card-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.45rem;
+}
+
+.history-card-top span {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.empty-inline-state {
+  padding: 0.8rem 0 0.2rem;
+}
+
+.upload-dropzone {
+  display: grid;
+  gap: 0.45rem;
+  padding: 1.4rem;
+  border: 1px dashed rgba(20, 38, 28, 0.22);
+  border-radius: 1.3rem;
+  background: rgba(255, 255, 255, 0.72);
+  cursor: pointer;
+}
+
+.upload-dropzone input {
+  width: 100%;
+}
+
+.upload-title {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.2rem;
+}
+
+.upload-subtitle {
+  color: var(--muted);
+}
+
+.image-preview-card {
+  margin-top: 1rem;
+  border-radius: 1.4rem;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.image-preview {
+  display: block;
+  width: 100%;
+  max-height: 340px;
+  object-fit: cover;
+}
+
+.preview-placeholder {
+  margin-top: 1rem;
+}
+
 .result-card {
   padding: 1.2rem;
   border-radius: 1.3rem;
@@ -611,6 +707,10 @@ select {
   .hero-grid,
   .crop-hero,
   .crop-layout,
+  .pest-layout,
+  .dashboard-grid,
+  .dashboard-hero,
+  .metric-grid,
   .route-hero,
   .auth-layout,
   .footer-grid,

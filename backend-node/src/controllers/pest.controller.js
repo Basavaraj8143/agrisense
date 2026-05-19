@@ -6,6 +6,16 @@ const { ensureDbConnected } = require("../utils/ensure-db-connected");
 const { HttpError } = require("../utils/http-error");
 const { logInfo, logWarn } = require("../utils/logger");
 
+function toHistoryLimit(value) {
+  const parsed = Number.parseInt(value, 10);
+
+  if (!Number.isFinite(parsed) || parsed < 1) {
+    return 5;
+  }
+
+  return Math.min(parsed, 20);
+}
+
 async function detect(req, res, next) {
   const startedAt = Date.now();
 
@@ -100,6 +110,46 @@ async function detect(req, res, next) {
   }
 }
 
+async function history(req, res, next) {
+  try {
+    ensureDbConnected();
+
+    const limit = toHistoryLimit(req.query.limit);
+    const items = await prisma.pestQuery.findMany({
+      where: {
+        userId: req.user.id,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: limit,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Pest analysis history fetched",
+      data: {
+        items: items.map((item) => ({
+          id: item.id,
+          createdAt: item.createdAt,
+          imageUrl: item.imageUrl,
+          imageHash: item.imageHash,
+          result: item.result || {},
+          provider: item.provider || {},
+          meta: item.meta || {},
+        })),
+      },
+      meta: {
+        requestId: req.requestId,
+        timestamp: new Date().toISOString(),
+      },
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
+
 module.exports = {
   detect,
+  history,
 };

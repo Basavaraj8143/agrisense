@@ -82,13 +82,13 @@ function AppShell() {
       <footer className="site-footer">
         <div className="shell-container footer-grid">
           <div>
-            <p className="eyebrow">Day 10 shipped</p>
-            <h2 className="footer-title">Protected auth and crop flows are now live in React.</h2>
+            <p className="eyebrow">Day 11 shipped</p>
+            <h2 className="footer-title">Pest upload and dashboard history now complete the frontend MVP.</h2>
           </div>
           <div className="footer-copy">
             <p>
-              The app shell now carries real authenticated routes, while Day 11 can focus on pest analysis, dashboard
-              history, and polish instead of rebuilding core flow pieces.
+              The React client now covers auth, crop recommendations, pest analysis, and recent activity, which puts the
+              next phase squarely on testing and hardening.
             </p>
           </div>
         </div>

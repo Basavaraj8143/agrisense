@@ -12,13 +12,14 @@ const configuredBaseUrl = import.meta.env.VITE_API_BASE_URL || defaultBaseUrl;
 const apiBaseUrl = configuredBaseUrl.replace(/\/$/, "");
 
 async function apiRequest(path, { method = "GET", body, token } = {}) {
+  const isFormData = typeof FormData !== "undefined" && body instanceof FormData;
   const response = await fetch(`${apiBaseUrl}${path}`, {
     method,
     headers: {
-      "Content-Type": "application/json",
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
-    body: body ? JSON.stringify(body) : undefined,
+    body: body ? (isFormData ? body : JSON.stringify(body)) : undefined,
   });
 
   const payload = await response.json().catch(() => null);
@@ -82,6 +83,37 @@ export const cropApi = {
     });
 
     return response.data;
+  },
+
+  async history(token, limit = 5) {
+    const response = await apiRequest(`/api/crop/history?limit=${limit}`, {
+      token,
+    });
+
+    return response.data.items;
+  },
+};
+
+export const pestApi = {
+  async detect(file, token) {
+    const form = new FormData();
+    form.append("image", file);
+
+    const response = await apiRequest("/api/pest/detect", {
+      method: "POST",
+      body: form,
+      token,
+    });
+
+    return response.data;
+  },
+
+  async history(token, limit = 5) {
+    const response = await apiRequest(`/api/pest/history?limit=${limit}`, {
+      token,
+    });
+
+    return response.data.items;
   },
 };
 
