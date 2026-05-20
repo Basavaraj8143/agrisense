@@ -9,7 +9,7 @@ function formatDate(value) {
     return "Unknown time";
   }
 
-  return new Date(value).toLocaleString();
+  return new Date(value).toLocaleDateString();
 }
 
 function DashboardPage() {
@@ -46,183 +46,145 @@ function DashboardPage() {
     };
   }, [token]);
 
-  const totalActivity = cropItems.length + pestItems.length;
-  const latestSource = [...cropItems, ...pestItems]
-    .map((item) => item.meta?.source)
-    .filter(Boolean)
-    .slice(0, 1)[0];
-
   return (
-    <section className="page">
-      <div className="shell-container workspace-hero">
-        <div>
-          <p className="eyebrow">Operations dashboard</p>
-          <h1 className="page-title">Welcome back, {user?.name || "farmer"}.</h1>
-          <p className="lead-text">
-            Monitor your recent crop recommendations and pest diagnoses from one place, with backend-backed history
-            and workflow shortcuts ready for the next field run.
+    <section className="legacy-dashboard-page">
+      <div className="legacy-dashboard-hero">
+        <div className="legacy-container legacy-dashboard-hero-inner">
+          <h2 className="legacy-dashboard-title">Your Farming Dashboard</h2>
+          <p className="legacy-dashboard-subtitle">
+            Track your recent crop recommendations, pest detections, and farming activity in one place, {user?.name || "farmer"}.
           </p>
         </div>
-
-        <aside className="surface-card workspace-summary accent-surface">
-          <p className="card-kicker">Workspace summary</p>
-          <div className="stats-stack">
-            <div className="summary-row">
-              <strong>History state</strong>
-              <span>{status === "ready" ? "Synchronized" : status === "loading" ? "Syncing" : "Needs attention"}</span>
-            </div>
-            <div className="summary-row">
-              <strong>Recent source</strong>
-              <span>{latestSource || "Awaiting data"}</span>
-            </div>
-            <div className="summary-row">
-              <strong>Preferred workspace</strong>
-              <span>{user?.preferredLanguage?.toUpperCase?.() || "EN"}</span>
-            </div>
-          </div>
-        </aside>
       </div>
 
-      <div className="shell-container stats-row">
-        <article className="surface-card stat-card">
-          <p className="metric-label">Recent activity</p>
-          <strong className="metric-value">{totalActivity}</strong>
-          <p>Combined crop and pest records loaded into this dashboard session.</p>
-        </article>
-        <article className="surface-card stat-card">
-          <p className="metric-label">Crop runs</p>
-          <strong className="metric-value">{cropItems.length}</strong>
-          <p>Latest recommendation records available from the protected crop history endpoint.</p>
-        </article>
-        <article className="surface-card stat-card">
-          <p className="metric-label">Pest scans</p>
-          <strong className="metric-value">{pestItems.length}</strong>
-          <p>Most recent diagnosis uploads returned through the pest history endpoint.</p>
-        </article>
-      </div>
-
-      {status === "loading" ? (
-        <div className="shell-container">
-          <div className="surface-card empty-state-card">
-            <p className="card-kicker">Loading dashboard</p>
-            <h3>Fetching recent field activity.</h3>
-            <p>We are loading saved crop and pest records from the protected backend routes.</p>
-          </div>
-        </div>
-      ) : null}
-
-      {status === "error" ? (
-        <div className="shell-container">
-          <div className="form-error">Unable to load dashboard history right now. Please refresh after the backend is reachable.</div>
-        </div>
-      ) : null}
-
-      {status === "ready" ? (
-        <div className="shell-container dashboard-grid">
-          <section className="surface-card results-panel">
-            <div className="section-heading">
-              <div>
-                <p className="card-kicker">Crop recommendations</p>
-                <h3>Recent crop runs</h3>
-              </div>
-              <Link to="/crop" className="secondary-button inline-button">
-                New crop run
-              </Link>
-            </div>
-
-            {cropItems.length === 0 ? (
-              <div className="empty-inline-state">
-                <p className="state-copy">No crop recommendations yet. Start one from the crop workflow.</p>
-              </div>
-            ) : (
-              <div className="history-stack">
-                {cropItems.map((item) => (
-                  <article key={item.id} className="history-card">
-                    <div className="history-card-top">
+      <div className="legacy-section">
+        <div className="legacy-container">
+          <div className="legacy-dashboard-grid">
+            <article className="legacy-card">
+              <h3 className="legacy-card-title">Recent Crop Recommendations</h3>
+              {status === "loading" ? <p className="legacy-card-copy">Loading crop history...</p> : null}
+              {status === "error" ? <p className="legacy-card-copy">Unable to load crop history right now.</p> : null}
+              {status === "ready" && cropItems.length === 0 ? <p className="legacy-card-copy">No crop recommendations saved yet.</p> : null}
+              {status === "ready" && cropItems.length > 0 ? (
+                <div className="legacy-mini-list">
+                  {cropItems.map((item) => (
+                    <div key={item.id} className="legacy-mini-item">
                       <strong>{item.primaryCrop?.name || "Unknown crop"}</strong>
-                      <span>{formatDate(item.createdAt)}</span>
+                      <span>{Math.round((item.primaryCrop?.score || 0) * 100)}% match</span>
                     </div>
-                    <p>
-                      {item.location?.district || "Unknown district"}, {item.location?.taluk || "Unknown taluk"} |{" "}
-                      {item.season || "Unknown season"} | {item.soilType || "Unknown soil"}
-                    </p>
-                    <div className="result-stats">
-                      <span className="result-pill">{Math.round((item.primaryCrop?.score || 0) * 100)}% match</span>
-                      <span className="result-pill result-pill-soft">{item.meta?.source || "ml-service"}</span>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            )}
-          </section>
+                  ))}
+                </div>
+              ) : null}
+            </article>
 
-          <section className="surface-card results-panel">
-            <div className="section-heading">
-              <div>
-                <p className="card-kicker">Pest analyses</p>
-                <h3>Recent pest checks</h3>
-              </div>
-              <Link to="/pest" className="secondary-button inline-button">
-                New pest scan
-              </Link>
-            </div>
-
-            {pestItems.length === 0 ? (
-              <div className="empty-inline-state">
-                <p className="state-copy">No pest analyses yet. Upload an image from the pest workflow.</p>
-              </div>
-            ) : (
-              <div className="history-stack">
-                {pestItems.map((item) => (
-                  <article key={item.id} className="history-card">
-                    <div className="history-card-top">
+            <article className="legacy-card">
+              <h3 className="legacy-card-title">Recent Pest Analyses</h3>
+              {status === "loading" ? <p className="legacy-card-copy">Loading pest history...</p> : null}
+              {status === "error" ? <p className="legacy-card-copy">Unable to load pest history right now.</p> : null}
+              {status === "ready" && pestItems.length === 0 ? <p className="legacy-card-copy">No pest analyses saved yet.</p> : null}
+              {status === "ready" && pestItems.length > 0 ? (
+                <div className="legacy-mini-list">
+                  {pestItems.map((item) => (
+                    <div key={item.id} className="legacy-mini-item">
                       <strong>{item.result?.scientificName || "Unknown pest"}</strong>
-                      <span>{formatDate(item.createdAt)}</span>
+                      <span>{item.result?.confidencePercent ?? 0}% confidence</span>
                     </div>
-                    <p>{item.result?.commonNames || "Unknown common name"}</p>
-                    <div className="result-stats">
-                      <span className="result-pill">{item.result?.confidencePercent ?? 0}% confidence</span>
-                      <span className="result-pill result-pill-soft">{item.meta?.source || "ml-service"}</span>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            )}
-          </section>
+                  ))}
+                </div>
+              ) : null}
+            </article>
 
-          <aside className="dashboard-sidebar">
-            <div className="surface-card sidebar-card">
-              <p className="card-kicker">Quick actions</p>
-              <div className="action-stack">
-                <Link to="/crop" className="secondary-button full-width">
-                  Open crop workspace
-                </Link>
-                <Link to="/pest" className="secondary-button full-width">
-                  Open pest workspace
-                </Link>
-              </div>
-            </div>
-
-            <div className="surface-card sidebar-card">
-              <p className="card-kicker">System status</p>
-              <div className="status-list">
-                <div className="status-row">
-                  <span>Auth session</span>
+            <article className="legacy-card">
+              <h3 className="legacy-card-title">Workspace Status</h3>
+              <div className="legacy-status-stack">
+                <div className="legacy-status-row">
+                  <span>Session</span>
                   <strong>Active</strong>
                 </div>
-                <div className="status-row">
-                  <span>History sync</span>
-                  <strong>{status === "ready" ? "Healthy" : "Retrying"}</strong>
+                <div className="legacy-status-row">
+                  <span>History Sync</span>
+                  <strong>{status === "ready" ? "Healthy" : status === "loading" ? "Loading" : "Attention"}</strong>
                 </div>
-                <div className="status-row">
-                  <span>Primary source</span>
-                  <strong>{latestSource || "Pending"}</strong>
+                <div className="legacy-status-row">
+                  <span>Preferred Language</span>
+                  <strong>{user?.preferredLanguage?.toUpperCase?.() || "EN"}</strong>
                 </div>
               </div>
+            </article>
+          </div>
+
+          <div className="legacy-stats-grid">
+            <article className="legacy-stat-card accent-green">
+              <div className="legacy-stat-value">{cropItems.length}</div>
+              <div className="legacy-stat-label">Saved Crop Runs</div>
+            </article>
+            <article className="legacy-stat-card accent-blue">
+              <div className="legacy-stat-value">{pestItems.length}</div>
+              <div className="legacy-stat-label">Saved Pest Checks</div>
+            </article>
+            <article className="legacy-stat-card accent-purple">
+              <div className="legacy-stat-value">{cropItems.length + pestItems.length}</div>
+              <div className="legacy-stat-label">Total Recent Records</div>
+            </article>
+            <article className="legacy-stat-card accent-orange">
+              <div className="legacy-stat-value">2</div>
+              <div className="legacy-stat-label">Active Workflows</div>
+            </article>
+          </div>
+
+          <div className="legacy-dashboard-section">
+            <div className="legacy-dashboard-section-header">
+              <h3 className="legacy-dashboard-section-title">Your Saved Crops</h3>
+              <Link to="/crop" className="legacy-text-link">
+                New Crop Recommendation
+              </Link>
             </div>
-          </aside>
+            <div className="legacy-record-grid">
+              {cropItems.length === 0 ? (
+                <div className="legacy-empty-panel">No crops saved yet. Get recommendations to add activity to your dashboard.</div>
+              ) : (
+                cropItems.map((item) => (
+                  <article key={item.id} className="legacy-card legacy-card-hover">
+                    <h4 className="legacy-card-title">{item.primaryCrop?.name || "Unknown crop"}</h4>
+                    <p className="legacy-card-copy">
+                      {item.location?.district || "Unknown district"}, {item.location?.taluk || "Unknown taluk"}
+                    </p>
+                    <div className="legacy-record-meta">
+                      <span>{item.season || "Unknown season"}</span>
+                      <span>{formatDate(item.createdAt)}</span>
+                    </div>
+                  </article>
+                ))
+              )}
+            </div>
+          </div>
+
+          <div className="legacy-dashboard-section">
+            <div className="legacy-dashboard-section-header">
+              <h3 className="legacy-dashboard-section-title">Your Saved Pest Analyses</h3>
+              <Link to="/pest" className="legacy-text-link">
+                New Pest Detection
+              </Link>
+            </div>
+            <div className="legacy-record-grid">
+              {pestItems.length === 0 ? (
+                <div className="legacy-empty-panel">No pest analyses yet. Upload a crop image to start saving results.</div>
+              ) : (
+                pestItems.map((item) => (
+                  <article key={item.id} className="legacy-card legacy-card-hover">
+                    <h4 className="legacy-card-title">{item.result?.scientificName || "Unknown pest"}</h4>
+                    <p className="legacy-card-copy">{item.result?.commonNames || "Unknown common name"}</p>
+                    <div className="legacy-record-meta">
+                      <span>{item.result?.confidencePercent ?? 0}% confidence</span>
+                      <span>{formatDate(item.createdAt)}</span>
+                    </div>
+                  </article>
+                ))
+              )}
+            </div>
+          </div>
         </div>
-      ) : null}
+      </div>
     </section>
   );
 }

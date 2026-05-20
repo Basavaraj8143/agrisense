@@ -8,12 +8,11 @@ function RequireAuth({ children }) {
 
   if (status === "checking") {
     return (
-      <section className="page">
-        <div className="shell-container">
-          <div className="surface-card gate-card">
-            <p className="eyebrow">Checking session</p>
-            <h2>Restoring your secure workspace.</h2>
-            <p>We are validating your saved session before opening protected tools.</p>
+      <section className="legacy-section">
+        <div className="legacy-container">
+          <div className="legacy-card legacy-not-found-card">
+            <h2 className="legacy-card-title">Restoring your secure workspace</h2>
+            <p className="legacy-card-copy">We are validating your saved session before opening the protected farming tools.</p>
           </div>
         </div>
       </section>

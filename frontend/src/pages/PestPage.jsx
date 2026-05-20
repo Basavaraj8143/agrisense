@@ -10,11 +10,11 @@ function formatDate(value) {
     return "Unknown time";
   }
 
-  return new Date(value).toLocaleString();
+  return new Date(value).toLocaleDateString();
 }
 
 function PestPage() {
-  const { token, user } = useAuth();
+  const { token } = useAuth();
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
   const [result, setResult] = useState(null);
@@ -115,178 +115,119 @@ function PestPage() {
   }
 
   return (
-    <section className="page page-pest">
-      <div className="shell-container workspace-hero">
-        <div>
-          <p className="eyebrow">Pest diagnosis workspace</p>
-          <h1 className="page-title">Turn crop imagery into a structured diagnosis.</h1>
-          <p className="lead-text">
-            Signed in as {user?.name || "farmer"}. Upload a crop image, run the protected pest analysis route, and keep
-            recent diagnoses visible for follow-up action.
+    <section className="legacy-section">
+      <div className="legacy-container">
+        <div className="legacy-page-intro centered">
+          <h2 className="legacy-page-title">Pest Detection & Identification</h2>
+          <p className="legacy-page-subtitle">
+            Upload an image of the insect or pest for quick identification and management recommendations.
           </p>
         </div>
 
-        <aside className="surface-card workspace-summary accent-surface">
-          <p className="card-kicker">Diagnosis coverage</p>
-          <div className="stats-stack">
-            <div className="summary-row">
-              <strong>Accepted formats</strong>
-              <span>JPEG, PNG, WebP</span>
-            </div>
-            <div className="summary-row">
-              <strong>Result data</strong>
-              <span>Name, confidence, treatment, and source metadata</span>
-            </div>
-            <div className="summary-row">
-              <strong>History refresh</strong>
-              <span>Recent scans update after every successful upload</span>
+        <div className="legacy-workspace-grid">
+          <div className="legacy-card legacy-form-card">
+            <div className="legacy-upload-wrapper">
+              <label className="legacy-upload-zone pest">
+                <input
+                  type="file"
+                  className="legacy-hidden-input"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={handleFileChange}
+                />
+
+                {!previewUrl ? (
+                  <div className="legacy-upload-placeholder">
+                    <div className="legacy-upload-icon">IMG</div>
+                    <p className="legacy-upload-title">Upload Insect/Pest Image</p>
+                    <p className="legacy-helper-text">Click to select or drag and drop. Supported formats: JPG, PNG, WEBP.</p>
+                  </div>
+                ) : (
+                  <div className="legacy-upload-preview">
+                    <img src={previewUrl} alt="Selected pest sample preview" className="legacy-upload-image pest" />
+                  </div>
+                )}
+              </label>
+
+              {fieldErrors.image ? <small className="legacy-field-error">{fieldErrors.image}</small> : null}
+              {errorMessage ? <div className="legacy-error-box">{errorMessage}</div> : null}
+
+              {previewUrl ? (
+                <div className="legacy-button-row">
+                  <button type="button" className="legacy-solid-button" onClick={handleSubmit} disabled={submitting}>
+                    {submitting ? "Identifying Pest..." : "Identify Pest"}
+                  </button>
+                  <button
+                    type="button"
+                    className="legacy-text-button"
+                    onClick={() => {
+                      setSelectedFile(null);
+                      setPreviewUrl("");
+                      setResult(null);
+                      setFieldErrors({});
+                      setErrorMessage("");
+                    }}
+                  >
+                    Retake
+                  </button>
+                </div>
+              ) : null}
             </div>
           </div>
-        </aside>
-      </div>
 
-      <div className="shell-container workspace-layout">
-        <form className="surface-card workflow-panel" onSubmit={handleSubmit}>
-          <div className="section-heading">
-            <div>
-              <p className="card-kicker">Image intake</p>
-              <h2>Upload a clear crop sample.</h2>
-            </div>
-            <p>Higher quality images help the diagnosis service return more useful names, confidence scores, and treatment notes.</p>
+          <div className="legacy-card legacy-results-card">
+            <h3 className="legacy-card-title">Detection Results</h3>
+            {!result ? (
+              <div className="legacy-empty-result">
+                <div className="legacy-empty-icon">PEST</div>
+                <p>Upload an image to identify pests and review management guidance.</p>
+              </div>
+            ) : (
+              <div className="legacy-pest-result">
+                <div className="legacy-pest-result-row">
+                  <span>Scientific Name</span>
+                  <strong>{result.scientificName}</strong>
+                </div>
+                <div className="legacy-pest-result-row">
+                  <span>Confidence</span>
+                  <strong>{result.confidencePercent}%</strong>
+                </div>
+                <div className="legacy-pest-result-row">
+                  <span>Common Names</span>
+                  <strong>{result.commonNames}</strong>
+                </div>
+                <div className="legacy-pest-about">
+                  <h4>About</h4>
+                  <p>{result.treatmentSummary}</p>
+                </div>
+              </div>
+            )}
           </div>
+        </div>
 
-          <label className="upload-dropzone">
-            <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleFileChange} />
-            <span className="upload-title">{selectedFile ? selectedFile.name : "Drop or choose an image"}</span>
-            <span className="upload-subtitle">The protected upload is sent to `/api/pest/detect` through the Node backend.</span>
-          </label>
-
-          {fieldErrors.image ? <p className="form-error">{fieldErrors.image}</p> : null}
-          {errorMessage ? <p className="form-error">{errorMessage}</p> : null}
-
-          {previewUrl ? (
-            <div className="image-preview-card">
-              <img src={previewUrl} alt="Selected pest sample preview" className="image-preview" />
-            </div>
-          ) : (
-            <div className="surface-card empty-state-card preview-placeholder">
-              <p className="card-kicker">Preview</p>
-              <h3>No image selected yet.</h3>
-              <p>Your upload preview appears here before analysis starts.</p>
-            </div>
-          )}
-
-          <div className="form-actions">
-            <button type="submit" className="primary-button" disabled={submitting}>
-              {submitting ? "Analyzing image..." : "Analyze pest"}
-            </button>
-            <button
-              type="button"
-              className="secondary-button"
-              onClick={() => {
-                setSelectedFile(null);
-                setPreviewUrl("");
-                setResult(null);
-                setFieldErrors({});
-                setErrorMessage("");
-              }}
-            >
-              Clear
-            </button>
+        <div className="legacy-dashboard-section">
+          <div className="legacy-dashboard-section-header">
+            <h3 className="legacy-dashboard-section-title">Recent Pest Checks</h3>
           </div>
-        </form>
-
-        <div className="results-column">
-          {result ? (
-            <div className="surface-card results-panel">
-              <div className="section-heading">
-                <div>
-                  <p className="card-kicker">Diagnosis result</p>
-                  <h2>{result.scientificName}</h2>
-                </div>
-                <p>Query ID: {result.queryId}</p>
-              </div>
-
-              <div className="result-stats">
-                <span className="result-pill">{result.confidencePercent}% confidence</span>
-                <span className="result-pill result-pill-soft">{result.commonNames}</span>
-              </div>
-
-              <article className="result-card result-card-featured">
-                <p className="card-kicker">Treatment summary</p>
-                <p>{result.treatmentSummary}</p>
-              </article>
-
-              <div className="meta-grid">
-                <article className="surface-card stat-card compact-metric">
-                  <p className="metric-label">Source</p>
-                  <strong className="metric-value meta-value">{result.meta?.source || "ml-service"}</strong>
-                  <p>Returned through the Node broker so outage handling and metadata stay consistent.</p>
-                </article>
-                <article className="surface-card stat-card compact-metric">
-                  <p className="metric-label">Latency</p>
-                  <strong className="metric-value meta-value">{result.meta?.latencyMs ?? 0} ms</strong>
-                  <p>Measured by the backend while persisting this pest diagnosis for history.</p>
-                </article>
-              </div>
-            </div>
-          ) : (
-            <div className="surface-card results-panel">
-              <p className="card-kicker">Awaiting analysis</p>
-              <h2>Your diagnosis panel will appear here.</h2>
-              <p className="state-copy">
-                Upload a crop image to review the likely pest, confidence, treatment summary, and response metadata.
-              </p>
-              <div className="status-list status-list-spaced">
-                <div className="status-row">
-                  <span>Upload state</span>
-                  <strong>{selectedFile ? "Ready" : "Awaiting image"}</strong>
-                </div>
-                <div className="status-row">
-                  <span>History sync</span>
-                  <strong>{historyStatus === "ready" ? "Healthy" : historyStatus === "loading" ? "Loading" : "Attention"}</strong>
-                </div>
-                <div className="status-row">
-                  <span>Runtime path</span>
-                  <strong>Protected multipart upload</strong>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="surface-card results-panel">
-            <div className="section-heading">
-              <div>
-                <p className="card-kicker">Recent analyses</p>
-                <h2>Latest pest checks</h2>
-              </div>
-            </div>
-
-            {historyStatus === "loading" ? <p className="state-copy">Loading recent pest history...</p> : null}
-            {historyStatus === "error" ? <p className="form-error">Unable to load recent pest history right now.</p> : null}
-            {historyStatus === "ready" && recentItems.length === 0 ? (
-              <div className="empty-inline-state">
-                <p className="state-copy">No pest analyses yet. Your first upload will show up here.</p>
-              </div>
-            ) : null}
-            {historyStatus === "ready" && recentItems.length > 0 ? (
-              <div className="history-stack">
-                {recentItems.map((item) => (
-                  <article key={item.id} className="history-card">
-                    <div className="history-card-top">
-                      <strong>{item.result?.scientificName || "Unknown pest"}</strong>
+          {historyStatus === "loading" ? <div className="legacy-empty-panel">Loading recent pest history...</div> : null}
+          {historyStatus === "error" ? <div className="legacy-empty-panel">Unable to load recent pest history right now.</div> : null}
+          {historyStatus === "ready" ? (
+            <div className="legacy-record-grid">
+              {recentItems.length === 0 ? (
+                <div className="legacy-empty-panel">No pest analyses yet. Your first upload will show up here.</div>
+              ) : (
+                recentItems.map((item) => (
+                  <article key={item.id} className="legacy-card legacy-card-hover">
+                    <h4 className="legacy-card-title">{item.result?.scientificName || "Unknown pest"}</h4>
+                    <p className="legacy-card-copy">{item.result?.commonNames || "Unknown common name"}</p>
+                    <div className="legacy-record-meta">
+                      <span>{item.result?.confidencePercent ?? 0}% confidence</span>
                       <span>{formatDate(item.createdAt)}</span>
                     </div>
-                    <p>{item.result?.commonNames || "Unknown common name"}</p>
-                    <div className="result-stats">
-                      <span className="result-pill">{item.result?.confidencePercent ?? 0}% confidence</span>
-                      <span className="result-pill result-pill-soft">{item.meta?.source || "ml-service"}</span>
-                    </div>
                   </article>
-                ))}
-              </div>
-            ) : null}
-          </div>
+                ))
+              )}
+            </div>
+          ) : null}
         </div>
       </div>
     </section>

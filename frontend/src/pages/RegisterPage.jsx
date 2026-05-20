@@ -87,122 +87,106 @@ function RegisterPage() {
   }
 
   return (
-    <section className="page auth-page">
-      <div className="shell-container auth-layout">
-        <div className="auth-copy">
-          <p className="eyebrow">Workspace onboarding</p>
-          <h1 className="page-title auth-title">Create an account for localized crop and pest workflows.</h1>
-          <p className="lead-text">
-            Register once to unlock protected recommendations, diagnosis uploads, and a saved dashboard history tied to
-            your profile.
-          </p>
-
-          <div className="auth-copy-grid">
-            <article className="surface-card auth-panel">
-              <p className="card-kicker">Account benefits</p>
-              <ul className="bullet-list">
-                <li>JWT session stored for protected routes</li>
-                <li>Crop and pest activity saved to your account history</li>
-                <li>Language preference carried with the user profile</li>
-              </ul>
-            </article>
-
-            <article className="surface-card auth-panel accent-surface">
-              <p className="card-kicker">Password rules</p>
-              <ul className="bullet-list">
-                <li>At least 8 characters</li>
-                <li>One uppercase and one lowercase letter</li>
-                <li>At least one number</li>
-              </ul>
-            </article>
+    <section className="legacy-section">
+      <div className="legacy-container">
+        <div className="legacy-auth-layout">
+          <div className="legacy-gradient-panel">
+            <h2 className="legacy-panel-title">Create your farming account</h2>
+            <p className="legacy-gradient-copy">
+              Register once to save crop recommendations, pest detections, and dashboard history inside the new React
+              app.
+            </p>
+            <ul className="legacy-list legacy-list-light">
+              <li>JWT session restored automatically after sign in</li>
+              <li>Preferred language stored with your user profile</li>
+              <li>Direct access to protected crop and pest routes</li>
+            </ul>
           </div>
+
+          <form className="legacy-card legacy-form-card" onSubmit={handleSubmit}>
+            <h3 className="legacy-card-title">Create Account</h3>
+            <p className="legacy-card-copy">These fields follow the backend validation rules exactly.</p>
+
+            <label className="legacy-field">
+              <span>Name</span>
+              <input
+                type="text"
+                className="legacy-input"
+                value={form.name}
+                onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))}
+                placeholder="Basava"
+                autoComplete="name"
+                required
+              />
+              {fieldErrors.name ? <small className="legacy-field-error">{fieldErrors.name}</small> : null}
+            </label>
+
+            <label className="legacy-field">
+              <span>Email</span>
+              <input
+                type="email"
+                className="legacy-input"
+                value={form.email}
+                onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))}
+                placeholder="farmer@example.com"
+                autoComplete="email"
+                required
+              />
+              {fieldErrors.email ? <small className="legacy-field-error">{fieldErrors.email}</small> : null}
+            </label>
+
+            <label className="legacy-field">
+              <span>Password</span>
+              <input
+                type="password"
+                className="legacy-input"
+                value={form.password}
+                onChange={(event) => setForm((current) => ({ ...current, password: event.target.value }))}
+                placeholder="StrongPass@123"
+                autoComplete="new-password"
+                required
+              />
+              {fieldErrors.password ? <small className="legacy-field-error">{fieldErrors.password}</small> : null}
+            </label>
+
+            <label className="legacy-field">
+              <span>Confirm Password</span>
+              <input
+                type="password"
+                className="legacy-input"
+                value={form.confirmPassword}
+                onChange={(event) => setForm((current) => ({ ...current, confirmPassword: event.target.value }))}
+                placeholder="Repeat password"
+                autoComplete="new-password"
+                required
+              />
+              {fieldErrors.confirmPassword ? <small className="legacy-field-error">{fieldErrors.confirmPassword}</small> : null}
+            </label>
+
+            <label className="legacy-field">
+              <span>Preferred Language</span>
+              <select
+                className="legacy-input"
+                value={form.preferredLanguage}
+                onChange={(event) => setForm((current) => ({ ...current, preferredLanguage: event.target.value }))}
+              >
+                <option value="en">English</option>
+                <option value="hi">Hindi</option>
+                <option value="kn">Kannada</option>
+              </select>
+            </label>
+
+            {errorMessage ? <div className="legacy-error-box">{errorMessage}</div> : null}
+
+            <button type="submit" className="legacy-solid-button legacy-full-width" disabled={submitting}>
+              {submitting ? "Creating Account..." : "Create Account"}
+            </button>
+
+            <p className="legacy-footnote">
+              Already registered? <Link to="/login">Sign in</Link>
+            </p>
+          </form>
         </div>
-
-        <form className="auth-card" onSubmit={handleSubmit}>
-          <div className="form-heading">
-            <p className="card-kicker">Register</p>
-            <h2>Create your account</h2>
-            <p>These fields map directly to the backend validation and user model.</p>
-          </div>
-
-          <label className="field">
-            <span>Name</span>
-            <input
-              type="text"
-              value={form.name}
-              onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))}
-              placeholder="Basava"
-              autoComplete="name"
-              required
-            />
-            {fieldErrors.name ? <small className="field-hint field-hint-error">{fieldErrors.name}</small> : null}
-          </label>
-
-          <label className="field">
-            <span>Email</span>
-            <input
-              type="email"
-              value={form.email}
-              onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))}
-              placeholder="farmer@example.com"
-              autoComplete="email"
-              required
-            />
-            {fieldErrors.email ? <small className="field-hint field-hint-error">{fieldErrors.email}</small> : null}
-          </label>
-
-          <label className="field">
-            <span>Password</span>
-            <input
-              type="password"
-              value={form.password}
-              onChange={(event) => setForm((current) => ({ ...current, password: event.target.value }))}
-              placeholder="StrongPass@123"
-              minLength={8}
-              autoComplete="new-password"
-              required
-            />
-            {fieldErrors.password ? <small className="field-hint field-hint-error">{fieldErrors.password}</small> : null}
-          </label>
-
-          <label className="field">
-            <span>Confirm password</span>
-            <input
-              type="password"
-              value={form.confirmPassword}
-              onChange={(event) => setForm((current) => ({ ...current, confirmPassword: event.target.value }))}
-              placeholder="Repeat password"
-              autoComplete="new-password"
-              required
-            />
-            {fieldErrors.confirmPassword ? (
-              <small className="field-hint field-hint-error">{fieldErrors.confirmPassword}</small>
-            ) : null}
-          </label>
-
-          <label className="field">
-            <span>Preferred language</span>
-            <select
-              value={form.preferredLanguage}
-              onChange={(event) => setForm((current) => ({ ...current, preferredLanguage: event.target.value }))}
-            >
-              <option value="en">English</option>
-              <option value="hi">Hindi</option>
-              <option value="kn">Kannada</option>
-            </select>
-            <small className="field-hint">Stored as part of the protected user profile.</small>
-          </label>
-
-          {errorMessage ? <p className="form-error">{errorMessage}</p> : null}
-
-          <button type="submit" className="primary-button full-width" disabled={submitting}>
-            {submitting ? "Creating account..." : "Create account"}
-          </button>
-
-          <p className="auth-footnote">
-            Already registered? <Link to="/login">Sign in</Link>
-          </p>
-        </form>
       </div>
     </section>
   );

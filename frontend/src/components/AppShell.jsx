@@ -5,105 +5,151 @@ import { useAuth } from "../context/AuthContext";
 
 const navItems = [
   { to: "/", label: "Home" },
-  { to: "/crop", label: "Crop" },
-  { to: "/pest", label: "Pest" },
+  { to: "/crop", label: "Crop Recommendation" },
+  { to: "/pest", label: "Pest Detection" },
   { to: "/dashboard", label: "Dashboard" },
 ];
 
 function AppShell() {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
-  const { isAuthenticated, user, logout, status } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
 
   useEffect(() => {
     setMenuOpen(false);
   }, [location.pathname]);
 
   return (
-    <div className="app-shell">
-      <header className="site-header">
-        <div className="topbar">Localized crop intelligence, pest diagnosis, and saved field history in one workspace.</div>
+    <div className="legacy-app">
+      <div className="offline-banner">Works partially offline in low connectivity regions</div>
 
-        <div className="shell-container header-row">
-          <NavLink to="/" className="brand-lockup" aria-label="AgriSense home">
-            <div className="brand-mark">AS</div>
-            <div>
-              <p className="eyebrow">Agri intelligence platform</p>
-              <p className="brand-title">AgriSense</p>
-            </div>
-          </NavLink>
+      <header className="legacy-header">
+        <div className="legacy-container legacy-header-inner">
+          <div className="legacy-header-top">
+            <NavLink to="/" className="legacy-brand" aria-label="AgriSense home">
+              <div className="legacy-brand-mark">AS</div>
+              <div>
+                <h1 className="legacy-brand-name">AgriSense</h1>
+                <p className="legacy-brand-tagline">AI Crop Recommendation System</p>
+              </div>
+            </NavLink>
 
-          <button
-            type="button"
-            className="menu-toggle"
-            onClick={() => setMenuOpen((current) => !current)}
-            aria-expanded={menuOpen}
-            aria-label="Toggle navigation"
-          >
-            Menu
-          </button>
-
-          <nav className={`site-nav ${menuOpen ? "is-open" : ""}`}>
-            {navItems.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) => `nav-link ${isActive ? "is-active" : ""}`}
+            <div className="legacy-header-actions">
+              <select
+                className="legacy-language-select"
+                aria-label="Preferred language"
+                value={user?.preferredLanguage || "en"}
+                onChange={() => {}}
               >
-                {item.label}
-              </NavLink>
-            ))}
+                <option value="en">English</option>
+                <option value="hi">Hindi</option>
+                <option value="kn">Kannada</option>
+              </select>
+
+              {isAuthenticated ? (
+                <button type="button" className="legacy-outline-button" onClick={logout}>
+                  Sign Out
+                </button>
+              ) : (
+                <NavLink to="/login" className="legacy-solid-button legacy-header-button">
+                  Sign In
+                </NavLink>
+              )}
+
+              <button
+                type="button"
+                className="legacy-menu-button"
+                onClick={() => setMenuOpen((current) => !current)}
+                aria-expanded={menuOpen}
+                aria-label="Toggle navigation"
+              >
+                Menu
+              </button>
+            </div>
+          </div>
+
+          <nav className="legacy-desktop-nav">
+            <ul className="legacy-nav-list">
+              {navItems.map((item) => (
+                <li key={item.to}>
+                  <NavLink
+                    to={item.to}
+                    className={({ isActive }) => `legacy-nav-link ${isActive ? "is-active" : ""}`}
+                  >
+                    {item.label}
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
           </nav>
 
-          <div className="nav-actions">
-            <div className="status-chip">
-              <span className={`status-dot status-${status}`} />
-              {isAuthenticated ? user?.name || "Workspace active" : "Guest mode"}
-            </div>
-
-            {isAuthenticated ? (
-              <button type="button" className="ghost-button compact-button" onClick={logout}>
-                Sign out
-              </button>
-            ) : (
-              <NavLink to="/login" className="primary-button compact-button">
-                Sign in
-              </NavLink>
-            )}
-          </div>
+          <nav className={`legacy-mobile-nav ${menuOpen ? "is-open" : ""}`}>
+            <ul className="legacy-mobile-nav-list">
+              {navItems.map((item) => (
+                <li key={item.to}>
+                  <NavLink
+                    to={item.to}
+                    className={({ isActive }) => `legacy-mobile-nav-link ${isActive ? "is-active" : ""}`}
+                  >
+                    {item.label}
+                  </NavLink>
+                </li>
+              ))}
+              {!isAuthenticated ? (
+                <li>
+                  <NavLink to="/register" className="legacy-mobile-nav-link">
+                    Create Account
+                  </NavLink>
+                </li>
+              ) : null}
+            </ul>
+          </nav>
         </div>
       </header>
 
-      <main className="main-content">
+      <main className="legacy-main">
         <Outlet />
       </main>
 
-      <footer className="site-footer">
-        <div className="shell-container footer-grid">
-          <div className="footer-brand">
-            <p className="eyebrow">Current product state</p>
-            <h2 className="footer-title">Field recommendations and pest workflows now share one consistent product UI.</h2>
-            <p className="footer-copy">
-              The frontend now follows a cleaner agri-tech system with clearer workflow panels, stronger trust cues,
-              and more operational dashboard surfaces.
+      <footer className="legacy-footer">
+        <div className="legacy-container legacy-footer-grid">
+          <div>
+            <div className="legacy-footer-brand">
+              <div className="legacy-footer-mark">AS</div>
+              <span>AgriSense</span>
+            </div>
+            <p className="legacy-footer-copy">
+              Empowering farmers with AI-powered agricultural solutions for sustainable and profitable farming.
             </p>
+            <div className="legacy-footer-note">© 2025 AgriSense Team | Built for Smart India Hackathon</div>
           </div>
 
-          <div className="footer-column">
-            <p className="card-kicker">Modules</p>
-            <ul className="bullet-list">
-              <li>Protected auth and session restore</li>
-              <li>Crop recommendation workspace</li>
-              <li>Pest diagnosis and recent history</li>
+          <div>
+            <h4 className="legacy-footer-heading">Quick Links</h4>
+            <ul className="legacy-footer-list">
+              <li>
+                <NavLink to="/">Home</NavLink>
+              </li>
+              <li>
+                <NavLink to="/crop">Crop Recommendation</NavLink>
+              </li>
+              <li>
+                <NavLink to="/pest">Pest Detection</NavLink>
+              </li>
+              <li>
+                <NavLink to="/dashboard">Dashboard</NavLink>
+              </li>
             </ul>
           </div>
 
-          <div className="footer-column">
-            <p className="card-kicker">Delivery phase</p>
-            <ul className="bullet-list">
-              <li>Frontend MVP workflows complete</li>
-              <li>Neon-backed persistence enabled</li>
-              <li>Ready for hardening and end-to-end testing</li>
+          <div>
+            <h4 className="legacy-footer-heading">Features</h4>
+            <ul className="legacy-footer-list">
+              <li>AI Crop Recommendations</li>
+              <li>Pest Detection</li>
+              <li>Yield Predictions</li>
+              <li>Market Price Analysis</li>
+              <li>Multilingual Support</li>
             </ul>
           </div>
         </div>
