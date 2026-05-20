@@ -90,23 +90,41 @@ function RegisterPage() {
     <section className="page auth-page">
       <div className="shell-container auth-layout">
         <div className="auth-copy">
-          <p className="eyebrow">Farmer onboarding</p>
-          <h2>Create your account and unlock the new crop recommendation workspace.</h2>
-          <p>
-            Registration now enforces the same password rules as the backend, stores the JWT session, and lands you
-            directly inside the authenticated flow.
+          <p className="eyebrow">Workspace onboarding</p>
+          <h1 className="page-title auth-title">Create an account for localized crop and pest workflows.</h1>
+          <p className="lead-text">
+            Register once to unlock protected recommendations, diagnosis uploads, and a saved dashboard history tied to
+            your profile.
           </p>
-          <div className="surface-card auth-highlight">
-            <p className="card-kicker">Password rules</p>
-            <ul className="compact-list">
-              <li>At least 8 characters</li>
-              <li>One uppercase and one lowercase letter</li>
-              <li>At least one number</li>
-            </ul>
+
+          <div className="auth-copy-grid">
+            <article className="surface-card auth-panel">
+              <p className="card-kicker">Account benefits</p>
+              <ul className="bullet-list">
+                <li>JWT session stored for protected routes</li>
+                <li>Crop and pest activity saved to your account history</li>
+                <li>Language preference carried with the user profile</li>
+              </ul>
+            </article>
+
+            <article className="surface-card auth-panel accent-surface">
+              <p className="card-kicker">Password rules</p>
+              <ul className="bullet-list">
+                <li>At least 8 characters</li>
+                <li>One uppercase and one lowercase letter</li>
+                <li>At least one number</li>
+              </ul>
+            </article>
           </div>
         </div>
 
         <form className="auth-card" onSubmit={handleSubmit}>
+          <div className="form-heading">
+            <p className="card-kicker">Register</p>
+            <h2>Create your account</h2>
+            <p>These fields map directly to the backend validation and user model.</p>
+          </div>
+
           <label className="field">
             <span>Name</span>
             <input
@@ -172,7 +190,7 @@ function RegisterPage() {
               <option value="hi">Hindi</option>
               <option value="kn">Kannada</option>
             </select>
-            <small className="field-hint">Used for your account preference in protected APIs.</small>
+            <small className="field-hint">Stored as part of the protected user profile.</small>
           </label>
 
           {errorMessage ? <p className="form-error">{errorMessage}</p> : null}

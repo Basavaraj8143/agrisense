@@ -116,39 +116,49 @@ function PestPage() {
 
   return (
     <section className="page page-pest">
-      <div className="shell-container crop-hero">
+      <div className="shell-container workspace-hero">
         <div>
-          <p className="eyebrow">Day 11 pest flow</p>
-          <h2>Upload a crop image and turn ML output into clear treatment guidance.</h2>
-          <p className="hero-text">
-            Signed in as {user?.name || "farmer"}. This screen now sends a real multipart upload to the protected Node
-            API and keeps your recent pest analyses visible in one place.
+          <p className="eyebrow">Pest diagnosis workspace</p>
+          <h1 className="page-title">Turn crop imagery into a structured diagnosis.</h1>
+          <p className="lead-text">
+            Signed in as {user?.name || "farmer"}. Upload a crop image, run the protected pest analysis route, and keep
+            recent diagnoses visible for follow-up action.
           </p>
         </div>
-        <div className="surface-card crop-summary-card accent-card">
-          <p className="card-kicker">Upload rules</p>
-          <ul className="compact-list">
-            <li>Supported types: JPEG, PNG, WebP</li>
-            <li>Server-side size limits are enforced by upload middleware</li>
-            <li>Graceful ML outage messaging is preserved from the backend</li>
-          </ul>
-        </div>
+
+        <aside className="surface-card workspace-summary accent-surface">
+          <p className="card-kicker">Diagnosis coverage</p>
+          <div className="stats-stack">
+            <div className="summary-row">
+              <strong>Accepted formats</strong>
+              <span>JPEG, PNG, WebP</span>
+            </div>
+            <div className="summary-row">
+              <strong>Result data</strong>
+              <span>Name, confidence, treatment, and source metadata</span>
+            </div>
+            <div className="summary-row">
+              <strong>History refresh</strong>
+              <span>Recent scans update after every successful upload</span>
+            </div>
+          </div>
+        </aside>
       </div>
 
-      <div className="shell-container pest-layout">
-        <form className="surface-card crop-form-card" onSubmit={handleSubmit}>
+      <div className="shell-container workspace-layout">
+        <form className="surface-card workflow-panel" onSubmit={handleSubmit}>
           <div className="section-heading">
             <div>
-              <p className="card-kicker">Pest image</p>
-              <h3>Analyze a leaf or crop photo</h3>
+              <p className="card-kicker">Image intake</p>
+              <h2>Upload a clear crop sample.</h2>
             </div>
-            <p>Choose a clear image so the ML service can return cleaner names, confidence, and treatment notes.</p>
+            <p>Higher quality images help the diagnosis service return more useful names, confidence scores, and treatment notes.</p>
           </div>
 
           <label className="upload-dropzone">
             <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleFileChange} />
             <span className="upload-title">{selectedFile ? selectedFile.name : "Drop or choose an image"}</span>
-            <span className="upload-subtitle">JPEG, PNG, or WebP. Protected upload goes to `/api/pest/detect`.</span>
+            <span className="upload-subtitle">The protected upload is sent to `/api/pest/detect` through the Node backend.</span>
           </label>
 
           {fieldErrors.image ? <p className="form-error">{fieldErrors.image}</p> : null}
@@ -159,7 +169,7 @@ function PestPage() {
               <img src={previewUrl} alt="Selected pest sample preview" className="image-preview" />
             </div>
           ) : (
-            <div className="empty-state-card surface-card preview-placeholder">
+            <div className="surface-card empty-state-card preview-placeholder">
               <p className="card-kicker">Preview</p>
               <h3>No image selected yet.</h3>
               <p>Your upload preview appears here before analysis starts.</p>
@@ -191,8 +201,8 @@ function PestPage() {
             <div className="surface-card results-panel">
               <div className="section-heading">
                 <div>
-                  <p className="card-kicker">Analysis result</p>
-                  <h3>{result.scientificName}</h3>
+                  <p className="card-kicker">Diagnosis result</p>
+                  <h2>{result.scientificName}</h2>
                 </div>
                 <p>Query ID: {result.queryId}</p>
               </div>
@@ -208,23 +218,39 @@ function PestPage() {
               </article>
 
               <div className="meta-grid">
-                <article className="metric-card">
-                  <span className="metric-label">Source</span>
+                <article className="surface-card stat-card compact-metric">
+                  <p className="metric-label">Source</p>
                   <strong className="metric-value meta-value">{result.meta?.source || "ml-service"}</strong>
-                  <p>Returned through the Node broker so outages and request IDs stay consistent.</p>
+                  <p>Returned through the Node broker so outage handling and metadata stay consistent.</p>
                 </article>
-                <article className="metric-card muted">
-                  <span className="metric-label">Latency</span>
+                <article className="surface-card stat-card compact-metric">
+                  <p className="metric-label">Latency</p>
                   <strong className="metric-value meta-value">{result.meta?.latencyMs ?? 0} ms</strong>
-                  <p>Measured by the backend while persisting this pest query for dashboard history.</p>
+                  <p>Measured by the backend while persisting this pest diagnosis for history.</p>
                 </article>
               </div>
             </div>
           ) : (
-            <div className="surface-card empty-state-card">
+            <div className="surface-card results-panel">
               <p className="card-kicker">Awaiting analysis</p>
-              <h3>Your diagnosis will appear here.</h3>
-              <p>After upload, we will show scientific name, confidence, treatment guidance, and recent history.</p>
+              <h2>Your diagnosis panel will appear here.</h2>
+              <p className="state-copy">
+                Upload a crop image to review the likely pest, confidence, treatment summary, and response metadata.
+              </p>
+              <div className="status-list status-list-spaced">
+                <div className="status-row">
+                  <span>Upload state</span>
+                  <strong>{selectedFile ? "Ready" : "Awaiting image"}</strong>
+                </div>
+                <div className="status-row">
+                  <span>History sync</span>
+                  <strong>{historyStatus === "ready" ? "Healthy" : historyStatus === "loading" ? "Loading" : "Attention"}</strong>
+                </div>
+                <div className="status-row">
+                  <span>Runtime path</span>
+                  <strong>Protected multipart upload</strong>
+                </div>
+              </div>
             </div>
           )}
 
@@ -232,14 +258,12 @@ function PestPage() {
             <div className="section-heading">
               <div>
                 <p className="card-kicker">Recent analyses</p>
-                <h3>Latest pest checks</h3>
+                <h2>Latest pest checks</h2>
               </div>
             </div>
 
             {historyStatus === "loading" ? <p className="state-copy">Loading recent pest history...</p> : null}
-            {historyStatus === "error" ? (
-              <p className="form-error">Unable to load recent pest history right now.</p>
-            ) : null}
+            {historyStatus === "error" ? <p className="form-error">Unable to load recent pest history right now.</p> : null}
             {historyStatus === "ready" && recentItems.length === 0 ? (
               <div className="empty-inline-state">
                 <p className="state-copy">No pest analyses yet. Your first upload will show up here.</p>

@@ -25,10 +25,7 @@ function DashboardPage() {
       setStatus("loading");
 
       try {
-        const [nextCropItems, nextPestItems] = await Promise.all([
-          cropApi.history(token, 4),
-          pestApi.history(token, 4),
-        ]);
+        const [nextCropItems, nextPestItems] = await Promise.all([cropApi.history(token, 4), pestApi.history(token, 4)]);
 
         if (!isCancelled) {
           setCropItems(nextCropItems);
@@ -49,38 +46,67 @@ function DashboardPage() {
     };
   }, [token]);
 
+  const totalActivity = cropItems.length + pestItems.length;
+  const latestSource = [...cropItems, ...pestItems]
+    .map((item) => item.meta?.source)
+    .filter(Boolean)
+    .slice(0, 1)[0];
+
   return (
     <section className="page">
-      <div className="shell-container dashboard-hero">
+      <div className="shell-container workspace-hero">
         <div>
-          <p className="eyebrow">Day 11 dashboard</p>
-          <h2>Welcome back, {user?.name || "farmer"}.</h2>
-          <p className="hero-text">
-            This dashboard now reads from live backend history endpoints so your latest crop recommendations and pest
-            analyses stay visible after each protected workflow.
+          <p className="eyebrow">Operations dashboard</p>
+          <h1 className="page-title">Welcome back, {user?.name || "farmer"}.</h1>
+          <p className="lead-text">
+            Monitor your recent crop recommendations and pest diagnoses from one place, with backend-backed history
+            and workflow shortcuts ready for the next field run.
           </p>
         </div>
 
-        <div className="metric-grid">
-          <article className="metric-card">
-            <span className="metric-label">Recent crop queries</span>
-            <strong className="metric-value">{cropItems.length}</strong>
-            <p>Most recent recommendation records loaded for this session.</p>
-          </article>
-          <article className="metric-card muted">
-            <span className="metric-label">Recent pest queries</span>
-            <strong className="metric-value">{pestItems.length}</strong>
-            <p>Latest uploaded pest analyses stored through the Node service.</p>
-          </article>
-        </div>
+        <aside className="surface-card workspace-summary accent-surface">
+          <p className="card-kicker">Workspace summary</p>
+          <div className="stats-stack">
+            <div className="summary-row">
+              <strong>History state</strong>
+              <span>{status === "ready" ? "Synchronized" : status === "loading" ? "Syncing" : "Needs attention"}</span>
+            </div>
+            <div className="summary-row">
+              <strong>Recent source</strong>
+              <span>{latestSource || "Awaiting data"}</span>
+            </div>
+            <div className="summary-row">
+              <strong>Preferred workspace</strong>
+              <span>{user?.preferredLanguage?.toUpperCase?.() || "EN"}</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div className="shell-container stats-row">
+        <article className="surface-card stat-card">
+          <p className="metric-label">Recent activity</p>
+          <strong className="metric-value">{totalActivity}</strong>
+          <p>Combined crop and pest records loaded into this dashboard session.</p>
+        </article>
+        <article className="surface-card stat-card">
+          <p className="metric-label">Crop runs</p>
+          <strong className="metric-value">{cropItems.length}</strong>
+          <p>Latest recommendation records available from the protected crop history endpoint.</p>
+        </article>
+        <article className="surface-card stat-card">
+          <p className="metric-label">Pest scans</p>
+          <strong className="metric-value">{pestItems.length}</strong>
+          <p>Most recent diagnosis uploads returned through the pest history endpoint.</p>
+        </article>
       </div>
 
       {status === "loading" ? (
         <div className="shell-container">
           <div className="surface-card empty-state-card">
             <p className="card-kicker">Loading dashboard</p>
-            <h3>Fetching your recent work.</h3>
-            <p>We are loading saved crop and pest history from the protected backend routes.</p>
+            <h3>Fetching recent field activity.</h3>
+            <p>We are loading saved crop and pest records from the protected backend routes.</p>
           </div>
         </div>
       ) : null}
@@ -163,6 +189,38 @@ function DashboardPage() {
               </div>
             )}
           </section>
+
+          <aside className="dashboard-sidebar">
+            <div className="surface-card sidebar-card">
+              <p className="card-kicker">Quick actions</p>
+              <div className="action-stack">
+                <Link to="/crop" className="secondary-button full-width">
+                  Open crop workspace
+                </Link>
+                <Link to="/pest" className="secondary-button full-width">
+                  Open pest workspace
+                </Link>
+              </div>
+            </div>
+
+            <div className="surface-card sidebar-card">
+              <p className="card-kicker">System status</p>
+              <div className="status-list">
+                <div className="status-row">
+                  <span>Auth session</span>
+                  <strong>Active</strong>
+                </div>
+                <div className="status-row">
+                  <span>History sync</span>
+                  <strong>{status === "ready" ? "Healthy" : "Retrying"}</strong>
+                </div>
+                <div className="status-row">
+                  <span>Primary source</span>
+                  <strong>{latestSource || "Pending"}</strong>
+                </div>
+              </div>
+            </div>
+          </aside>
         </div>
       ) : null}
     </section>

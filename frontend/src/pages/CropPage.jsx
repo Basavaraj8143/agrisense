@@ -314,34 +314,43 @@ function CropPage() {
 
   return (
     <section className="page page-crop">
-      <div className="shell-container crop-hero">
+      <div className="shell-container workspace-hero">
         <div>
-          <p className="eyebrow">Crop recommendation</p>
-          <h2>Upload a field image or enter your location manually before building the recommendation.</h2>
-          <p className="hero-text">
-            Signed in as {user?.name || "farmer"}. This flow now supports the legacy-style image-first entry while still
-            keeping a direct manual location option for faster use.
+          <p className="eyebrow">Crop recommendation workspace</p>
+          <h1 className="page-title">Capture field context before generating a recommendation.</h1>
+          <p className="lead-text">
+            Signed in as {user?.name || "farmer"}. Start with a field image or manual location input, then confirm the
+            nutrient profile used by the recommendation service.
           </p>
         </div>
-        <div className="surface-card crop-summary-card">
-          <p className="card-kicker">What this screen covers</p>
-          <ul className="compact-list">
-            <li>Image-assisted or manual location entry</li>
-            <li>Protected request using your stored JWT token</li>
-            <li>Primary crop and alternative recommendation cards</li>
-            <li>Latency, source, and autofill metadata from the backend</li>
-          </ul>
-        </div>
+
+        <aside className="surface-card workspace-summary">
+          <p className="card-kicker">Workflow coverage</p>
+          <div className="stats-stack">
+            <div className="summary-row">
+              <strong>Entry paths</strong>
+              <span>Image-assisted or manual</span>
+            </div>
+            <div className="summary-row">
+              <strong>Location assist</strong>
+              <span>EXIF GPS, OCR, or device coordinates</span>
+            </div>
+            <div className="summary-row">
+              <strong>Output record</strong>
+              <span>Primary crop, alternatives, and backend metadata</span>
+            </div>
+          </div>
+        </aside>
       </div>
 
-      <div className="shell-container crop-layout">
-        <form className="surface-card crop-form-card" onSubmit={handleSubmit}>
+      <div className="shell-container workspace-layout">
+        <form className="surface-card workflow-panel" onSubmit={handleSubmit}>
           <div className="section-heading">
             <div>
-              <p className="card-kicker">Recommendation inputs</p>
-              <h3>Location and field profile</h3>
+              <p className="card-kicker">Location capture</p>
+              <h2>Choose how the farmer starts the workflow.</h2>
             </div>
-            <p>Choose the input path that matches how the farmer actually starts the workflow.</p>
+            <p>Both entry paths stay available so the product works for guided field use and fast office entry.</p>
           </div>
 
           <div className="location-mode-grid">
@@ -351,7 +360,7 @@ function CropPage() {
               onClick={() => updateForm((current) => ({ ...current, locationMethod: "image_upload" }))}
             >
               <span className="location-mode-title">Upload field image</span>
-              <span className="location-mode-copy">Start with a field photo, then confirm location details below.</span>
+              <span className="location-mode-copy">Try GPS metadata first, then OCR, and fill location fields from detected coordinates.</span>
             </button>
 
             <button
@@ -368,7 +377,7 @@ function CropPage() {
               }
             >
               <span className="location-mode-title">Enter location manually</span>
-              <span className="location-mode-copy">Skip the image and provide district and taluk directly.</span>
+              <span className="location-mode-copy">Skip image analysis and go directly to district, taluk, and field profile inputs.</span>
             </button>
           </div>
 
@@ -377,7 +386,9 @@ function CropPage() {
               <label className="upload-dropzone">
                 <input type="file" accept="image/*" onChange={handleImageChange} />
                 <span className="upload-title">{form.locationImage ? form.locationImage.name : "Choose a field image"}</span>
-                <span className="upload-subtitle">We will try GPS metadata first, then OCR text, and autofill the location fields if coordinates are found.</span>
+                <span className="upload-subtitle">
+                  We inspect GPS metadata first, fall back to OCR text, then reverse-geocode coordinates into district and taluk.
+                </span>
               </label>
 
               {fieldErrors.locationImage ? <p className="form-error">{fieldErrors.locationImage}</p> : null}
@@ -390,9 +401,9 @@ function CropPage() {
 
               <div className="location-helper-card">
                 <div>
-                  <p className="card-kicker">Optional coordinates</p>
+                  <p className="card-kicker">Fallback location assist</p>
                   <p className="helper-copy">
-                    If image extraction fails, you can still use current device coordinates or type district and taluk yourself.
+                    If image extraction fails, use current device coordinates or continue with manual district and taluk entry.
                   </p>
                 </div>
                 <button
@@ -438,6 +449,14 @@ function CropPage() {
               </div>
             </div>
           ) : null}
+
+          <div className="section-heading">
+            <div>
+              <p className="card-kicker">Field profile</p>
+              <h2>Confirm localized field inputs.</h2>
+            </div>
+            <p>District and taluk remain required even when coordinates were auto-extracted from the image.</p>
+          </div>
 
           <div className="field-grid field-grid-two">
             <label className="field">
@@ -498,7 +517,7 @@ function CropPage() {
                   checked={form.autofillUsed}
                   onChange={(event) => updateForm((current) => ({ ...current, autofillUsed: event.target.checked }))}
                 />
-                <span>Mark nutrient values as estimated from a saved source</span>
+                <span>Mark nutrient values as estimated from a saved source.</span>
               </label>
             </div>
           </div>
@@ -524,9 +543,9 @@ function CropPage() {
           <div className="section-heading">
             <div>
               <p className="card-kicker">Soil chemistry</p>
-              <h3>Nutrient profile</h3>
+              <h2>Enter nutrient values used by the recommendation engine.</h2>
             </div>
-            <p>Use the same NPK and pH range limits enforced by the API.</p>
+            <p>These fields still honor the same range checks enforced by the backend validation layer.</p>
           </div>
 
           <div className="field-grid field-grid-four">
@@ -584,7 +603,7 @@ function CropPage() {
 
           <div className="form-actions">
             <button type="submit" className="primary-button" disabled={submitting}>
-              {submitting ? "Generating recommendation..." : extractingLocation ? "Finishing image extraction..." : "Recommend crops"}
+              {submitting ? "Generating recommendation..." : extractingLocation ? "Finishing image extraction..." : "Generate recommendation"}
             </button>
             <button type="button" className="secondary-button" onClick={resetForm}>
               Reset form
@@ -598,7 +617,7 @@ function CropPage() {
               <div className="section-heading">
                 <div>
                   <p className="card-kicker">Recommendation result</p>
-                  <h3>{result.primaryCrop?.name} looks strongest for this field.</h3>
+                  <h2>{result.primaryCrop?.name || "Recommendation ready"}</h2>
                 </div>
                 <p>Query ID: {result.queryId}</p>
               </div>
@@ -612,33 +631,46 @@ function CropPage() {
               </div>
 
               <div className="meta-grid">
-                <article className="metric-card">
-                  <span className="metric-label">Source</span>
+                <article className="surface-card stat-card compact-metric">
+                  <p className="metric-label">Source</p>
                   <strong className="metric-value meta-value">{result.meta?.source || "Unknown"}</strong>
-                  <p>Shows whether the result came from `ml-service` or a Node fallback path.</p>
+                  <p>Shows whether the result came from the ML service or a backend fallback path.</p>
                 </article>
-                <article className="metric-card muted">
-                  <span className="metric-label">Latency</span>
+                <article className="surface-card stat-card compact-metric">
+                  <p className="metric-label">Latency</p>
                   <strong className="metric-value meta-value">{result.meta?.latencyMs ?? 0} ms</strong>
-                  <p>Measured by the backend before it stored the recommendation audit record.</p>
+                  <p>Measured by the backend before persisting the recommendation record.</p>
                 </article>
               </div>
 
               <div className="result-footnote">
                 <span className="result-pill">{result.meta?.autofillUsed ? "Autofill flagged" : "Manual inputs"}</span>
-                {result.meta?.fallbackUsed ? (
-                  <span className="result-pill result-pill-warning">Fallback rules used</span>
-                ) : null}
+                {result.meta?.fallbackUsed ? <span className="result-pill result-pill-warning">Fallback rules used</span> : null}
               </div>
             </div>
           ) : (
-            <div className="surface-card empty-state-card">
+            <div className="surface-card results-panel">
               <p className="card-kicker">Awaiting submission</p>
-              <h3>Your recommendation will appear here.</h3>
-              <p>
-                Upload a field image or enter the location manually, then submit the crop form to see the recommendation
-                cards and backend metadata.
+              <h2>Your recommendation panel will appear here.</h2>
+              <p className="state-copy">
+                Upload a field image or enter location manually, confirm the nutrient profile, and submit the request to
+                view crop matches and backend metadata.
               </p>
+
+              <div className="status-list status-list-spaced">
+                <div className="status-row">
+                  <span>Image extraction</span>
+                  <strong>{extractingLocation ? "Running" : "Ready"}</strong>
+                </div>
+                <div className="status-row">
+                  <span>Location status</span>
+                  <strong>{locationStatus ? "Detected" : "Awaiting input"}</strong>
+                </div>
+                <div className="status-row">
+                  <span>Submission mode</span>
+                  <strong>{form.locationMethod === "image_upload" ? "Image-assisted" : "Manual"}</strong>
+                </div>
+              </div>
             </div>
           )}
         </div>

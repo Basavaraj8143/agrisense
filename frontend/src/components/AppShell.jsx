@@ -21,18 +21,17 @@ function AppShell() {
 
   return (
     <div className="app-shell">
-      <div className="ambient ambient-one" />
-      <div className="ambient ambient-two" />
-
       <header className="site-header">
-        <div className="shell-container">
-          <div className="brand-lockup">
-            <div className="brand-mark">A</div>
+        <div className="topbar">Localized crop intelligence, pest diagnosis, and saved field history in one workspace.</div>
+
+        <div className="shell-container header-row">
+          <NavLink to="/" className="brand-lockup" aria-label="AgriSense home">
+            <div className="brand-mark">AS</div>
             <div>
-              <p className="eyebrow">AgriSense Rebuild</p>
-              <h1 className="brand-title">Smart farming, now in React.</h1>
+              <p className="eyebrow">Agri intelligence platform</p>
+              <p className="brand-title">AgriSense</p>
             </div>
-          </div>
+          </NavLink>
 
           <button
             type="button"
@@ -59,11 +58,11 @@ function AppShell() {
           <div className="nav-actions">
             <div className="status-chip">
               <span className={`status-dot status-${status}`} />
-              {isAuthenticated ? user?.name || "Signed in" : "Guest mode"}
+              {isAuthenticated ? user?.name || "Workspace active" : "Guest mode"}
             </div>
 
             {isAuthenticated ? (
-              <button type="button" className="ghost-button" onClick={logout}>
+              <button type="button" className="ghost-button compact-button" onClick={logout}>
                 Sign out
               </button>
             ) : (
@@ -81,15 +80,31 @@ function AppShell() {
 
       <footer className="site-footer">
         <div className="shell-container footer-grid">
-          <div>
-            <p className="eyebrow">Day 11 shipped</p>
-            <h2 className="footer-title">Pest upload and dashboard history now complete the frontend MVP.</h2>
-          </div>
-          <div className="footer-copy">
-            <p>
-              The React client now covers auth, crop recommendations, pest analysis, and recent activity, which puts the
-              next phase squarely on testing and hardening.
+          <div className="footer-brand">
+            <p className="eyebrow">Current product state</p>
+            <h2 className="footer-title">Field recommendations and pest workflows now share one consistent product UI.</h2>
+            <p className="footer-copy">
+              The frontend now follows a cleaner agri-tech system with clearer workflow panels, stronger trust cues,
+              and more operational dashboard surfaces.
             </p>
+          </div>
+
+          <div className="footer-column">
+            <p className="card-kicker">Modules</p>
+            <ul className="bullet-list">
+              <li>Protected auth and session restore</li>
+              <li>Crop recommendation workspace</li>
+              <li>Pest diagnosis and recent history</li>
+            </ul>
+          </div>
+
+          <div className="footer-column">
+            <p className="card-kicker">Delivery phase</p>
+            <ul className="bullet-list">
+              <li>Frontend MVP workflows complete</li>
+              <li>Neon-backed persistence enabled</li>
+              <li>Ready for hardening and end-to-end testing</li>
+            </ul>
           </div>
         </div>
       </footer>

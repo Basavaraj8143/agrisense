@@ -51,20 +51,34 @@ function LoginPage() {
     <section className="page auth-page">
       <div className="shell-container auth-layout">
         <div className="auth-copy">
-          <p className="eyebrow">Secure sign in</p>
-          <h2>Return to your farm workspace and protected recommendation tools.</h2>
-          <p>
-            This login now talks directly to the Node auth API, restores the JWT session, and opens crop and pest flows
-            without leaving the React app.
+          <p className="eyebrow">Secure access</p>
+          <h1 className="page-title auth-title">Return to your field operations workspace.</h1>
+          <p className="lead-text">
+            Sign in to continue into protected crop recommendations, pest diagnosis, and your recent analysis history.
           </p>
-          <div className="surface-card auth-highlight">
-            <p className="card-kicker">Current session target</p>
-            <strong>{location.state?.from ? `Continue to ${location.state.from}` : "Open your dashboard"}</strong>
-            <p>{user?.email ? `Signed in as ${user.email}` : "Use the same credentials created in the Register flow."}</p>
+
+          <div className="auth-copy-grid">
+            <article className="surface-card auth-panel">
+              <p className="card-kicker">Session flow</p>
+              <h3>Protected by the Node auth API</h3>
+              <p>JWT restore, route protection, and backend-aligned validation all stay inside the React product flow.</p>
+            </article>
+
+            <article className="surface-card auth-panel accent-surface">
+              <p className="card-kicker">Next destination</p>
+              <strong>{location.state?.from ? `Continue to ${location.state.from}` : "Open your dashboard"}</strong>
+              <p>{user?.email ? `Saved session for ${user.email}` : "Use the account created from the register flow."}</p>
+            </article>
           </div>
         </div>
 
         <form className="auth-card" onSubmit={handleSubmit}>
+          <div className="form-heading">
+            <p className="card-kicker">Sign in</p>
+            <h2>Access your workspace</h2>
+            <p>Enter the same credentials stored in the backend account record.</p>
+          </div>
+
           <label className="field">
             <span>Email</span>
             <input
