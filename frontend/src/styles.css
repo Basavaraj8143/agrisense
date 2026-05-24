@@ -257,14 +257,60 @@ button:disabled {
   padding: 3rem 2rem;
 }
 
+.legacy-hero-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 28rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .legacy-gradient-panel {
   height: 100%;
 }
 
 .legacy-hero-content {
-  max-width: 44rem;
+  position: relative;
+  z-index: 2;
+  max-width: 52rem;
   margin: 0 auto;
   text-align: center;
+  padding: 1.5rem 1rem;
+}
+
+.legacy-hero-slider,
+.legacy-hero-overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.legacy-hero-slider {
+  z-index: 0;
+}
+
+.legacy-hero-slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(1.05);
+  transition: opacity 900ms ease, transform 5000ms ease;
+}
+
+.legacy-hero-slide.is-active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.legacy-hero-overlay {
+  z-index: 1;
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.08), rgba(15, 23, 42, 0.2)),
+    linear-gradient(0deg, rgba(15, 23, 42, 0.18), rgba(15, 23, 42, 0.02)),
+    linear-gradient(90deg, rgba(21, 128, 61, 0.18), rgba(21, 128, 61, 0.08));
 }
 
 .legacy-hero-title,
@@ -277,6 +323,10 @@ button:disabled {
   font-weight: 800;
 }
 
+.legacy-hero-title {
+  text-shadow: 0 6px 18px rgba(15, 23, 42, 0.26);
+}
+
 .legacy-hero-text,
 .legacy-dashboard-subtitle,
 .legacy-page-subtitle,
@@ -285,6 +335,12 @@ button:disabled {
   color: rgba(255, 255, 255, 0.9);
   font-size: 1.05rem;
   line-height: 1.7;
+}
+
+.legacy-hero-text {
+  max-width: 44rem;
+  margin-inline: auto;
+  text-shadow: 0 3px 14px rgba(15, 23, 42, 0.18);
 }
 
 .legacy-page-intro {
@@ -306,6 +362,26 @@ button:disabled {
   flex-wrap: wrap;
   gap: 0.75rem;
   margin-top: 1.5rem;
+}
+
+.legacy-hero-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 1.4rem;
+}
+
+.legacy-hero-dot {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.45);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.legacy-hero-dot.is-active {
+  background: rgba(255, 255, 255, 0.95);
+  transform: scale(1.15);
 }
 
 .legacy-solid-button,
@@ -358,9 +434,9 @@ button:disabled {
 }
 
 .legacy-ghost-white-button {
-  background: transparent;
+  background: rgba(15, 23, 42, 0.16);
   color: var(--white);
-  border-color: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.48);
 }
 
 .legacy-blue-button {
@@ -655,6 +731,49 @@ button:disabled {
 
 .legacy-location-box {
   background: var(--gray-50);
+}
+
+.legacy-assist-panel {
+  margin-top: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--gray-200);
+  padding: 1rem;
+}
+
+.legacy-assist-panel p {
+  margin: 0;
+  line-height: 1.65;
+}
+
+.legacy-assist-panel.tone-neutral {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1d4ed8;
+}
+
+.legacy-assist-panel.tone-success {
+  background: #f0fdf4;
+  border-color: #86efac;
+  color: #166534;
+}
+
+.legacy-assist-panel.tone-warning {
+  background: #fffbeb;
+  border-color: #fcd34d;
+  color: #92400e;
+}
+
+.legacy-assist-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.28rem 0.7rem;
+  margin-bottom: 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.7);
 }
 
 .legacy-location-row,

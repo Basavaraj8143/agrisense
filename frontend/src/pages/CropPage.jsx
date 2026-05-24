@@ -177,6 +177,7 @@ function CropPage() {
   const [form, setForm] = useState(() => ({ ...initialForm, locationImage: null }));
   const [imagePreviewUrl, setImagePreviewUrl] = useState("");
   const [locationStatus, setLocationStatus] = useState("");
+  const [locationAssist, setLocationAssist] = useState(null);
   const [extractingLocation, setExtractingLocation] = useState(false);
   const [geolocating, setGeolocating] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
@@ -225,6 +226,11 @@ function CropPage() {
     }));
 
     setLocationStatus(`Coordinates extracted from ${sourceLabel}. Resolving district and taluk...`);
+    setLocationAssist({
+      tone: "neutral",
+      badge: "Matching Location",
+      detail: "Coordinates were detected. We are mapping them to the district and taluk dropdowns now.",
+    });
 
     try {
       const location = await reverseGeocodeCoordinates(lat, lng);
@@ -250,15 +256,35 @@ function CropPage() {
       });
       const matchedDistrict = findDistrictKey(location.district) || findDistrictByTaluk(location.taluk);
       const matchedTaluk = findTalukForDistrict(matchedDistrict, location.taluk);
-      setLocationStatus(
-        matchedDistrict && matchedTaluk
-          ? `Location detected from ${sourceLabel}. Auto-selected ${matchedTaluk}, ${matchedDistrict}.`
-          : matchedDistrict
-            ? `Location detected from ${sourceLabel}. Auto-selected district ${matchedDistrict}. Please confirm taluk.`
-            : `Coordinates detected from ${sourceLabel}. Please select district and taluk from the dropdowns.`
-      );
+      if (matchedDistrict && matchedTaluk) {
+        setLocationStatus(`Location detected from ${sourceLabel}. Auto-selected ${matchedTaluk}, ${matchedDistrict}.`);
+        setLocationAssist({
+          tone: "success",
+          badge: "Location Auto-Filled",
+          detail: `District and taluk were selected from the uploaded image. Current match: ${matchedTaluk}, ${matchedDistrict}.`,
+        });
+      } else if (matchedDistrict) {
+        setLocationStatus(`Location detected from ${sourceLabel}. Auto-selected district ${matchedDistrict}. Please confirm taluk.`);
+        setLocationAssist({
+          tone: "warning",
+          badge: "District Matched",
+          detail: `We matched the district to ${matchedDistrict}, but the taluk still needs manual confirmation from the dropdown.`,
+        });
+      } else {
+        setLocationStatus(`Coordinates detected from ${sourceLabel}. Please select district and taluk from the dropdowns.`);
+        setLocationAssist({
+          tone: "warning",
+          badge: "Manual Confirmation Needed",
+          detail: "Coordinates were found, but the dropdown location labels did not match cleanly. Please choose district and taluk manually.",
+        });
+      }
     } catch {
       setLocationStatus(`Coordinates detected from ${sourceLabel}. Confirm district and taluk before submitting.`);
+      setLocationAssist({
+        tone: "warning",
+        badge: "Location Review Needed",
+        detail: "Coordinates were detected, but reverse geocoding did not fully resolve the dropdown location values. Please confirm them manually.",
+      });
     }
   }
 
@@ -266,6 +292,7 @@ function CropPage() {
     const nextFile = event.target.files?.[0] || null;
     setFieldErrors((current) => ({ ...current, locationImage: undefined }));
     setLocationStatus("");
+    setLocationAssist(null);
 
     if (!nextFile) {
       updateForm((current) => ({ ...current, locationImage: null }));
@@ -286,6 +313,11 @@ function CropPage() {
 
       if (!coordinates) {
         setLocationStatus("No coordinates were found in the image. You can still enter the location manually.");
+        setLocationAssist({
+          tone: "warning",
+          badge: "No Coordinates Found",
+          detail: "The image did not contain usable GPS metadata or OCR-readable coordinates. Continue by choosing the location manually.",
+        });
         return;
       }
 
@@ -296,6 +328,11 @@ function CropPage() {
       );
     } catch {
       setLocationStatus("Could not extract coordinates from this image. You can still continue with manual location entry.");
+      setLocationAssist({
+        tone: "warning",
+        badge: "Image Extraction Failed",
+        detail: "We could not read a usable location from this image. You can still use current location or choose district and taluk manually.",
+      });
     } finally {
       setExtractingLocation(false);
     }
@@ -309,6 +346,11 @@ function CropPage() {
 
     setGeolocating(true);
     setLocationStatus("Getting current device coordinates...");
+    setLocationAssist({
+      tone: "neutral",
+      badge: "Getting Device Location",
+      detail: "We are requesting your current coordinates and will try to map them to the location dropdowns.",
+    });
 
     navigator.geolocation.getCurrentPosition(
       async (position) => {
@@ -317,6 +359,11 @@ function CropPage() {
       },
       () => {
         setLocationStatus("Unable to access current location. Please enter district and taluk manually.");
+        setLocationAssist({
+          tone: "warning",
+          badge: "Device Location Unavailable",
+          detail: "Browser location access failed, so the district and taluk still need to be selected manually.",
+        });
         setGeolocating(false);
       },
       {
@@ -426,6 +473,13 @@ function CropPage() {
                     </div>
                   </div>
                 )}
+
+                {locationAssist ? (
+                  <div className={`legacy-assist-panel tone-${locationAssist.tone}`}>
+                    <div className="legacy-assist-badge">{locationAssist.badge}</div>
+                    <p>{locationAssist.detail}</p>
+                  </div>
+                ) : null}
 
                 {form.locationMethod === "image_upload" ? (
                   <button

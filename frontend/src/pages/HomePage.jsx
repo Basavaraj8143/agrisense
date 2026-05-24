@@ -1,4 +1,9 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+
+import heroImage1 from "../../images/image1.png";
+import heroImage2 from "../../images/image2.png";
+import heroImage3 from "../../images/image3.png";
 
 const features = [
   {
@@ -22,11 +27,36 @@ const stats = [
   { value: "1", label: "Unified dashboard", accent: "orange" },
 ];
 
+const heroSlides = [heroImage1, heroImage2, heroImage3];
+
 function HomePage() {
+  const [activeSlide, setActiveSlide] = useState(0);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setActiveSlide((current) => (current + 1) % heroSlides.length);
+    }, 3500);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, []);
+
   return (
     <section className="legacy-section legacy-home">
       <div className="legacy-container">
         <div className="legacy-hero-card">
+          <div className="legacy-hero-slider" aria-hidden="true">
+            {heroSlides.map((slide, index) => (
+              <img
+                key={slide}
+                src={slide}
+                alt=""
+                className={`legacy-hero-slide ${index === activeSlide ? "is-active" : ""}`}
+              />
+            ))}
+          </div>
+          <div className="legacy-hero-overlay" />
           <div className="legacy-hero-content">
             <h2 className="legacy-hero-title">Smarter crop planning and pest diagnosis for every farmer.</h2>
             <p className="legacy-hero-text">
@@ -40,6 +70,11 @@ function HomePage() {
               <Link to="/crop" className="legacy-ghost-white-button">
                 Try Crop Recommendation
               </Link>
+            </div>
+            <div className="legacy-hero-dots" aria-label="Hero image indicators">
+              {heroSlides.map((slide, index) => (
+                <span key={slide} className={`legacy-hero-dot ${index === activeSlide ? "is-active" : ""}`} />
+              ))}
             </div>
           </div>
         </div>
