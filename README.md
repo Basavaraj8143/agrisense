@@ -3,14 +3,10 @@
 **AgriSense** is a comprehensive, AI-driven agricultural platform designed to empower farmers with real-time insights, intelligent recommendations, and community support. It bridges the gap between traditional farming and modern technology, ensuring better yields, sustainable practices, and improved profitability.
 
 ![Python](https://img.shields.io/badge/Python-3.8+-3d7a3d?style=flat-square&logo=python&logoColor=white)
-
 ![Flask](https://img.shields.io/badge/Flask-REST_API-1a2f1a?style=flat-square&logo=flask&logoColor=white)
-
 ![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-Random_Forest-f7931e?style=flat-square&logo=scikit-learn&logoColor=white)
-
 ![License](https://img.shields.io/badge/License-MIT-7dc45a?style=flat-square)
 ![Status](https://img.shields.io/badge/Rebuild-Active-7dc45a?style=flat-square)
-
 
 ## Rebuild Roadmap (Active)
 The repository is currently entering a staged rebuild to support backend-focused production architecture:
