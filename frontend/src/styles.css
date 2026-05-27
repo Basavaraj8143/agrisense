@@ -915,6 +915,85 @@ button:disabled {
   text-align: center;
 }
 
+.legacy-profile-hero {
+  padding: 2.7rem 0;
+}
+
+.legacy-profile-hero-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  text-align: left;
+}
+
+.legacy-profile-avatar {
+  width: 5.5rem;
+  height: 5.5rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.legacy-profile-page {
+  padding-bottom: 1rem;
+}
+
+.legacy-profile-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.9fr;
+  gap: 1.5rem;
+}
+
+.legacy-profile-lower-grid {
+  margin-top: 2rem;
+}
+
+.legacy-profile-details,
+.legacy-profile-actions {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.legacy-profile-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.legacy-profile-row span {
+  color: var(--gray-600);
+}
+
+.legacy-profile-row strong {
+  text-align: right;
+  color: var(--gray-800);
+}
+
+.legacy-profile-status-card {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--gray-200);
+}
+
+.legacy-signout-text {
+  justify-content: flex-start;
+  padding-left: 0;
+}
+
+.legacy-stat-value-small {
+  font-size: 1.35rem;
+}
+
 .legacy-dashboard-subtitle {
   max-width: 46rem;
   margin: 0 auto;
@@ -1018,7 +1097,8 @@ button:disabled {
   .legacy-feature-grid,
   .legacy-record-grid,
   .legacy-stats-grid,
-  .legacy-dashboard-grid {
+  .legacy-dashboard-grid,
+  .legacy-profile-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -1044,8 +1124,14 @@ button:disabled {
   .legacy-two-column,
   .legacy-auth-layout,
   .legacy-workspace-grid,
-  .legacy-footer-grid {
+  .legacy-footer-grid,
+  .legacy-profile-grid {
     grid-template-columns: 1fr;
+  }
+
+  .legacy-profile-hero-inner {
+    text-align: center;
+    flex-direction: column;
   }
 }
 
@@ -1085,6 +1171,15 @@ button:disabled {
   .legacy-header-actions {
     width: 100%;
     justify-content: space-between;
+  }
+
+  .legacy-profile-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .legacy-profile-row strong {
+    text-align: left;
   }
 
   .legacy-language-select {

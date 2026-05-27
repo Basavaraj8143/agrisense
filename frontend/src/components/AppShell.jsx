@@ -47,9 +47,14 @@ function AppShell() {
               </select>
 
               {isAuthenticated ? (
-                <button type="button" className="legacy-outline-button" onClick={logout}>
-                  Sign Out
-                </button>
+                <>
+                  <NavLink to="/profile" className="legacy-outline-button">
+                    Profile
+                  </NavLink>
+                  <button type="button" className="legacy-outline-button" onClick={logout}>
+                    Sign Out
+                  </button>
+                </>
               ) : (
                 <NavLink to="/login" className="legacy-solid-button legacy-header-button">
                   Sign In
@@ -101,7 +106,13 @@ function AppShell() {
                     Create Account
                   </NavLink>
                 </li>
-              ) : null}
+              ) : (
+                <li>
+                  <NavLink to="/profile" className="legacy-mobile-nav-link">
+                    Profile
+                  </NavLink>
+                </li>
+              )}
             </ul>
           </nav>
         </div>
@@ -139,6 +150,11 @@ function AppShell() {
               <li>
                 <NavLink to="/dashboard">Dashboard</NavLink>
               </li>
+              {isAuthenticated ? (
+                <li>
+                  <NavLink to="/profile">Profile</NavLink>
+                </li>
+              ) : null}
             </ul>
           </div>
 
