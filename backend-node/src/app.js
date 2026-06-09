@@ -6,6 +6,7 @@ const rateLimit = require("express-rate-limit");
 
 const healthRouter = require("./routes/health.routes");
 const authRouter = require("./routes/auth.routes");
+const profileRouter = require("./routes/profile.routes");
 const cropRouter = require("./routes/crop.routes");
 const pestRouter = require("./routes/pest.routes");
 const { attachRequestContext } = require("./middlewares/request-context.middleware");
@@ -73,6 +74,7 @@ app.use(express.json({ limit: "1mb" }));
 
 app.use("/api/health", healthRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/profile", profileRouter);
 app.use("/api/crop", cropRouter);
 app.use("/api/pest", pestRouter);
 

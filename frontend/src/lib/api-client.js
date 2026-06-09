@@ -126,4 +126,31 @@ export const pestApi = {
   },
 };
 
+export const profileApi = {
+  async getProfile(token) {
+    const response = await apiRequest("/api/profile/me", {
+      token,
+    });
+    return response.data;
+  },
+
+  async updateProfile(profileData, token) {
+    const response = await apiRequest("/api/profile/me", {
+      method: "PATCH",
+      body: profileData,
+      token,
+    });
+    return response.data;
+  },
+
+  async changePassword(passwordData, token) {
+    const response = await apiRequest("/api/profile/password", {
+      method: "PATCH",
+      body: passwordData,
+      token,
+    });
+    return response.data;
+  },
+};
+
 export { ApiError, apiBaseUrl, toFieldErrors };

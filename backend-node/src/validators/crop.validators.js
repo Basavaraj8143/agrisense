@@ -84,6 +84,7 @@ const cropRecommendationSchema = z.object({
   p: z.number().min(0, "P must be at least 0").max(300, "P must be at most 300"),
   k: z.number().min(0, "K must be at least 0").max(300, "K must be at most 300"),
   ph: z.number().min(0, "pH must be at least 0").max(14, "pH must be at most 14"),
+  previousCrop: z.string().trim().optional(),
   autofill: z
     .object({
       used: z.boolean(),

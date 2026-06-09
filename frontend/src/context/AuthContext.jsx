@@ -71,6 +71,10 @@ export function AuthProvider({ children }) {
     setStatus("idle");
   }
 
+  function updateUser(updatedUser) {
+    setUser(updatedUser);
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -81,6 +85,7 @@ export function AuthProvider({ children }) {
         login,
         register,
         logout,
+        updateUser,
       }}
     >
       {children}
